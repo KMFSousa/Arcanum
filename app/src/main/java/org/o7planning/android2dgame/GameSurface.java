@@ -1,6 +1,7 @@
 package org.o7planning.android2dgame;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -16,7 +17,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
     private GameThread gameThread;
     private Map map;
-    private final List<ChibiCharacter> chibiList = new ArrayList<ChibiCharacter>();
+    private final List<Character> characterList = new ArrayList<Character>();
     private final List<Explosion> explosionList = new ArrayList<Explosion>();
     public GameSurface(Context context)  {
         super(context);
@@ -31,8 +32,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     // MASTER UPDATE CONTROL
     // CALL ALL UPDATE METHODS FOR OBJECTS HERE
     public void update()  {
-        for (ChibiCharacter chibi: chibiList) {
-            chibi.update();
+        for (Character character: characterList) {
+            character.update();
         }
 
         for (Explosion explosion: this.explosionList) {
@@ -58,8 +59,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         this.map.draw(canvas);
 
         // Call the draw method implemented in each class, responsible for drawing the bitmap of the model in question
-        for (ChibiCharacter chibi: chibiList) {
-            chibi.draw(canvas);
+        for (Character character: characterList) {
+            character.draw(canvas);
         }
 
         for (Explosion explosion: explosionList) {
@@ -71,21 +72,22 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     @Override
 
     // The surfaceCreated method is called immediately after the surface is first created (in MainActivity)
-    // The gameThread will be what calls the update method on the chibi character
+    // The gameThread will be what calls the update method on the character
     public void surfaceCreated(SurfaceHolder holder) {
-        Bitmap chibiBitmap1 = BitmapFactory.decodeResource(this.getResources(),R.drawable.chibi1);
-        ChibiCharacter chibi1 = new ChibiCharacter(this, chibiBitmap1,100,50);
+        Bitmap characterBitmap1 = BitmapFactory.decodeResource(this.getResources(),R.drawable.chibi1);
+        Character character1 = new Character(this, characterBitmap1,100,50);
 
-        Bitmap chibiBitmap2 = BitmapFactory.decodeResource(this.getResources(),R.drawable.chibi2);
-        ChibiCharacter chibi2 = new ChibiCharacter(this, chibiBitmap2,300,150);
+        Bitmap characterBitmap2 = BitmapFactory.decodeResource(this.getResources(),R.drawable.chibi2);
+        Character character2 = new Character(this, characterBitmap2,300,150);
 
         Bitmap backgroundBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.spritesheet);
-        Map map = new Map(this, backgroundBitmap, 500, 500);
+
+        Map map = new Map(this, backgroundBitmap);
 
         this.map = map;
 
-        this.chibiList.add(chibi1);
-        this.chibiList.add(chibi2);
+        this.characterList.add(character1);
+        this.characterList.add(character2);
 
         // Create a thread that will handle the running of the game (character movements and such) that can be easily paused without having to add excess logic to the main thread
         this.gameThread = new GameThread(this,holder);
@@ -128,27 +130,22 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
             // An iterator loops over a list, and will continue to do so until there are no items left in the list
             // Rather than use a while or for loop, which can be problematic if you have to remove items from them while they are executing,
             // an iterator is designed to allow the programmer to remove items from the list mid-iteration without affecting the program negatively.
-            Iterator<ChibiCharacter> iterator = this.chibiList.iterator();
+            Iterator<Character> iterator = this.characterList.iterator();
 
-            while (iterator.hasNext()) {
-                ChibiCharacter chibi = iterator.next();
-                // Is the click within the bounds of the character?
-                if (chibi.getX() < x && x < chibi.getX() + chibi.getWidth() && chibi.getY() < y && y < chibi.getY() + chibi.getHeight()) {
-                    iterator.remove();
+            for (Character character: characterList) {
+                int movingVectorX = x - character.getX();
+                int movingVectorY = y - character.getY();
 
-                    // Create Explosion object
-                    Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.explosion);
-                    Explosion explosion = new Explosion(this, bitmap, chibi.getX(), chibi.getY());
-
-                    this.explosionList.add(explosion);
-                }
+                character.setMovingVector(movingVectorX, movingVectorY);
             }
 
-            for (ChibiCharacter chibi: chibiList) {
-                int movingVectorX = x - chibi.getX();
-                int movingVectorY = y - chibi.getY();
-
-                chibi.setMovingVector(movingVectorX, movingVectorY);
+            while (iterator.hasNext()) {
+                Character character = iterator.next();
+                // Is the click within the bounds of the character?
+                if (character.isWithinBounds(x,y)) {
+                    //Stop moving the character
+                    character.setMovingVector(0,0);
+                }
             }
 
             return true;

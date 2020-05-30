@@ -52,5 +52,9 @@ public class GameObject {
     public int getWidth() {
         return this.width;
     }
+
+    public boolean isWithinBounds(int targetX, int targetY) {
+        return this.x < targetX && targetX < this.x + this.width && this.y < targetY && targetY < this.y + this.height;
+    }
 }
 

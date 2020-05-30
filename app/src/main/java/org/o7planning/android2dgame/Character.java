@@ -3,7 +3,7 @@ package org.o7planning.android2dgame;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
-public class ChibiCharacter extends GameObject {
+public class Character extends GameObject {
 
     // The spritesheet is configured such that:
     // Row 0: When character moving down
@@ -30,8 +30,8 @@ public class ChibiCharacter extends GameObject {
     // Velocity of game character (pixel/millisecond)
     public static final float VELOCITY = 0.1f;
 
-    private int movingVectorX = 10;
-    private int movingVectorY = 5;
+    private int movingVectorX = 0;
+    private int movingVectorY = 0;
 
     private long lastDrawNanoTime =-1;
 
@@ -39,7 +39,7 @@ public class ChibiCharacter extends GameObject {
 
     // This method (called in GameSurface.java) will take the spritesheet we provide it with and create arrays holding the bitmaps of each sprite
 
-    public ChibiCharacter(GameSurface gameSurface, Bitmap image, int x, int y) {
+    public Character(GameSurface gameSurface, Bitmap image, int x, int y) {
         super(image, 4, 3, x, y); // Calls
 
         this.gameSurface= gameSurface;
@@ -88,10 +88,14 @@ public class ChibiCharacter extends GameObject {
     // This is the character update loop
 
     public void update()  {
+        // c = sqrt(a^2 + b^2) - i.e. we are getting the movement vector based on how far we moved horizontally and vertically
+        double movingVectorLength = Math.sqrt(movingVectorX*movingVectorX + movingVectorY*movingVectorY);
 
         // Update which column we are using by 1 for each iteration
         // Used in getCurrentMoveBitmap() to grab the next sprite to render on the canvas
-        this.colUsing++;
+        if (movingVectorLength > 0) {
+            this.colUsing++;
+        }
         // Once we have cycled through all the sprites for a certain direction, start back at the first one
         if(colUsing >= this.colCount)  {
             this.colUsing =0;
@@ -110,15 +114,11 @@ public class ChibiCharacter extends GameObject {
         // Distance moved per time unit
         float distance = VELOCITY * deltaTime;
 
-        // c = sqrt(a^2 + b^2) - i.e. we are getting the movement vector based on how far we moved horizontally and vertically
-        double movingVectorLength = Math.sqrt(movingVectorX*movingVectorX + movingVectorY*movingVectorY);
-
         // Calculate the new position of the game character.
         this.x = x +  (int)(distance* movingVectorX / movingVectorLength);
         this.y = y +  (int)(distance* movingVectorY / movingVectorLength);
 
         // When the game's character touches the edge of the screen, then change direction
-
         if(this.x < 0 )  {
             this.x = 0;
             this.movingVectorX = - this.movingVectorX;

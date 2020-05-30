@@ -47,10 +47,10 @@ public class GameThread extends Thread {
                 // The synchronized method allows only one thread at a time to access the contained code
                 // In our case we've only instantiated one thread, but if we were to instantiate more this would become very important.
                 synchronized (canvas)  {
-                    // the gameSurface update() method calls the chibi update() method
-                    // IMPORTANT NOTE: The `update()` method is responsible for adjusting the parameters regarding the chibi objects, IT DOES NOT RENDER ANYTHING TO THE SCREEN
+                    // the gameSurface update() method calls the character update() method
+                    // IMPORTANT NOTE: The `update()` method is responsible for adjusting the parameters regarding the character objects, IT DOES NOT RENDER ANYTHING TO THE SCREEN
                     this.gameSurface.update();
-                    // the gameSurface draw() method calls the chibi draw() method
+                    // the gameSurface draw() method calls the character draw() method
                     // IMPORTANT NOTE: The `draw()` method is what will actually draw the sprites to the canvas
                     this.gameSurface.draw(canvas);
                 }
@@ -64,11 +64,7 @@ public class GameThread extends Thread {
             }
             long now = System.nanoTime() ;
             // Interval to redraw game
-            // (Change nanoseconds to milliseconds)
-            long waitTime = (now - startTime)/1000000;
-            if(waitTime < 10)  {
-                waitTime = 10; // Millisecond.
-            }
+            long waitTime = 100; // Millisecond.
             System.out.print("Wait Time = " + waitTime);
 
             try {
