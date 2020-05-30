@@ -79,11 +79,9 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
         Bitmap characterBitmap2 = BitmapFactory.decodeResource(this.getResources(),R.drawable.chibi2);
         Character character2 = new Character(this, characterBitmap2,300,150);
-
         Bitmap backgroundBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.spritesheet);
 
         Map map = new Map(this, backgroundBitmap);
-
         this.map = map;
 
         this.characterList.add(character1);
