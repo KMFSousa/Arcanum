@@ -79,8 +79,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         Bitmap chibiBitmap2 = BitmapFactory.decodeResource(this.getResources(),R.drawable.chibi2);
         ChibiCharacter chibi2 = new ChibiCharacter(this, chibiBitmap2,300,150);
 
-        Bitmap backgroundBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.spritesheet);
-        Map map = new Map(this, backgroundBitmap, 500, 500);
+        Bitmap mapBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.spritesheet);
+        Map map = new Map(this, mapBitmap, 500, 500);
 
         this.map = map;
 

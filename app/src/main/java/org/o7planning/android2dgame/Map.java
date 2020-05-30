@@ -23,6 +23,11 @@ public class Map {
     private void createTiles (Bitmap image, int rows, int columns) {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
+                // TODO: IMPORTANT! May be able to use the GameObject's `createSubImageAt()` method, which returns a bitmap from a subset of the source bitmap
+                // TODO: It sets the width and height of the object based on the width and height of the original image, divided by the rows/columns
+                // TODO: We should probably call the `createSubImageAt()` here as the rowCount and colCount properties are unneeded for a Tile object, and then pass the sub image into the `Tile()` constructor
+                // TODO: Would need to extend GameObject
+
                 // TODO: Divide up map into rows and columns, then pass each sub-bitmap into the `Tile()` constructor along with the `x` and `y`
                 // TODO: Then, place the created tile into its respective place in the `tileArray`
                 // TODO: This method should do the dividing of the main image into tiles
