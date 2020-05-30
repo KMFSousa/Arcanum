@@ -22,5 +22,5 @@
 * The `run()` method is responsible for calling the GameSurface's `update()` and `draw()` methods in a loop.
 
 # GameObject
-* This class is an abstract class implemented by all other sprite classes that defines some basic properties, such as the width, height, and x and y of each, as well as methods for retrieving them
+* This class is an abstract class implemented by all other sprite classes that defines some basic properties, such as the width, height, and x and y of each, as well as methods for retrieving them.
 * The `createSubImageAt()` method allows one to pass in a bigger image and break it down into sub-images based on the # of specified rows and columns, which is good for working with sprite sheets or the map grid.
