@@ -1,5 +1,6 @@
 # Code Breakdown
-* All the code can be found in /app/src/main/java/org.o7planning.android2dgame
+* All the code can be found in /app/src/main/java/org.o7planning.android2dgame.
+* All the resources are stored /app/src/main/res.
 * The most important classes are the MainActivity, GameSurface, GameThread and GameObject classes.
 
 # MainActivity
