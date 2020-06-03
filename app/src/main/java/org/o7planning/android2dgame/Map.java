@@ -3,6 +3,7 @@ package org.o7planning.android2dgame;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.util.Log;
 
 
 public class Map {
@@ -26,36 +27,33 @@ public class Map {
 
     public Map(GameSurface gameSurface, Bitmap image) {
         this.gameSurface = gameSurface;
-        int screenHeight =  Resources.getSystem().getDisplayMetrics().heightPixels;
-        int screenWidth =  Resources.getSystem().getDisplayMetrics().widthPixels;
-        this.bitmap = Bitmap.createScaledBitmap(image, screenWidth,screenHeight, true);
+        // TODO: For some reason screen still returns display metrics as if it is in portrait, even though set to landscape
+        // TODO: Thus, swapping width and height for now
+        int screenWidth = Resources.getSystem().getDisplayMetrics().heightPixels; // For landscape mode, width = height of portrait
+        int screenHeight =  Resources.getSystem().getDisplayMetrics().widthPixels; // For landscape mode, height = width of portrait
+        this.bitmap = Bitmap.createScaledBitmap(image, screenWidth, screenHeight, true);
         int bitmapWidth = bitmap.getWidth();
         int bitmapHeight = bitmap.getHeight();
-        this.rows = 16; // 16:9 map aspect ratio to function with most resolutions
-        this.columns = 9;
-        this.tileWidth = bitmapWidth/rows;
-        this.tileHeight = bitmapHeight/columns;
+        this.rows = 9; // 16:9 map aspect ratio to function with most resolutions
+        this.columns = 16;
+        this.tileWidth = bitmapWidth/columns;
+        this.tileHeight = bitmapHeight/rows;
         this.tileArray = new Tile[rows][columns];
         this.createTiles(bitmap, rows, columns);
-
-        // TODO: Get screen size, divide into tiles of some width/height (may be pre-determined), initialize the `tileArray`
-        // TODO: Then, pass the # of rows and columns as well as the whole background image to the `createTiles()` method
     }
 
     private void createTiles (Bitmap image, int rows, int columns) {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                tileArray[i][j] = new Tile(createSubImageAt(image, j, i), i*tileWidth, j*tileHeight);
-                // TODO: IMPORTANT! May be able to use the GameObject's `createSubImageAt()` method, which returns a bitmap from a subset of the source bitmap
-                // TODO: It sets the width and height of the object based on the width and height of the original image, divided by the rows/columns
-                // TODO: We should probably call the `createSubImageAt()` here as the rowCount and colCount properties are unneeded for a Tile object, and then pass the sub image into the `Tile()` constructor
-                // TODO: Would need to extend GameObject
+                // TODO: For some reason,
+                tileArray[i][j] = new Tile(createSubImageAt(image, i, j), j*tileWidth, i*tileHeight);
             }
         }
     }
 
     private Bitmap createSubImageAt(Bitmap image, int row, int col) {
-        //createBitmap(bitmap, x, y, width, height);
+        // createBitmap(bitmap, x, y, width, height);
+        // Log.i("Map", "x: " + Integer.toString(col*this.tileWidth) + ", y: " + Integer.toString((row*this.tileHeight)));
         Bitmap subImage = Bitmap.createBitmap(image, col * this.tileWidth, row * this.tileHeight, this.tileWidth, this.tileHeight);
         return subImage;
     }
