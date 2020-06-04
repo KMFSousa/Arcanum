@@ -3,6 +3,8 @@ package org.o7planning.android2dgame;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
+import java.util.Iterator;
+
 public class Character extends GameObject {
 
     // The spritesheet is configured such that:
@@ -88,6 +90,10 @@ public class Character extends GameObject {
     // This is the character update loop
 
     public void update()  {
+
+        //check if in combat
+        inCombat();
+
         // c = sqrt(a^2 + b^2) - i.e. we are getting the movement vector based on how far we moved horizontally and vertically
         double movingVectorLength = Math.sqrt(movingVectorX*movingVectorX + movingVectorY*movingVectorY);
 
@@ -170,8 +176,20 @@ public class Character extends GameObject {
         this.movingVectorY = movingVectorY;
     }
 
-    //To Do:
-//    public void inCombat(int x, int y) {
-//        Monster monster = GameSurface.
-//    }
+    public void inCombat() {
+        Iterator<Monster> iterator = gameSurface.monsterList.iterator();
+
+        while(iterator.hasNext()){
+            Character other = iterator.next();
+            if(this.getX() < other.x && other.x < this.getX() + this.getWidth()
+                    && this.getY() < other.y && other.y < this.getY() + this.getHeight()){
+                attack(other);
+            }
+
+        }
+    }
+
+    public void attack(Character other) {
+        gameSurface.removeCharacter(other);
+    }
 }

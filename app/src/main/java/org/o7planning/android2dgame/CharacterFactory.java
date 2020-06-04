@@ -4,10 +4,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 
-public class CreatureFactory {
+public class CharacterFactory {
     private GameSurface gameSurface;
 
-    public CreatureFactory(GameSurface gameSurface) {
+    public CharacterFactory(GameSurface gameSurface) {
         this.gameSurface = gameSurface;
     }
 

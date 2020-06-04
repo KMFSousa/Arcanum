@@ -1,7 +1,6 @@
 package org.o7planning.android2dgame;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -77,9 +76,13 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    private void createCreatures(CreatureFactory creatureFactory){
-        Character player = creatureFactory.newPlayer();
-        Character monster = creatureFactory.newMonster();
+    private void createCreatures(CharacterFactory characterFactory){
+        Character player = characterFactory.newPlayer();
+        Character monster = characterFactory.newMonster();
+    }
+
+    public void removeCharacter(Character other) {
+        monsterList.remove(other);
     }
 
     // Implements method of SurfaceHolder.Callback
@@ -89,8 +92,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     // The gameThread will be what calls the update method on the character
     public void surfaceCreated(SurfaceHolder holder) {
 
-        CreatureFactory creatureFactory = new CreatureFactory(this);
-        createCreatures(creatureFactory);
+        CharacterFactory characterFactory = new CharacterFactory(this);
+        createCreatures(characterFactory);
 
         Bitmap backgroundBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.spritesheet);
 
