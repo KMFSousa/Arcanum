@@ -17,9 +17,9 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
     private GameThread gameThread;
     private Map map;
-    private final List<Character> characterList = new ArrayList<Character>();
-    private final List<Explosion> explosionList = new ArrayList<Explosion>();
-    private final List<Monster> monsterList = new ArrayList<Monster>();
+    public final List<Character> characterList = new ArrayList<Character>();
+    public final List<Explosion> explosionList = new ArrayList<Explosion>();
+    public final List<Monster> monsterList = new ArrayList<Monster>();
     public GameSurface(Context context)  {
         super(context);
 
@@ -77,30 +77,25 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
+    private void createCreatures(CreatureFactory creatureFactory){
+        Character player = creatureFactory.newPlayer();
+        Character monster = creatureFactory.newMonster();
+    }
+
     // Implements method of SurfaceHolder.Callback
     @Override
 
     // The surfaceCreated method is called immediately after the surface is first created (in MainActivity)
     // The gameThread will be what calls the update method on the character
     public void surfaceCreated(SurfaceHolder holder) {
-        Bitmap characterBitmap1 = BitmapFactory.decodeResource(this.getResources(),R.drawable.chibi1);
-        Character character1 = new Character(this, characterBitmap1,100,50);
 
-        Bitmap characterBitmap2 = BitmapFactory.decodeResource(this.getResources(),R.drawable.chibi2);
-        Character character2 = new Character(this, characterBitmap2,300,150);
-
-        Bitmap monsterBitmap1 = BitmapFactory.decodeResource(this.getResources(), R.drawable.chibi2);
-        Monster monster1 = new Monster(this, monsterBitmap1, 150, 150);
+        CreatureFactory creatureFactory = new CreatureFactory(this);
+        createCreatures(creatureFactory);
 
         Bitmap backgroundBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.spritesheet);
 
         Map map = new Map(this, backgroundBitmap);
         this.map = map;
-
-        this.characterList.add(character1);
-        this.characterList.add(character2);
-
-        this.monsterList.add(monster1);
 
         // Create a thread that will handle the running of the game (character movements and such) that can be easily paused without having to add excess logic to the main thread
         this.gameThread = new GameThread(this,holder);
@@ -165,5 +160,4 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         }
         return false;
     }
-
 }

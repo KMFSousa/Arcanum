@@ -169,4 +169,9 @@ public class Character extends GameObject {
         this.movingVectorX = movingVectorX;
         this.movingVectorY = movingVectorY;
     }
+
+    //To Do:
+//    public void inCombat(int x, int y) {
+//        Monster monster = GameSurface.
+//    }
 }
