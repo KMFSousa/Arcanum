@@ -27,10 +27,16 @@ public class Map {
 
     public Map(GameSurface gameSurface, Bitmap image) {
         this.gameSurface = gameSurface;
-        // TODO: For some reason screen still returns display metrics as if it is in portrait, even though set to landscape
-        // TODO: Thus, swapping width and height for now
-        int screenWidth = Resources.getSystem().getDisplayMetrics().heightPixels; // For landscape mode, width = height of portrait
-        int screenHeight =  Resources.getSystem().getDisplayMetrics().widthPixels; // For landscape mode, height = width of portrait
+        // TODO: For some reason screen still returns display metrics as if it is in portrait, even though set to landscape, BUT ONLY ON THE EDITOR!
+
+        // TODO: Use the below screenWidth and screenHeight properties if you are testing on an actual phone
+        int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+        int screenHeight =  Resources.getSystem().getDisplayMetrics().heightPixels;
+
+        // TODO: Use the below screenWidth and screenHeight properties if you are testing on the emulator
+        //int screenWidth = Resources.getSystem().getDisplayMetrics().heightPixels;
+        //int screenHeight =  Resources.getSystem().getDisplayMetrics().widthPixels;
+
         this.bitmap = Bitmap.createScaledBitmap(image, screenWidth, screenHeight, true);
         int bitmapWidth = bitmap.getWidth();
         int bitmapHeight = bitmap.getHeight();
