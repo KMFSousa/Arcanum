@@ -13,6 +13,8 @@ public class Character extends GameObject {
     // Row 2: When character moving right
     // Row 3: When character moving up
 
+    private GameSurface gameSurface;
+
     private static final int ROW_TOP_TO_BOTTOM = 0;
     private static final int ROW_RIGHT_TO_LEFT = 1;
     private static final int ROW_LEFT_TO_RIGHT = 2;
@@ -39,8 +41,6 @@ public class Character extends GameObject {
 
     private CharacterAI ai;
     public void setCharacterAI(CharacterAI ai) { this.ai = ai; }
-
-    private GameSurface gameSurface;
 
     // This method (called in GameSurface.java) will take the spritesheet we provide it with and create arrays holding the bitmaps of each sprite
 
@@ -98,7 +98,7 @@ public class Character extends GameObject {
         inCombat();
 
         //update AI
-        this.ai.onUpdate();
+         ai.onUpdate();
 
         // c = sqrt(a^2 + b^2) - i.e. we are getting the movement vector based on how far we moved horizontally and vertically
         double movingVectorLength = Math.sqrt(movingVectorX*movingVectorX + movingVectorY*movingVectorY);
