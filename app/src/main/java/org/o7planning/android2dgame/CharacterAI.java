@@ -4,8 +4,8 @@ public class CharacterAI {
     protected Character character;
 
     public CharacterAI(Character character) {
-        this.character = character;
-        this.character.setCharacterAI(this);
+//        this.character = character;
+//        this.character.setCharacterAI(this);
     }
 
     //TODO: Maybe add movement logic in here. It will be the same for both AI and Player characters. More thought required
