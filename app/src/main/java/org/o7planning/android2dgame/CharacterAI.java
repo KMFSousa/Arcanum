@@ -13,8 +13,8 @@ public class CharacterAI {
 
     public void wander() {
 
-        int x = (int)(Math.random()* 2 - 1);
-        int y = (int)(Math.random()*2 -1 );
+        int x = (int)(Math.random() * 200 - 100);
+        int y = (int)(Math.random() * 200 - 100);
         character.setMovingVector(x, y);
     }
 
