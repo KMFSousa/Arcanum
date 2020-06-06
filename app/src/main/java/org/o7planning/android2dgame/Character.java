@@ -3,6 +3,8 @@ package org.o7planning.android2dgame;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
+import java.util.Iterator;
+
 public class Character extends GameObject {
 
     // The spritesheet is configured such that:
@@ -10,6 +12,8 @@ public class Character extends GameObject {
     // Row 1: When character moving left
     // Row 2: When character moving right
     // Row 3: When character moving up
+
+    private GameSurface gameSurface;
 
     private static final int ROW_TOP_TO_BOTTOM = 0;
     private static final int ROW_RIGHT_TO_LEFT = 1;
@@ -35,7 +39,8 @@ public class Character extends GameObject {
 
     private long lastDrawNanoTime =-1;
 
-    private GameSurface gameSurface;
+    private CharacterAI ai;
+    public void setCharacterAI(CharacterAI ai) {   this.ai = ai; }
 
     // This method (called in GameSurface.java) will take the spritesheet we provide it with and create arrays holding the bitmaps of each sprite
 
@@ -88,6 +93,13 @@ public class Character extends GameObject {
     // This is the character update loop
 
     public void update()  {
+
+        //check if in combat
+        inCombat();
+
+        //update AI
+         ai.onUpdate();
+
         // c = sqrt(a^2 + b^2) - i.e. we are getting the movement vector based on how far we moved horizontally and vertically
         double movingVectorLength = Math.sqrt(movingVectorX*movingVectorX + movingVectorY*movingVectorY);
 
@@ -168,5 +180,22 @@ public class Character extends GameObject {
     public void setMovingVector(int movingVectorX, int movingVectorY)  {
         this.movingVectorX = movingVectorX;
         this.movingVectorY = movingVectorY;
+    }
+
+    public void inCombat() {
+        Iterator<Character> iterator = gameSurface.monsterList.iterator();
+
+        while(iterator.hasNext()){
+            Character other = iterator.next();
+            if(this.getX() < other.x && other.x < this.getX() + this.getWidth()
+                    && this.getY() < other.y && other.y < this.getY() + this.getHeight()){
+                attack(other);
+            }
+
+        }
+    }
+
+    public void attack(Character other) {
+        gameSurface.removeCharacter(other);
     }
 }

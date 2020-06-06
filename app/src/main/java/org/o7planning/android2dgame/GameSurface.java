@@ -1,7 +1,6 @@
 package org.o7planning.android2dgame;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -17,8 +16,9 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
     private GameThread gameThread;
     private Map map;
-    private final List<Character> characterList = new ArrayList<Character>();
-    private final List<Explosion> explosionList = new ArrayList<Explosion>();
+    public final List<Character> characterList = new ArrayList<Character>();
+    public final List<Explosion> explosionList = new ArrayList<Explosion>();
+    public final List<Character> monsterList = new ArrayList<Character>();
     public GameSurface(Context context)  {
         super(context);
 
@@ -34,6 +34,10 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     public void update()  {
         for (Character character: characterList) {
             character.update();
+        }
+
+        for (Character monster: monsterList) {
+            monster.update();
         }
 
         for (Explosion explosion: this.explosionList) {
@@ -63,9 +67,22 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
             character.draw(canvas);
         }
 
+        for (Character monster: monsterList) {
+            monster.draw(canvas);
+        }
+
         for (Explosion explosion: explosionList) {
             explosion.draw(canvas);
         }
+    }
+
+    private void createCreatures(CharacterFactory characterFactory){
+        Character player = characterFactory.newPlayer();
+        Character monster = characterFactory.newMonster();
+    }
+
+    public void removeCharacter(Character other) {
+        monsterList.remove(other);
     }
 
     // Implements method of SurfaceHolder.Callback
@@ -74,18 +91,14 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     // The surfaceCreated method is called immediately after the surface is first created (in MainActivity)
     // The gameThread will be what calls the update method on the character
     public void surfaceCreated(SurfaceHolder holder) {
-        Bitmap characterBitmap1 = BitmapFactory.decodeResource(this.getResources(),R.drawable.chibi1);
-        Character character1 = new Character(this, characterBitmap1,100,50);
 
-        Bitmap characterBitmap2 = BitmapFactory.decodeResource(this.getResources(),R.drawable.chibi2);
-        Character character2 = new Character(this, characterBitmap2,300,150);
+        CharacterFactory characterFactory = new CharacterFactory(this);
+        createCreatures(characterFactory);
+
         Bitmap backgroundBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.testmap);
 
         Map map = new Map(this, backgroundBitmap);
         this.map = map;
-
-        this.characterList.add(character1);
-        this.characterList.add(character2);
 
         // Create a thread that will handle the running of the game (character movements and such) that can be easily paused without having to add excess logic to the main thread
         this.gameThread = new GameThread(this,holder);
@@ -150,5 +163,4 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         }
         return false;
     }
-
 }
