@@ -40,7 +40,7 @@ public class Character extends GameObject {
     private long lastDrawNanoTime =-1;
 
     private CharacterAI ai;
-    public void setCharacterAI(PlayerAI ai) {   this.ai = ai; }
+    public void setCharacterAI(CharacterAI ai) {   this.ai = ai; }
 
     // This method (called in GameSurface.java) will take the spritesheet we provide it with and create arrays holding the bitmaps of each sprite
 

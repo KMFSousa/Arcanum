@@ -13,6 +13,9 @@ public class CharacterAI {
 
     public void wander() {
 
+        int x = (int)(Math.random()* 2 - 1);
+        int y = (int)(Math.random()*2 -1 );
+        character.setMovingVector(x, y);
     }
 
     public void onUpdate() {
