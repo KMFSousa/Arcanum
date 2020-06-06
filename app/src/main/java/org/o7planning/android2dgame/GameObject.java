@@ -31,6 +31,14 @@ public class GameObject {
         this.height = this.HEIGHT/rowCount;
     }
 
+    public static int getDistanceBetweenObjects(GameObject obj1, GameObject obj2) {
+        return  (int) Math.sqrt(
+                Math.pow( (double) obj2.getX() - (double) obj1.getX(), 2) +
+                        Math.pow((double) obj2.getY() - (double) obj1.getY(), 2)
+        );
+
+    }
+
     protected Bitmap createSubImageAt(int row, int col) {
         //createBitmap(bitmap, x, y, width, height);
         Bitmap subImage = Bitmap.createBitmap(image, col * this.width, row * this.height, this.width, this.height);
