@@ -26,7 +26,7 @@ public class CharacterFactory {
         Bitmap monsterBitmap1 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.chibi2);
         Character monster1 = new Character(gameSurface, monsterBitmap1, 500, 500);
         gameSurface.monsterList.add(monster1);
-        WarriorAI warriorAI = new WarriorAI(monster1);
+        WarriorAI warriorAI = new WarriorAI(monster1, gameSurface);
         warriorAI.character = monster1;
         monster1.setCharacterAI(warriorAI);
 //        new CharacterAI(monster1);
