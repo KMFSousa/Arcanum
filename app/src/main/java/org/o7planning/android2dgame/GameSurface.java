@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -19,7 +20,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     public final List<Character> characterList = new ArrayList<Character>();
     public final List<Explosion> explosionList = new ArrayList<Explosion>();
     public final List<Character> monsterList = new ArrayList<Character>();
-    public GameSurface(Context context)  {
+
+    public GameSurface(Context context) {
         super(context);
 
         // Make Game Surface focusable so it can handle events.
@@ -31,16 +33,16 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
     // MASTER UPDATE CONTROL
     // CALL ALL UPDATE METHODS FOR OBJECTS HERE
-    public void update()  {
-        for (Character character: characterList) {
+    public void update() {
+        for (Character character : characterList) {
             character.update();
         }
 
-        for (Character monster: monsterList) {
+        for (Character monster : monsterList) {
             monster.update();
         }
 
-        for (Explosion explosion: this.explosionList) {
+        for (Explosion explosion : this.explosionList) {
             explosion.update();
         }
 
@@ -57,26 +59,26 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     // MASTER DRAW CONTROL
     // CALL ALL DRAW METHODS FOR OBJECTS HERE
-    public void draw(Canvas canvas)  {
+    public void draw(Canvas canvas) {
         super.draw(canvas);
 
         this.map.draw(canvas);
 
         // Call the draw method implemented in each class, responsible for drawing the bitmap of the model in question
-        for (Character character: characterList) {
+        for (Character character : characterList) {
             character.draw(canvas);
         }
 
-        for (Character monster: monsterList) {
+        for (Character monster : monsterList) {
             monster.draw(canvas);
         }
 
-        for (Explosion explosion: explosionList) {
+        for (Explosion explosion : explosionList) {
             explosion.draw(canvas);
         }
     }
 
-    private void createCreatures(CharacterFactory characterFactory){
+    private void createCreatures(CharacterFactory characterFactory) {
         Character player = characterFactory.newPlayer();
         Character monster = characterFactory.newMonster();
     }
@@ -101,7 +103,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         this.map = map;
 
         // Create a thread that will handle the running of the game (character movements and such) that can be easily paused without having to add excess logic to the main thread
-        this.gameThread = new GameThread(this,holder);
+        this.gameThread = new GameThread(this, holder);
         // Call the setRunning method to set the `running` variable of the game thread to true: this is what will control the pausing of the thread
         this.gameThread.setRunning(true);
         // Call the already implemented `start()` method of the `Thread` superclass which will call the overrided `run()` method of our `GameThread` subclass
@@ -117,50 +119,17 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     // Implements method of SurfaceHolder.Callback
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        boolean retry= true;
-        while(retry) {
+        boolean retry = true;
+        while (retry) {
             try {
                 this.gameThread.setRunning(false);
 
                 // Parent thread must wait until the end of GameThread.
                 this.gameThread.join();
-            }catch(InterruptedException e)  {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            retry= true;
+            retry = true;
         }
-    }
-
-    @Override
-    // This method will be called whenever the surface receives a touch event
-    public boolean onTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            int x = (int) event.getX();
-            int y = (int) event.getY();
-
-            // An iterator loops over a list, and will continue to do so until there are no items left in the list
-            // Rather than use a while or for loop, which can be problematic if you have to remove items from them while they are executing,
-            // an iterator is designed to allow the programmer to remove items from the list mid-iteration without affecting the program negatively.
-            Iterator<Character> iterator = this.characterList.iterator();
-
-            for (Character character: characterList) {
-                int movingVectorX = x - character.getX();
-                int movingVectorY = y - character.getY();
-
-                character.setMovingVector(movingVectorX, movingVectorY);
-            }
-
-            while (iterator.hasNext()) {
-                Character character = iterator.next();
-                // Is the click within the bounds of the character?
-                if (character.isWithinBounds(x,y)) {
-                    //Stop moving the character
-                    character.setMovingVector(0,0);
-                }
-            }
-
-            return true;
-        }
-        return false;
     }
 }
