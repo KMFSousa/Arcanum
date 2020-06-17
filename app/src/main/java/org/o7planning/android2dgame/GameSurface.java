@@ -19,6 +19,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     public final List<Character> characterList = new ArrayList<Character>();
     public final List<Explosion> explosionList = new ArrayList<Explosion>();
     public final List<Character> monsterList = new ArrayList<Character>();
+    public final List<Character> removalList = new ArrayList<Character>();
     public GameSurface(Context context)  {
         super(context);
 
@@ -52,6 +53,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
                 iterator.remove();
             }
         }
+
+        monsterList.removeAll(removalList);
     }
 
     @Override
@@ -82,7 +85,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void removeCharacter(Character other) {
-        monsterList.remove(other);
+        removalList.add(other);
     }
 
     // Implements method of SurfaceHolder.Callback
@@ -137,6 +140,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             int x = (int) event.getX();
             int y = (int) event.getY();
+
+            //TODO: We will eventually want to account for different "touch events". Such as when user clicks a menu button
 
             // An iterator loops over a list, and will continue to do so until there are no items left in the list
             // Rather than use a while or for loop, which can be problematic if you have to remove items from them while they are executing,

@@ -39,6 +39,7 @@ public class Character extends GameObject {
 
     private long lastDrawNanoTime =-1;
 
+
     private CharacterAI ai;
     public void setCharacterAI(CharacterAI ai) {   this.ai = ai; }
 
@@ -97,9 +98,15 @@ public class Character extends GameObject {
         //check if in combat
         inCombat();
 
+        //update character moving vector and animate
+        move();
+
         //update AI
          ai.onUpdate();
 
+    }
+
+    public void move() {
         // c = sqrt(a^2 + b^2) - i.e. we are getting the movement vector based on how far we moved horizontally and vertically
         double movingVectorLength = Math.sqrt(movingVectorX*movingVectorX + movingVectorY*movingVectorY);
 
@@ -147,6 +154,11 @@ public class Character extends GameObject {
             this.movingVectorY = - this.movingVectorY ;
         }
 
+        animate();
+    }
+
+    public void animate() {
+
         // movingVectorX and movingVectorY are +/- values that will determine what direction we are moving in
         // based on the values of these vectors, we can decide which row of sprites we are using
         if( movingVectorX > 0 )  {
@@ -187,7 +199,7 @@ public class Character extends GameObject {
 
         while(iterator.hasNext()){
             Character other = iterator.next();
-            if(this.getX() < other.x && other.x < this.getX() + this.getWidth()
+            if(this.getX() < other.x + other.getWidth() && other.x < this.getX() + this.getWidth()
                     && this.getY() < other.y && other.y < this.getY() + this.getHeight()){
                 attack(other);
             }
@@ -196,6 +208,8 @@ public class Character extends GameObject {
     }
 
     public void attack(Character other) {
-        gameSurface.removeCharacter(other);
+        if(!ai.getType())
+            gameSurface.removeCharacter(other);
     }
+
 }

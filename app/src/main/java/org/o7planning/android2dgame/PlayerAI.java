@@ -6,5 +6,11 @@ public class PlayerAI extends CharacterAI {
         super(character);
     }
 
+    public void onUpdate() {
+
+
+
+    }
+
     //TODO: Think of PC specific actions
 }
