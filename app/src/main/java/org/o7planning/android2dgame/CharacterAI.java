@@ -8,17 +8,20 @@ public class CharacterAI {
 //        this.character.setCharacterAI(this);
     }
 
-    //TODO: Maybe add movement logic in here. It will be the same for both AI and Player characters. More thought required
     //TODO: Different 'types' of enemies will have different AI classes that will extend this class
 
     public void wander() {
 
-        int x = (int)(Math.random()* 200 - 100);
-        int y = (int)(Math.random()*200 -100 );
+        int x = (int)(Math.random() * 200 - 100);
+        int y = (int)(Math.random() * 200 - 100);
         character.setMovingVector(x, y);
     }
 
     public void onUpdate() {
 
+    }
+
+    public boolean getType() {
+        return false;
     }
 }
