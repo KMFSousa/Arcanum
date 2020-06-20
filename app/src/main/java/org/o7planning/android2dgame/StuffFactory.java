@@ -36,6 +36,7 @@ public class StuffFactory {
     public Item newSword() {
         Bitmap swordBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.sword);
         Item sword = new Item(gameSurface, swordBitmap, "sword", 100, 100);
+        gameSurface.itemList.add(sword);
         return sword;
     }
 }

@@ -19,6 +19,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     public final List<Explosion> explosionList = new ArrayList<Explosion>();
     public final List<Character> monsterList = new ArrayList<Character>();
     public final List<Character> removalList = new ArrayList<Character>();
+    public final List<Item> itemList = new ArrayList<Item>();
     public GameSurface(Context context)  {
         super(context);
 
@@ -71,6 +72,10 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
         for (Character monster : monsterList) {
             monster.draw(canvas);
+        }
+
+        for (Item item : itemList) {
+            item.draw(canvas);
         }
 
         for (Explosion explosion : explosionList) {

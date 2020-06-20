@@ -2,6 +2,8 @@ package org.o7planning.android2dgame;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import java.util.List;
+import java.util.ArrayList;
 
 import java.util.Iterator;
 
@@ -19,6 +21,8 @@ public class Character extends GameObject {
     private static final int ROW_RIGHT_TO_LEFT = 1;
     private static final int ROW_LEFT_TO_RIGHT = 2;
     private static final int ROW_BOTTOM_TO_TOP = 3;
+
+    private final List<Item> itemList = new ArrayList<Item>();
 
     // Row index of Image are being used.
     private int rowUsing = ROW_LEFT_TO_RIGHT;
@@ -47,6 +51,7 @@ public class Character extends GameObject {
 
     public Character(GameSurface gameSurface, Bitmap image, int x, int y, int spriteSheetRows, int spriteSheetColumns) {
         super(image, spriteSheetRows, spriteSheetColumns, x, y); // Calls
+
 
         this.gameSurface= gameSurface;
 
@@ -96,7 +101,10 @@ public class Character extends GameObject {
     public void update()  {
 
         //check if in combat
-        inCombat();
+        if(itemList.size() != 0){itemList.get(0).inCombat();}
+
+        if(!ai.getType()){findItem();}
+
 
         //update character moving vector and animate
         move();
@@ -155,6 +163,12 @@ public class Character extends GameObject {
         }
 
         animate();
+        if(itemList.size() != 0){
+            itemList.get(0).x = this.x+50;
+            itemList.get(0).y = this.y+25;
+        }
+
+
     }
 
     public void animate() {
@@ -194,22 +208,38 @@ public class Character extends GameObject {
         this.movingVectorY = movingVectorY;
     }
 
-    public void inCombat() {
-        Iterator<Character> iterator = gameSurface.monsterList.iterator();
+    public void findItem() {
+        Iterator<Item> iterator = gameSurface.itemList.iterator();
 
-        while(iterator.hasNext()){
-            Character other = iterator.next();
+        while(iterator.hasNext()) {
+            Item other = iterator.next();
             if(this.getX() < other.x + other.getWidth() && other.x < this.getX() + this.getWidth()
-                    && this.getY() < other.y && other.y < this.getY() + this.getHeight()){
-                attack(other);
+                    && this.getY() < other.y && other.y < this.getY() + this.getHeight()) {
+                pickupItem(other);
             }
-
         }
     }
 
-    public void attack(Character other) {
-        if(!ai.getType())
-            gameSurface.removeCharacter(other);
+    public void pickupItem(Item other) {
+        itemList.add(other);
     }
+
+//    public void inCombat() {
+//        Iterator<Character> iterator = gameSurface.monsterList.iterator();
+//
+//        while(iterator.hasNext()){
+//            Character other = iterator.next();
+//            if(this.getX() < other.x + other.getWidth() && other.x < this.getX() + this.getWidth()
+//                    && this.getY() < other.y && other.y < this.getY() + this.getHeight()){
+//                attack(other);
+//            }
+//
+//        }
+//    }
+//
+//    public void attack(Character other) {
+//        if(!ai.getType())
+//            gameSurface.removeCharacter(other);
+//    }
 
 }
