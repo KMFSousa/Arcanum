@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="org.o7planning.android2dgame.MainActivity">
+
+
+    <io.github.controlwear.virtual.joystick.android.JoystickView
+        xmlns:custom="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/joystickView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:layout_marginRight="120dp"
+        custom:JV_buttonColor="#80FF6E40"
+        custom:JV_buttonSizeRatio="30%"
+        custom:JV_borderColor="#00796B"
+        custom:JV_backgroundColor="#4D009688"
+        custom:JV_borderWidth="4dp"
+        custom:JV_fixedCenter="false"
+        android:elevation="1dp"/>
+</RelativeLayout>
