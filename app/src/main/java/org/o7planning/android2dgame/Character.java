@@ -93,20 +93,20 @@ public class Character extends GameObject {
 
     // This is the character update loop
 
-    public void update()  {
+    public void update(Map map)  {
 
         //check if in combat
         inCombat();
 
         //update character moving vector and animate
-        move();
+        move(map);
 
         //update AI
          ai.onUpdate();
 
     }
 
-    public void move() {
+    public void move(Map map) {
         // c = sqrt(a^2 + b^2) - i.e. we are getting the movement vector based on how far we moved horizontally and vertically
         double movingVectorLength = Math.sqrt(movingVectorX*movingVectorX + movingVectorY*movingVectorY);
 
@@ -134,8 +134,13 @@ public class Character extends GameObject {
         float distance = VELOCITY * deltaTime;
 
         // Calculate the new position of the game character.
-        this.x = x +  (int)(distance* movingVectorX / movingVectorLength);
-        this.y = y +  (int)(distance* movingVectorY / movingVectorLength);
+        int xToMoveTo = this.x + (int)(distance* movingVectorX / movingVectorLength);
+        int yToMoveTo = this.y + (int)(distance* movingVectorY / movingVectorLength);
+
+        if (map.canMove(xToMoveTo, yToMoveTo)) {
+            this.x = xToMoveTo;
+            this.y = yToMoveTo;
+        }
 
         // When the game's character touches the edge of the screen, then change direction
         if(this.x < 0 )  {
