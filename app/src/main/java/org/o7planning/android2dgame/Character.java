@@ -45,8 +45,8 @@ public class Character extends GameObject {
 
     // This method (called in GameSurface.java) will take the spritesheet we provide it with and create arrays holding the bitmaps of each sprite
 
-    public Character(GameSurface gameSurface, Bitmap image, int x, int y) {
-        super(image, 4, 3, x, y); // Calls
+    public Character(GameSurface gameSurface, Bitmap image, int x, int y, int spriteSheetRows, int spriteSheetColumns) {
+        super(image, spriteSheetRows, spriteSheetColumns, x, y); // Calls
 
         this.gameSurface= gameSurface;
 

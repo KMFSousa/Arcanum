@@ -1,6 +1,5 @@
 package org.o7planning.android2dgame;
 
-import android.util.Log;
 import java.util.Iterator;
 import java.util.List;
 
@@ -9,7 +8,7 @@ public class WarriorAI extends CharacterAI {
     private GameSurface gameSurface;
     private List<Character> playerList;
     private final Character player;
-    private CharacterFactory factory;
+    private StuffFactory factory;
     private int positionX;
     private int postitionY;
 
@@ -20,7 +19,7 @@ public class WarriorAI extends CharacterAI {
 
     private int spreadCount;
 
-    public WarriorAI(Character character, GameSurface gameSurface, CharacterFactory factory) {
+    public WarriorAI(Character character, GameSurface gameSurface, StuffFactory factory) {
         super(character);
         this.gameSurface = gameSurface;
         this.factory = factory;

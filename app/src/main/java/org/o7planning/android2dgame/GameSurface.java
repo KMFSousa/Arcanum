@@ -4,8 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -80,9 +78,10 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    private void createCreatures(CharacterFactory characterFactory) {
-        Character player = characterFactory.newPlayer();
-        Character monster = characterFactory.newMonster();
+    private void createCreatures(StuffFactory stuffFactory) {
+        Character player = stuffFactory.newPlayer();
+        Character monster = stuffFactory.newMonster();
+        Item sword = stuffFactory.newSword();
     }
 
     public void removeCharacter(Character other) {
@@ -96,8 +95,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     // The gameThread will be what calls the update method on the character
     public void surfaceCreated(SurfaceHolder holder) {
 
-        CharacterFactory characterFactory = new CharacterFactory(this);
-        createCreatures(characterFactory);
+        StuffFactory stuffFactory = new StuffFactory(this);
+        createCreatures(stuffFactory);
 
         Bitmap backgroundBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.testmap);
 
