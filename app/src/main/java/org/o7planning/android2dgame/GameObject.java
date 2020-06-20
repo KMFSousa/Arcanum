@@ -16,6 +16,9 @@ public class GameObject {
     protected int x;
     protected int y;
 
+    protected HitBox hitBox;
+    public void setObjectHitbox(HitBox hitBox) {   this.hitBox = hitBox; }
+
     public GameObject(Bitmap image, int rowCount, int colCount, int x, int y) {
         this.image = image;
         this.rowCount = rowCount;

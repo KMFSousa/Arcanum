@@ -11,25 +11,33 @@ public class StuffFactory {
         this.gameSurface = gameSurface;
     }
 
+    //TODO: UPDATE CHARACTER AND ITEM CONSTRUCTORS WITH ATTRIBUTES
+
     public Character newPlayer() {
         Bitmap characterBitmap1 = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.chibi1);
-        Character player = new Character(gameSurface, characterBitmap1, 100, 50, 4, 3 );
+        Character player = new Character(gameSurface, characterBitmap1, 100, 50, 4, 3, 0.4f );
         gameSurface.characterList.add(player);
         PlayerAI playerAI = new PlayerAI(player);
         playerAI.character = player;
         player.setCharacterAI(playerAI);
-//        new PlayerAI(player);
+        Bitmap playerHitbox1 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.characterhitbox);
+        HitBox hitBox1 = new HitBox(gameSurface, playerHitbox1, 100, 50, player);
+        hitBox1.object = player;
+        player.setObjectHitbox(hitBox1);
         return player;
     }
 
     public Character newMonster() {
         Bitmap monsterBitmap1 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.slimes1);
-        Character monster1 = new Character(gameSurface, monsterBitmap1, 500, 500, 4, 5);
+        Character monster1 = new Character(gameSurface, monsterBitmap1, 500, 500, 4, 5, 0.1f);
         gameSurface.monsterList.add(monster1);
         WarriorAI warriorAI = new WarriorAI(monster1, gameSurface, this);
         warriorAI.character = monster1;
         monster1.setCharacterAI(warriorAI);
-//        new CharacterAI(monster1);
+        Bitmap monsterHitbox1 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.characterhitbox);
+        HitBox hitBox1 = new HitBox(gameSurface, monsterHitbox1, 500, 500, monster1);
+        hitBox1.object = monster1;
+        monster1.setObjectHitbox(hitBox1);
         return monster1;
     }
 
@@ -37,6 +45,10 @@ public class StuffFactory {
         Bitmap swordBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.sword);
         Item sword = new Item(gameSurface, swordBitmap, "sword", 100, 100);
         gameSurface.itemList.add(sword);
+        Bitmap swordHitbox1 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.sword_hitbox);
+        HitBox hitBox1 = new HitBox(gameSurface, swordHitbox1, 100, 100, sword);
+        hitBox1.object = sword;
+        sword.setObjectHitbox(hitBox1);
         return sword;
     }
 }

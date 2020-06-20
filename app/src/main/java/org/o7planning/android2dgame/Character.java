@@ -36,7 +36,7 @@ public class Character extends GameObject {
     private Bitmap[] bottomToTops;
 
     // Velocity of game character (pixel/millisecond)
-    public static final float VELOCITY = 0.1f;
+    private float velocity;
 
     private int movingVectorX = 0;
     private int movingVectorY = 0;
@@ -47,13 +47,22 @@ public class Character extends GameObject {
     private CharacterAI ai;
     public void setCharacterAI(CharacterAI ai) {   this.ai = ai; }
 
+    //TODO: IMPLEMENT A ROLL MECHANIC (INCREASED SPEED, ANIMATION)
+    //TODO: IMPLEMENT CHARACTERS STATS (FOR COMBAT AND LEVELING(?))
+    //TODO: BROAD PHASE HIT DETECTION (SO WE'RE NOT CONSTANTLY CHECKING EVERY MONSTER)
+    //TODO: ATTACK ANIMATIONS
+    //TODO: ON HIT EFFECTS (KNOCKBACK, BLOOD(?))
+
+
+
     // This method (called in GameSurface.java) will take the spritesheet we provide it with and create arrays holding the bitmaps of each sprite
 
-    public Character(GameSurface gameSurface, Bitmap image, int x, int y, int spriteSheetRows, int spriteSheetColumns) {
+    public Character(GameSurface gameSurface, Bitmap image, int x, int y, int spriteSheetRows, int spriteSheetColumns, float velocity) {
         super(image, spriteSheetRows, spriteSheetColumns, x, y); // Calls
 
 
         this.gameSurface= gameSurface;
+        this.velocity = velocity;
 
         this.topToBottoms = new Bitmap[colCount]; // 3
         this.rightToLefts = new Bitmap[colCount]; // 3
@@ -108,9 +117,14 @@ public class Character extends GameObject {
 
         //update character moving vector and animate
         move();
+        //TODO: IS THIS THE BEST PLACE FOR THIS?
+        hitBox.x = this.x;
+        hitBox.y = this.y;
 
         //update AI
          ai.onUpdate();
+
+
 
     }
 
@@ -139,7 +153,7 @@ public class Character extends GameObject {
         int deltaTime = (int) ((now - lastDrawNanoTime)/ 1000000 );
 
         // Distance moved per time unit
-        float distance = VELOCITY * deltaTime;
+        float distance = velocity * deltaTime;
 
         // Calculate the new position of the game character.
         this.x = x +  (int)(distance* movingVectorX / movingVectorLength);
@@ -162,10 +176,13 @@ public class Character extends GameObject {
             this.movingVectorY = - this.movingVectorY ;
         }
 
+        //TODO: CLEAN UP THIS CODE. PROBABLY MOVE IT INTO THE SWORD/ITEM CLASS
         animate();
         if(itemList.size() != 0){
             itemList.get(0).x = this.x+50;
             itemList.get(0).y = this.y+25;
+            itemList.get(0).hitBox.x = itemList.get(0).x;
+            itemList.get(0).hitBox.y = itemList.get(0).y;
         }
 
 
@@ -201,6 +218,7 @@ public class Character extends GameObject {
         canvas.drawBitmap(bitmap, x, y, null);
         // Last draw time.
         this.lastDrawNanoTime= System.nanoTime();
+        hitBox.draw(canvas);
     }
 
     public void setMovingVector(int movingVectorX, int movingVectorY)  {
@@ -208,6 +226,7 @@ public class Character extends GameObject {
         this.movingVectorY = movingVectorY;
     }
 
+    //TODO: COLLISION DETECTION CAN BE MOVED WITHIN THE HITBOX CLASS AS A SEPARATE METHOD
     public void findItem() {
         Iterator<Item> iterator = gameSurface.itemList.iterator();
 
