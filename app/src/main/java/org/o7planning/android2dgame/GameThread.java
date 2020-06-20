@@ -1,6 +1,7 @@
 package org.o7planning.android2dgame;
 
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 // A thread is a thread of execution in a program.
@@ -55,7 +56,7 @@ public class GameThread extends Thread {
                     this.gameSurface.draw(canvas);
                 }
             }catch(Exception e)  {
-                // Do nothing.
+                Log.d("ERROR", "ERROR HAS OCCURED!");
             } finally {
                 if(canvas!= null)  {
                     // Unlock Canvas.

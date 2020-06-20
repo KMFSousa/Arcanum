@@ -1,7 +1,6 @@
 package org.o7planning.android2dgame;
 
 import android.util.Log;
-
 import java.util.Iterator;
 import java.util.List;
 
@@ -10,41 +9,73 @@ public class WarriorAI extends CharacterAI {
     private GameSurface gameSurface;
     private List<Character> playerList;
     private final Character player;
+    private CharacterFactory factory;
     private int positionX;
     private int postitionY;
-    public WarriorAI(Character character, GameSurface gameSurface) {
+
+    private int distanceToPlayerX;
+    private int distanceToPlayerY;
+
+    private int updateCounter;
+
+    private int spreadCount;
+
+    public WarriorAI(Character character, GameSurface gameSurface, CharacterFactory factory) {
         super(character);
         this.gameSurface = gameSurface;
+        this.factory = factory;
         List<Character> playerList = gameSurface.characterList;
-        Iterator<Character> iter = playerList.iterator()
-;       this.player = iter.next();
+        Iterator<Character> iter = playerList.iterator();
+        this.player = iter.next();
+
     }
 
     public void onUpdate() {
-//        wander();
-        this.positionX = this.character.getX();
-        this.postitionY = this.character.getY();
 
-        int distanceToPlayerX = player.getX() - positionX;
-        int distanceToPlayerY = player.getY() - postitionY;
-
-        int distanceToPlayer = GameObject.getDistanceBetweenObjects(this.character, player);
-
-        Log.d("Distance" ,"Movement" + distanceToPlayer);
-        if (distanceToPlayer <= 560) {
-            // Velocity of monster set
+        if (closeToPlayer()) {
             character.setMovingVector(distanceToPlayerX, distanceToPlayerY);
-        } else {
+        } else if (updateCounter % 5 == 0) {
+            updateCounter = 0;
             wander();
         }
 
+        if(spreadCount < 1 && Math.random() < 0.1 )
+            spread();
 
+        updateCounter++;
+    }
 
+    private void spread() {
+        int x = character.x +(int)(Math.random() * 200 - 100);
+        int y = character.y +(int)(Math.random() * 200 - 100);
 
+        Character child = factory.newMonster();
+        child.x = x;
+        child.y = y;
 
-        // Calculate vector vector between enemy to player (x and y)
-        // Calculate (absolute) distance between enemy and player
-        // Set velocity to direction of player
-        // Update position
+        spreadCount++;
+    }
+
+    public boolean closeToPlayer() {
+        this.positionX = this.character.getX();
+        this.postitionY = this.character.getY();
+
+        distanceToPlayerX = player.getX() - positionX;
+        distanceToPlayerY = player.getY() - postitionY;
+
+        int distanceToPlayer = GameObject.getDistanceBetweenObjects(this.character, player);
+
+       // Log.d("Distance" ,"Movement" + distanceToPlayer);
+
+        if (distanceToPlayer <= 560) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean getType(){
+        return true;
     }
 }
+

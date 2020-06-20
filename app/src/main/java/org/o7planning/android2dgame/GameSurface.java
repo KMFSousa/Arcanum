@@ -20,8 +20,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     public final List<Character> characterList = new ArrayList<Character>();
     public final List<Explosion> explosionList = new ArrayList<Explosion>();
     public final List<Character> monsterList = new ArrayList<Character>();
-
-    public GameSurface(Context context) {
+    public final List<Character> removalList = new ArrayList<Character>();
+    public GameSurface(Context context)  {
         super(context);
 
         // Make Game Surface focusable so it can handle events.
@@ -54,6 +54,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
                 iterator.remove();
             }
         }
+
+        monsterList.removeAll(removalList);
     }
 
     @Override
@@ -84,7 +86,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void removeCharacter(Character other) {
-        monsterList.remove(other);
+        removalList.add(other);
     }
 
     // Implements method of SurfaceHolder.Callback
