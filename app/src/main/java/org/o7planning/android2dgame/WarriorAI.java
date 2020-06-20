@@ -46,8 +46,8 @@ public class WarriorAI extends CharacterAI {
     }
 
     private void spread() {
-        int x = character.x +(int)(Math.random() * 200) - 5;
-        int y = character.y +(int)(Math.random() * 200) - 5;
+        int x = character.x +(int)(Math.random() * 200 - 100);
+        int y = character.y +(int)(Math.random() * 200 - 100);
 
         Character child = factory.newMonster();
         child.x = x;
