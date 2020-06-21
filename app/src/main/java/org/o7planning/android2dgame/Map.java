@@ -111,22 +111,27 @@ public class Map {
         return -1;
     }
 
-    public boolean canMove(int x, int y) {
+    public boolean canMove(int x, int y, int height, int width) {
         // Character calls this function to determine if it can move to particular x and y
 
-        // Step 1: Figure out what tile the incoming x and y belongs to
-        int row = this.getRowFromY(y);
-        int col = this.getColFromX(x);
+        // Step 1: Figure out what tiles the incoming x and y belong to
+        int top_row = this.getRowFromY(y);
+        int bot_row = this.getRowFromY(y+height);
+        int left_col =  this.getColFromX(x);
+        int right_col = this.getColFromX(x+width);
 
-        // Step 2: Index into tile array to get the right tile
-        Tile tile = this.tileArray[row][col];
+        // Step 2: Index into tile array to get the right tiles
+        for (int row = top_row; row <= bot_row; row++) {
+            for (int col = left_col; col <= right_col; col++) {
+                Tile tile = this.tileArray[row][col];
 
-        // Step 3: Check if tile is collidable
-        if (!tile.isCollidable()) {
-            return true;
-        } else {
-            return false;
+                // Step 3: Check if tile is collidable
+                if (tile.isCollidable()) {
+                    return false;
+                }
+            }
         }
+        return true;
     }
 
     public void draw (Canvas canvas) {
