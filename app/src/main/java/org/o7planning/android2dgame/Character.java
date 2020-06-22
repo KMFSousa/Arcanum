@@ -39,10 +39,6 @@ public class Character extends GameObject {
 
     private long lastDrawNanoTime =-1;
 
-    private int height;
-    private int width;
-
-
     private CharacterAI ai;
     public void setCharacterAI(CharacterAI ai) {   this.ai = ai; }
 
@@ -66,9 +62,6 @@ public class Character extends GameObject {
             this.leftToRights[col] = this.createSubImageAt(ROW_LEFT_TO_RIGHT, col);
             this.bottomToTops[col]  = this.createSubImageAt(ROW_BOTTOM_TO_TOP, col);
         }
-
-        this.height = this.topToBottoms[0].getHeight();
-        this.width = this.topToBottoms[0].getWidth();
     }
 
     // Depending on what direction the character is moving we want to be able to grab the corresponding set of sprites

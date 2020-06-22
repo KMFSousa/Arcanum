@@ -32,12 +32,12 @@ public class Map {
         this.context = context;
 
         // TODO: Use the below screenWidth and screenHeight properties if you are testing on an actual phone
-        int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
-        int screenHeight =  Resources.getSystem().getDisplayMetrics().heightPixels;
+        //int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+        //int screenHeight =  Resources.getSystem().getDisplayMetrics().heightPixels;
 
         // TODO: Use the below screenWidth and screenHeight properties if you are testing on the emulator
-        //int screenWidth = Resources.getSystem().getDisplayMetrics().heightPixels;
-        //int screenHeight =  Resources.getSystem().getDisplayMetrics().widthPixels;
+        int screenWidth = Resources.getSystem().getDisplayMetrics().heightPixels;
+        int screenHeight =  Resources.getSystem().getDisplayMetrics().widthPixels;
 
         this.currentRoomBitmap = Bitmap.createScaledBitmap(startingImage, screenWidth, screenHeight, true);
         int bitmapWidth = currentRoomBitmap.getWidth();
@@ -115,21 +115,15 @@ public class Map {
         // Character calls this function to determine if it can move to particular x and y
 
         // Step 1: Figure out what tiles the incoming x and y belong to
-        int top_row = this.getRowFromY(y);
-        int bot_row = this.getRowFromY(y+height);
-        int left_col =  this.getColFromX(x);
-        int right_col = this.getColFromX(x+width);
+        int row = this.getRowFromY(y + Math.round(height/2));
+        int col = this.getColFromX(x + Math.round(width/2));
 
         // Step 2: Index into tile array to get the right tiles
-        for (int row = top_row; row <= bot_row; row++) {
-            for (int col = left_col; col <= right_col; col++) {
-                Tile tile = this.tileArray[row][col];
+        Tile tile = this.tileArray[row][col];
 
-                // Step 3: Check if tile is collidable
-                if (tile.isCollidable()) {
-                    return false;
-                }
-            }
+        // Step 3: Check if tile is collidable
+        if (tile.isCollidable()) {
+            return false;
         }
         return true;
     }
