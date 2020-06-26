@@ -3,8 +3,10 @@ package org.o7planning.android2dgame;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
@@ -39,6 +41,16 @@ public class MainActivity extends Activity {
                     character.setMovingVector((int)movingVectorX, (int)movingVectorY);
                 }
                 // do whatever you want
+            }
+        });
+
+        Button attackButton = findViewById(R.id.attackButton);
+        attackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                for (Character character: gameSurface.characterList) {
+                    character.attack();
+                }
             }
         });
 

@@ -20,6 +20,7 @@ public class StuffFactory {
         PlayerAI playerAI = new PlayerAI(player);
         playerAI.character = player;
         player.setCharacterAI(playerAI);
+
         Bitmap playerHitbox1 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.characterhitbox);
         HitBox hitBox1 = new HitBox(gameSurface, playerHitbox1, 100, 50, player);
         hitBox1.object = player;
@@ -34,6 +35,7 @@ public class StuffFactory {
         WarriorAI warriorAI = new WarriorAI(monster1, gameSurface, this);
         warriorAI.character = monster1;
         monster1.setCharacterAI(warriorAI);
+
         Bitmap monsterHitbox1 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.characterhitbox);
         HitBox hitBox1 = new HitBox(gameSurface, monsterHitbox1, 500, 500, monster1);
         hitBox1.object = monster1;
@@ -42,8 +44,8 @@ public class StuffFactory {
     }
 
     public Item newSword() {
-        Bitmap swordBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.sword);
-        Item sword = new Item(gameSurface, swordBitmap, "sword", 100, 100);
+        Bitmap swordBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.sword_attack_animation);
+        Item sword = new Item(gameSurface, swordBitmap, "sword", 100, 100, 1, 5);
         gameSurface.itemList.add(sword);
         Bitmap swordHitbox1 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.sword_hitbox);
         HitBox hitBox1 = new HitBox(gameSurface, swordHitbox1, 100, 100, sword);

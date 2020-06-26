@@ -110,9 +110,12 @@ public class Character extends GameObject {
     public void update()  {
 
         //check if in combat
-        if(itemList.size() != 0){itemList.get(0).inCombat();}
+       // if(itemList.size() != 0){itemList.get(0).inCombat();}
 
-        if(!ai.getType()){findItem();}
+        if(!ai.getType()){
+            findItem();
+            itemList.get(0).update();
+        }
 
 
         //update character moving vector and animate
@@ -124,6 +127,7 @@ public class Character extends GameObject {
         //update AI
          ai.onUpdate();
 
+        //update Weapon
 
 
     }
@@ -241,9 +245,12 @@ public class Character extends GameObject {
 
     public void pickupItem(Item other) {
         itemList.add(other);
+        //gameSurface.itemList.remove(other);
     }
 
-//    public void inCombat() {
+    public void attack() {
+
+        if(itemList.size() != 0){itemList.get(0).inCombat();}
 //        Iterator<Character> iterator = gameSurface.monsterList.iterator();
 //
 //        while(iterator.hasNext()){
@@ -254,7 +261,7 @@ public class Character extends GameObject {
 //            }
 //
 //        }
-//    }
+    }
 //
 //    public void attack(Character other) {
 //        if(!ai.getType())

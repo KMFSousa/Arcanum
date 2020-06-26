@@ -22,4 +22,12 @@
         custom:JV_borderWidth="4dp"
         custom:JV_fixedCenter="false"
         android:elevation="1dp"/>
+
+    <Button
+        android:id="@+id/attackButton"
+        android:layout_width="115dp"
+        android:layout_height="72dp"
+        android:layout_marginTop="300dp"
+        android:layout_marginLeft="550dp"
+        android:text="Attack" />
 </RelativeLayout>
