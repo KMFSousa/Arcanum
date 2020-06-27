@@ -32,12 +32,12 @@ public class Map {
         this.context = context;
 
         // TODO: Use the below screenWidth and screenHeight properties if you are testing on an actual phone
-        //int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
-        //int screenHeight =  Resources.getSystem().getDisplayMetrics().heightPixels;
+        int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+        int screenHeight =  Resources.getSystem().getDisplayMetrics().heightPixels;
 
         // TODO: Use the below screenWidth and screenHeight properties if you are testing on the emulator
-        int screenWidth = Resources.getSystem().getDisplayMetrics().heightPixels;
-        int screenHeight =  Resources.getSystem().getDisplayMetrics().widthPixels;
+        //int screenWidth = Resources.getSystem().getDisplayMetrics().heightPixels;
+        //int screenHeight =  Resources.getSystem().getDisplayMetrics().widthPixels;
 
         this.currentRoomBitmap = Bitmap.createScaledBitmap(startingImage, screenWidth, screenHeight, true);
         int bitmapWidth = currentRoomBitmap.getWidth();
