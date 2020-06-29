@@ -17,12 +17,15 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
     private GameThread gameThread;
     private Map map;
+    private Context context;
     public final List<Character> characterList = new ArrayList<Character>();
     public final List<Explosion> explosionList = new ArrayList<Explosion>();
     public final List<Character> monsterList = new ArrayList<Character>();
     public final List<Character> removalList = new ArrayList<Character>();
     public GameSurface(Context context)  {
         super(context);
+
+        this.context = context;
 
         // Make Game Surface focusable so it can handle events.
         this.setFocusable(true);
@@ -35,11 +38,11 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     // CALL ALL UPDATE METHODS FOR OBJECTS HERE
     public void update() {
         for (Character character : characterList) {
-            character.update();
+            character.update(map);
         }
 
         for (Character monster : monsterList) {
-            monster.update();
+            monster.update(map);
         }
 
         for (Explosion explosion : this.explosionList) {
@@ -101,7 +104,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
         Bitmap backgroundBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.testmap);
 
-        Map map = new Map(this, backgroundBitmap);
+        Map map = new Map(this, backgroundBitmap, context);
         this.map = map;
 
         // Create a thread that will handle the running of the game (character movements and such) that can be easily paused without having to add excess logic to the main thread

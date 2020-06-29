@@ -13,7 +13,7 @@ public class CharacterFactory {
 
     public Character newPlayer() {
         Bitmap characterBitmap1 = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.chibi1);
-        Character player = new Character(gameSurface, characterBitmap1, 100, 50 );
+        Character player = new Character(gameSurface, characterBitmap1, 200, 200 );
         gameSurface.characterList.add(player);
         PlayerAI playerAI = new PlayerAI(player);
         playerAI.character = player;
