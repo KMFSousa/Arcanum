@@ -144,18 +144,18 @@ public class Character extends GameObject {
         // When the game's character touches the edge of the screen, then change direction
         if(this.x < 0 )  {
             this.x = 0;
-            this.movingVectorX = - this.movingVectorX;
+            this.gameSurface.dungeon.transitionHorizontal(-1);
         } else if(this.x > this.gameSurface.getWidth() -width)  {
             this.x= this.gameSurface.getWidth()-width;
-            this.movingVectorX = - this.movingVectorX;
+            this.gameSurface.dungeon.transitionHorizontal(1);
         }
 
         if(this.y < 0 )  {
             this.y = 0;
-            this.movingVectorY = - this.movingVectorY;
+            this.gameSurface.dungeon.transitionVertical(1);
         } else if(this.y > this.gameSurface.getHeight()- height)  {
             this.y= this.gameSurface.getHeight()- height;
-            this.movingVectorY = - this.movingVectorY ;
+            this.gameSurface.dungeon.transitionVertical(-1);
         }
 
         animate();

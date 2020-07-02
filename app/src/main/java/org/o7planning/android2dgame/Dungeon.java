@@ -1,6 +1,7 @@
 package org.o7planning.android2dgame;
 
 import android.graphics.Canvas;
+import android.util.Log;
 
 public class Dungeon {
     private Map[][] rooms;
@@ -28,12 +29,14 @@ public class Dungeon {
     public void transitionVertical(int direction){ //Direction should be +1 for upwards room change, -1 for downwards
         if(roomY + direction >= 0  && roomY + direction < rooms[0].length) {
             roomY += direction;
+            Log.d("Dungeon","Vertical Transition: " + direction);
         }
     }
 
     public void transitionHorizontal(int direction){ //Direction should be +1 for right room change, -1 for left
         if(roomX + direction >= 0  && roomX + direction < rooms[0].length) {
             roomX += direction;
+            Log.d("Dungeon","Horizontal Transition: " + direction);
         }
     }
 

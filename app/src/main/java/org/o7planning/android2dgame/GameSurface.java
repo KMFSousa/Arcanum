@@ -16,7 +16,7 @@ import java.util.List;
 public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
     private GameThread gameThread;
-    private Dungeon dungeon;
+    public Dungeon dungeon;
     private Context context;
     public final List<Character> characterList = new ArrayList<Character>();
     public final List<Explosion> explosionList = new ArrayList<Explosion>();
