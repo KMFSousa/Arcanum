@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import android.os.Build;
 import android.util.Log;
 
 public class Map {
@@ -31,13 +32,15 @@ public class Map {
         this.gameSurface = gameSurface;
         this.context = context;
 
-        // TODO: Use the below screenWidth and screenHeight properties if you are testing on an actual phone
-        int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
-        int screenHeight =  Resources.getSystem().getDisplayMetrics().heightPixels;
-
-        // TODO: Use the below screenWidth and screenHeight properties if you are testing on the emulator
-        //int screenWidth = Resources.getSystem().getDisplayMetrics().heightPixels;
-        //int screenHeight =  Resources.getSystem().getDisplayMetrics().widthPixels;
+        int screenWidth, screenHeight;
+        if(Build.FINGERPRINT.contains("generic")) { //Emulator
+            screenWidth = Resources.getSystem().getDisplayMetrics().heightPixels;
+            screenHeight = Resources.getSystem().getDisplayMetrics().widthPixels;
+        }
+        else { //Hardware Phone
+            screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+            screenHeight =  Resources.getSystem().getDisplayMetrics().heightPixels;
+        }
 
         this.currentRoomBitmap = Bitmap.createScaledBitmap(startingImage, screenWidth, screenHeight, true);
         int bitmapWidth = currentRoomBitmap.getWidth();

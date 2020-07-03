@@ -16,7 +16,7 @@ import java.util.List;
 public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
     private GameThread gameThread;
-    private Map map;
+    public Dungeon dungeon;
     private Context context;
     public final List<Character> characterList = new ArrayList<Character>();
     public final List<Explosion> explosionList = new ArrayList<Explosion>();
@@ -37,12 +37,13 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     // MASTER UPDATE CONTROL
     // CALL ALL UPDATE METHODS FOR OBJECTS HERE
     public void update() {
+        Map currentMap = dungeon.getCurrentRoom();
         for (Character character : characterList) {
-            character.update(map);
+            character.update(currentMap);
         }
 
         for (Character monster : monsterList) {
-            monster.update(map);
+            monster.update(currentMap);
         }
 
         for (Explosion explosion : this.explosionList) {
@@ -67,7 +68,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
-        this.map.draw(canvas);
+        this.dungeon.draw(canvas);
 
         // Call the draw method implemented in each class, responsible for drawing the bitmap of the model in question
         for (Character character : characterList) {
@@ -105,7 +106,15 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         Bitmap backgroundBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.testmap);
 
         Map map = new Map(this, backgroundBitmap, context);
-        this.map = map;
+        Map[][] mapArr = new Map[2][2];
+        for(int i = 0; i < 2; i ++){
+            for (int j = 0; j < 2; j++) {
+                mapArr[i][j] = map;
+            }
+        }
+        Dungeon dungeon = new Dungeon(this, mapArr);
+
+        this.dungeon = dungeon;
 
         // Create a thread that will handle the running of the game (character movements and such) that can be easily paused without having to add excess logic to the main thread
         this.gameThread = new GameThread(this, holder);
