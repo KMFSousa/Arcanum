@@ -2,10 +2,13 @@ package org.o7planning.android2dgame;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.util.Log;
+
 import java.util.List;
 import java.util.ArrayList;
 
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 public class Character extends GameObject {
 
@@ -37,6 +40,8 @@ public class Character extends GameObject {
 
     // Velocity of game character (pixel/millisecond)
     private float velocity;
+    public int hitPoints;
+
 
     private int movingVectorX = 0;
     private int movingVectorY = 0;
@@ -57,12 +62,14 @@ public class Character extends GameObject {
 
     // This method (called in GameSurface.java) will take the spritesheet we provide it with and create arrays holding the bitmaps of each sprite
 
-    public Character(GameSurface gameSurface, Bitmap image, int x, int y, int spriteSheetRows, int spriteSheetColumns, float velocity) {
+    public Character(GameSurface gameSurface, Bitmap image, int x, int y, int spriteSheetRows, int spriteSheetColumns, float velocity, int hitPoints) {
         super(image, spriteSheetRows, spriteSheetColumns, x, y); // Calls
 
 
         this.gameSurface= gameSurface;
         this.velocity = velocity;
+        this.hitPoints = hitPoints;
+
 
         this.topToBottoms = new Bitmap[colCount]; // 3
         this.rightToLefts = new Bitmap[colCount]; // 3
@@ -112,23 +119,27 @@ public class Character extends GameObject {
         //check if in combat
        // if(itemList.size() != 0){itemList.get(0).inCombat();}
 
+        checkIfDead();
+
+        //TODO: MOVE TO CHARACTER AI
         if(!ai.getType()){
             findItem();
-            itemList.get(0).update();
         }
 
 
         //update character moving vector and animate
         move();
         //TODO: IS THIS THE BEST PLACE FOR THIS?
-        hitBox.x = this.x;
-        hitBox.y = this.y;
+        hitBox.x = this.getX() + this.getWidth()/2-16;
+        hitBox.y = this.getY(); //+ this.getHeight()/2-16;
 
         //update AI
          ai.onUpdate();
 
         //update Weapon
-
+        if(itemList.size() != 0){
+            itemList.get(0).update();
+        }
 
     }
 
@@ -142,6 +153,7 @@ public class Character extends GameObject {
             this.colUsing++;
         }
         // Once we have cycled through all the sprites for a certain direction, start back at the first one
+        //TODO: CYCLE THROUGH STATES, NOT ATTACK STATE
         if(colUsing >= this.colCount)  {
             this.colUsing =0;
         }
@@ -184,7 +196,7 @@ public class Character extends GameObject {
         animate();
         if(itemList.size() != 0){
             itemList.get(0).x = this.x+50;
-            itemList.get(0).y = this.y+25;
+            itemList.get(0).y = this.y+20;
             itemList.get(0).hitBox.x = itemList.get(0).x;
             itemList.get(0).hitBox.y = itemList.get(0).y;
         }
@@ -250,8 +262,21 @@ public class Character extends GameObject {
 
     public void attack() {
 
-        if(itemList.size() != 0){itemList.get(0).inCombat();}
+      //  if(itemList.size() != 0){itemList.get(0).inCombat();}
+        if(itemList.size() != 0){itemList.get(0).combatAnimationFinished = false;}
 //        Iterator<Character> iterator = gameSurface.monsterList.iterator();
+
+        if(ai.getType() && !gameSurface.characterList.isEmpty()){
+            //Iterator<Character> iterator = gameSurface.characterList.iterator();
+            Character other = gameSurface.characterList.get(0);
+            if(this.hitBox.x < other.hitBox.x + other.hitBox.width &&
+                    this.hitBox.x + this.hitBox.width > other.hitBox.x &&
+                    this.hitBox.y < other.hitBox.y + other.hitBox.height &&
+                    this.hitBox.y + this.hitBox.height > other.hitBox.y){
+                other.hitPoints -= 1;
+                Log.d("playerHitpoints", "" + other.hitPoints );
+            }
+        }
 //
 //        while(iterator.hasNext()){
 //            Character other = iterator.next();
@@ -261,6 +286,13 @@ public class Character extends GameObject {
 //            }
 //
 //        }
+    }
+
+    public void checkIfDead() {
+        if (this.hitPoints <= 0) {
+            if(ai.getType()){gameSurface.removalList.add(this);}
+            else if(!ai.getType()){((PlayerAI) ai).isDead = true;}
+        }
     }
 //
 //    public void attack(Character other) {

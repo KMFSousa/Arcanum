@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -34,7 +36,19 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     // CALL ALL UPDATE METHODS FOR OBJECTS HERE
     public void update() {
         for (Character character : characterList) {
-            character.update();
+            if(!characterList.isEmpty()){
+                character.update();
+//                MainActivity.healthBar.setLayoutParams(new RelativeLayout.LayoutParams(characterList.get(0).hitPoints*2, 50));
+
+                if(characterList.get(0).hitPoints > 0){
+                    MainActivity.healthBar.setText("" + characterList.get(0).hitPoints + " HP");
+
+                }else{
+                    MainActivity.healthBar.setText("DEAD :(");
+                }
+
+            }
+
         }
 
         for (Character monster : monsterList) {
@@ -55,6 +69,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         monsterList.removeAll(removalList);
+        characterList.removeAll(removalList);
     }
 
     @Override

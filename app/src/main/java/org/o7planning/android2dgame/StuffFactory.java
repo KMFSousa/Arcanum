@@ -14,8 +14,8 @@ public class StuffFactory {
     //TODO: UPDATE CHARACTER AND ITEM CONSTRUCTORS WITH ATTRIBUTES
 
     public Character newPlayer() {
-        Bitmap characterBitmap1 = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.chibi1);
-        Character player = new Character(gameSurface, characterBitmap1, 100, 50, 4, 3, 0.4f );
+        Bitmap characterBitmap1 = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.spritesheet);
+        Character player = new Character(gameSurface, characterBitmap1, 100, 50, 4, 4, 0.4f, 100 );
         gameSurface.characterList.add(player);
         PlayerAI playerAI = new PlayerAI(player);
         playerAI.character = player;
@@ -30,7 +30,7 @@ public class StuffFactory {
 
     public Character newMonster() {
         Bitmap monsterBitmap1 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.slimes1);
-        Character monster1 = new Character(gameSurface, monsterBitmap1, 500, 500, 4, 5, 0.1f);
+        Character monster1 = new Character(gameSurface, monsterBitmap1, 500, 500, 4, 5, 0.1f, 30);
         gameSurface.monsterList.add(monster1);
         WarriorAI warriorAI = new WarriorAI(monster1, gameSurface, this);
         warriorAI.character = monster1;
@@ -45,7 +45,7 @@ public class StuffFactory {
 
     public Item newSword() {
         Bitmap swordBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.sword_attack_animation);
-        Item sword = new Item(gameSurface, swordBitmap, "sword", 100, 100, 1, 5);
+        Item sword = new Item(gameSurface, swordBitmap, "sword", 100, 100, 1, 5, 10);
         gameSurface.itemList.add(sword);
         Bitmap swordHitbox1 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.sword_hitbox);
         HitBox hitBox1 = new HitBox(gameSurface, swordHitbox1, 100, 100, sword);

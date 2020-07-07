@@ -31,6 +31,8 @@ public class WarriorAI extends CharacterAI {
 
     public void onUpdate() {
 
+        character.attack();
+
         if (closeToPlayer()) {
             character.setMovingVector(distanceToPlayerX, distanceToPlayerY);
         } else if (updateCounter % 5 == 0) {
@@ -51,6 +53,8 @@ public class WarriorAI extends CharacterAI {
         Character child = factory.newMonster();
         child.x = x;
         child.y = y;
+        child.hitBox.x = x;
+        child.hitBox.y = y;
 
         spreadCount++;
     }

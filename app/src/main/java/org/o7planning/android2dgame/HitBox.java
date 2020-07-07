@@ -25,7 +25,7 @@ public class HitBox extends GameObject {
 
     public void draw(Canvas canvas) {
         Bitmap bitmap = this.hitbox[0];
-        canvas.drawBitmap(bitmap, object.x, object.y, null);
+        canvas.drawBitmap(bitmap, this.x, this.y, null);
 
     }
 }

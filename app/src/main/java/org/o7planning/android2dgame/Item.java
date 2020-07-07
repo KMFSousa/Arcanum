@@ -9,10 +9,11 @@ public class Item extends GameObject {
 
     private GameSurface gameSurface;
 
-    private Bitmap[] sword_nuetral;
+    private Bitmap[] sword_neutral;
     private Bitmap[] sword_attack;
     private int colUsing = 0;
-    private boolean combatAnimationFinished = true;
+    public boolean combatAnimationFinished = true;
+    public int attackDMG;
 
 
     private String name;
@@ -21,23 +22,29 @@ public class Item extends GameObject {
  //TODO: FURTHER FLESH OUT THE ITEM CLASS. ALLOW PLAYERS TO PICKUP ITEMS AND PUT THEM IN AN INVENTORY (ALSO IMPLEMENT AN INVENTORY)
  //TODO: IMPLEMENT ITEM STATS
     
-    public Item(GameSurface gameSurface, Bitmap image, String name, int x, int y, int spriteSheetRows, int spriteSheetColumns) {
+    public Item(GameSurface gameSurface, Bitmap image, String name, int x, int y, int spriteSheetRows, int spriteSheetColumns, int attackDMG) {
         super(image, spriteSheetRows, spriteSheetColumns, x, y);
 
         this.name = name;
 
         this.gameSurface = gameSurface;
 
-        this.sword_nuetral = new Bitmap[spriteSheetColumns];
+        this.attackDMG = attackDMG;
+
+        this.sword_neutral = new Bitmap[spriteSheetColumns];
         //this.sword_attack = new Bitmap[spriteSheetColumns];
 
         for(int col = 0; col< this.colCount; col++ ) {
-            this.sword_nuetral[col] = this.createSubImageAt(0, col);
+            this.sword_neutral[col] = this.createSubImageAt(0, col);
         }
     }
 
+    //TODO: SPEED UP ANIMATIONS
+    //TODO: SCALE UP THE SWORD
+    //TODO: ENABLE ANIMATION INTERRUPT FOR INSTANT ATTACKS
     public void update() {
         if(combatAnimationFinished == false && colUsing <= 5) {
+            inCombat();
             colUsing++;
             if (colUsing == 4) {
                 colUsing = 0;
@@ -47,7 +54,7 @@ public class Item extends GameObject {
     }
 
     public void draw(Canvas canvas) {
-        Bitmap bitmap = this.sword_nuetral[colUsing];
+        Bitmap bitmap = this.sword_neutral[colUsing];
         canvas.drawBitmap(bitmap, x, y, null);
         //hitBox.draw(canvas);
         Log.d("Location" ,"Sword hitbox x: " + hitBox.x);
@@ -71,7 +78,8 @@ public class Item extends GameObject {
     }
 
     public void attack(Character other) {
-            gameSurface.removeCharacter(other);
+            //gameSurface.removeCharacter(other);
+            other.hitPoints =- 10;
     }
 }
 

@@ -7,11 +7,14 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
 
 public class MainActivity extends Activity {
+
+    public static Button healthBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +57,8 @@ public class MainActivity extends Activity {
             }
         });
 
-
+        Button healthBar = findViewById(R.id.healthBar);
+        this.healthBar = healthBar;
     }
 
 }
