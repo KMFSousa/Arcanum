@@ -50,7 +50,6 @@ public class Character extends GameObject {
 
     private long lastDrawNanoTime =-1;
 
-
     private CharacterAI ai;
     public void setCharacterAI(CharacterAI ai) {   this.ai = ai; }
 
@@ -117,7 +116,7 @@ public class Character extends GameObject {
 
     // This is the character update loop
 
-    public void update()  {
+    public void update(Map map)  {
 
         //check if in combat
        // if(itemList.size() != 0){itemList.get(0).inCombat();}
@@ -130,7 +129,7 @@ public class Character extends GameObject {
         }
 
         //update character moving vector and animate
-        move();
+        move(map);
 
         //TODO: IS THIS THE BEST PLACE FOR THIS?
         hitBox.x = this.getX() + this.getWidth()/2 - 30;
@@ -147,7 +146,7 @@ public class Character extends GameObject {
 
     }
 
-    public void move() {
+    public void move(Map map) {
         // c = sqrt(a^2 + b^2) - i.e. we are getting the movement vector based on how far we moved horizontally and vertically
         double movingVectorLength = Math.sqrt(movingVectorX*movingVectorX + movingVectorY*movingVectorY);
 
@@ -182,24 +181,29 @@ public class Character extends GameObject {
         float distance = velocity * deltaTime;
 
         // Calculate the new position of the game character.
-        this.x = x +  (int)(distance* movingVectorX / movingVectorLength);
-        this.y = y +  (int)(distance* movingVectorY / movingVectorLength);
+        int xToMoveTo = this.x + (int)(distance* movingVectorX / movingVectorLength);
+        int yToMoveTo = this.y + (int)(distance* movingVectorY / movingVectorLength);
+
+        if (map.canMove(xToMoveTo, yToMoveTo, this.height, this.width)) {
+            this.x = xToMoveTo;
+            this.y = yToMoveTo;
+        }
 
         // When the game's character touches the edge of the screen, then change direction
         if(this.x < 0 )  {
             this.x = 0;
-            this.movingVectorX = - this.movingVectorX;
+            this.gameSurface.dungeon.transitionHorizontal(-1);
         } else if(this.x > this.gameSurface.getWidth() -width)  {
             this.x= this.gameSurface.getWidth()-width;
-            this.movingVectorX = - this.movingVectorX;
+            this.gameSurface.dungeon.transitionHorizontal(1);
         }
 
         if(this.y < 0 )  {
             this.y = 0;
-            this.movingVectorY = - this.movingVectorY;
+            this.gameSurface.dungeon.transitionVertical(1);
         } else if(this.y > this.gameSurface.getHeight()- height)  {
             this.y= this.gameSurface.getHeight()- height;
-            this.movingVectorY = - this.movingVectorY ;
+            this.gameSurface.dungeon.transitionVertical(-1);
         }
 
         //TODO: CLEAN UP THIS CODE. PROBABLY MOVE IT INTO THE SWORD/ITEM CLASS

@@ -16,7 +16,8 @@ import java.util.List;
 public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
     private GameThread gameThread;
-    private Map map;
+    public Dungeon dungeon;
+    private Context context;
     public final List<Character> characterList = new ArrayList<Character>();
     public final List<Explosion> explosionList = new ArrayList<Explosion>();
     public final List<Character> monsterList = new ArrayList<Character>();
@@ -24,6 +25,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     public final List<Item> itemList = new ArrayList<Item>();
     public GameSurface(Context context)  {
         super(context);
+
+        this.context = context;
 
         // Make Game Surface focusable so it can handle events.
         this.setFocusable(true);
@@ -35,10 +38,11 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     // MASTER UPDATE CONTROL
     // CALL ALL UPDATE METHODS FOR OBJECTS HERE
     public void update() {
+        Map currentMap = dungeon.getCurrentRoom();
         for (Character character : characterList) {
             if(!characterList.isEmpty()){
-                character.update();
-//                MainActivity.healthBar.setLayoutParams(new RelativeLayout.LayoutParams(characterList.get(0).hitPoints*2, 50));
+                character.update(currentMap);
+                // MainActivity.healthBar.setLayoutParams(new RelativeLayout.LayoutParams(characterList.get(0).hitPoints*2, 50));
 
                 if(characterList.get(0).hitPoints > 0){
                     MainActivity.healthBar.setText("" + characterList.get(0).hitPoints + " HP");
@@ -52,7 +56,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         for (Character monster : monsterList) {
-            monster.update();
+            monster.update(currentMap);
         }
 
         for (Explosion explosion : this.explosionList) {
@@ -78,7 +82,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
-        this.map.draw(canvas);
+        this.dungeon.draw(canvas);
 
         // Call the draw method implemented in each class, responsible for drawing the bitmap of the model in question
         for (Character character : characterList) {
@@ -120,8 +124,16 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
         Bitmap backgroundBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.testmap);
 
-        Map map = new Map(this, backgroundBitmap);
-        this.map = map;
+        Map map = new Map(this, backgroundBitmap, context);
+        Map[][] mapArr = new Map[2][2];
+        for(int i = 0; i < 2; i ++){
+            for (int j = 0; j < 2; j++) {
+                mapArr[i][j] = map;
+            }
+        }
+        Dungeon dungeon = new Dungeon(this, mapArr);
+
+        this.dungeon = dungeon;
 
         // Create a thread that will handle the running of the game (character movements and such) that can be easily paused without having to add excess logic to the main thread
         this.gameThread = new GameThread(this, holder);
