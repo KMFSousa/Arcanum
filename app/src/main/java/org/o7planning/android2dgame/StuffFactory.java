@@ -43,14 +43,14 @@ public class StuffFactory {
         return monster1;
     }
 
-    public Item newSword() {
-        Bitmap swordBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.sword_attack_animation);
-        Item sword = new Item(gameSurface, swordBitmap, "sword", 100, 100, 1, 5, 10);
-        gameSurface.itemList.add(sword);
-        Bitmap swordHitbox1 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.sword_hitbox);
-        HitBox hitBox1 = new HitBox(gameSurface, swordHitbox1, 100, 100, sword);
-        hitBox1.object = sword;
-        sword.setObjectHitbox(hitBox1);
-        return sword;
-    }
+//    public Item newSword() {
+//        Bitmap swordBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.sword_attack_animation);
+//        Item sword = new Item(gameSurface, swordBitmap, "sword", 100, 100, 1, 5, 10);
+//        gameSurface.itemList.add(sword);
+//        Bitmap swordHitbox1 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.sword_hitbox);
+//        HitBox hitBox1 = new HitBox(gameSurface, swordHitbox1, 100, 100, sword);
+//        hitBox1.object = sword;
+//        sword.setObjectHitbox(hitBox1);
+//        return sword;
+//    }
 }

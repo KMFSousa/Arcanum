@@ -101,7 +101,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     private void createCreatures(StuffFactory stuffFactory) {
         Character player = stuffFactory.newPlayer();
         Character monster = stuffFactory.newMonster();
-        Item sword = stuffFactory.newSword();
+        //Item sword = stuffFactory.newSword();
     }
 
     public void removeCharacter(Character other) {

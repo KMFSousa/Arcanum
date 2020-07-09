@@ -40,6 +40,8 @@ public class Character extends GameObject {
 
     // Velocity of game character (pixel/millisecond)
     private float velocity;
+    private  boolean isAttacking;
+
     public int hitPoints;
 
 
@@ -69,6 +71,7 @@ public class Character extends GameObject {
         this.gameSurface= gameSurface;
         this.velocity = velocity;
         this.hitPoints = hitPoints;
+
 
 
         this.topToBottoms = new Bitmap[colCount]; // 3
@@ -126,12 +129,13 @@ public class Character extends GameObject {
             findItem();
         }
 
-
         //update character moving vector and animate
         move();
+
         //TODO: IS THIS THE BEST PLACE FOR THIS?
-        hitBox.x = this.getX() + this.getWidth()/2-16;
+        hitBox.x = this.getX() + this.getWidth()/2 - 30;
         hitBox.y = this.getY(); //+ this.getHeight()/2-16;
+
 
         //update AI
          ai.onUpdate();
@@ -149,14 +153,20 @@ public class Character extends GameObject {
 
         // Update which column we are using by 1 for each iteration
         // Used in getCurrentMoveBitmap() to grab the next sprite to render on the canvas
-        if (movingVectorLength > 0) {
+        if (movingVectorLength > 0 || this.colUsing == this.colCount - 1) {
             this.colUsing++;
         }
         // Once we have cycled through all the sprites for a certain direction, start back at the first one
         //TODO: CYCLE THROUGH STATES, NOT ATTACK STATE
-        if(colUsing >= this.colCount)  {
+        if(colUsing >= this.colCount -1 )  {
             this.colUsing =0;
         }
+
+        if(isAttacking) {
+            this.colUsing = this.colCount - 1;
+            isAttacking = false;
+        }
+
         // Current time in nanoseconds
         long now = System.nanoTime();
 
@@ -234,7 +244,7 @@ public class Character extends GameObject {
         canvas.drawBitmap(bitmap, x, y, null);
         // Last draw time.
         this.lastDrawNanoTime= System.nanoTime();
-        hitBox.draw(canvas);
+        //hitBox.draw(canvas);
     }
 
     public void setMovingVector(int movingVectorX, int movingVectorY)  {
@@ -262,8 +272,13 @@ public class Character extends GameObject {
 
     public void attack() {
 
+
+
       //  if(itemList.size() != 0){itemList.get(0).inCombat();}
-        if(itemList.size() != 0){itemList.get(0).combatAnimationFinished = false;}
+        if(!ai.getType()){
+            this.isAttacking = true;
+//            itemList.get(0).combatAnimationFinished = false;
+        }
 //        Iterator<Character> iterator = gameSurface.monsterList.iterator();
 
         if(ai.getType() && !gameSurface.characterList.isEmpty()){
@@ -274,6 +289,7 @@ public class Character extends GameObject {
                     this.hitBox.y < other.hitBox.y + other.hitBox.height &&
                     this.hitBox.y + this.hitBox.height > other.hitBox.y){
                 other.hitPoints -= 1;
+                this.isAttacking = true;
                 Log.d("playerHitpoints", "" + other.hitPoints );
             }
         }

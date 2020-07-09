@@ -31,10 +31,11 @@ public class WarriorAI extends CharacterAI {
 
     public void onUpdate() {
 
-        character.attack();
+
 
         if (closeToPlayer()) {
             character.setMovingVector(distanceToPlayerX, distanceToPlayerY);
+            character.attack();
         } else if (updateCounter % 5 == 0) {
             updateCounter = 0;
             wander();
