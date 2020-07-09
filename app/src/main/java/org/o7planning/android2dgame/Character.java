@@ -222,21 +222,23 @@ public class Character extends GameObject {
 
         // movingVectorX and movingVectorY are +/- values that will determine what direction we are moving in
         // based on the values of these vectors, we can decide which row of sprites we are using
-        if( movingVectorX > 0 )  {
-            if(movingVectorY > 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
-                this.rowUsing = ROW_TOP_TO_BOTTOM;
-            }else if(movingVectorY < 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
-                this.rowUsing = ROW_BOTTOM_TO_TOP;
-            }else  {
-                this.rowUsing = ROW_LEFT_TO_RIGHT;
-            }
-        } else {
-            if(movingVectorY > 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
-                this.rowUsing = ROW_TOP_TO_BOTTOM;
-            }else if(movingVectorY < 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
-                this.rowUsing = ROW_BOTTOM_TO_TOP;
-            }else  {
-                this.rowUsing = ROW_RIGHT_TO_LEFT;
+        if ( movingVectorX != 0 || movingVectorY != 0 ) {
+            if (movingVectorX > 0) {
+                if (movingVectorY > 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
+                    this.rowUsing = ROW_TOP_TO_BOTTOM;
+                } else if (movingVectorY < 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
+                    this.rowUsing = ROW_BOTTOM_TO_TOP;
+                } else {
+                    this.rowUsing = ROW_LEFT_TO_RIGHT;
+                }
+            } else {
+                if (movingVectorY > 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
+                    this.rowUsing = ROW_TOP_TO_BOTTOM;
+                } else if (movingVectorY < 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
+                    this.rowUsing = ROW_BOTTOM_TO_TOP;
+                } else {
+                    this.rowUsing = ROW_RIGHT_TO_LEFT;
+                }
             }
         }
     }
