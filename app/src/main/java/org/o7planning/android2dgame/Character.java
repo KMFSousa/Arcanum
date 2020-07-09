@@ -43,6 +43,7 @@ public class Character extends GameObject {
     private  boolean isAttacking;
 
     public int hitPoints;
+    private int attackDamage;
 
 
     private int movingVectorX = 0;
@@ -64,13 +65,14 @@ public class Character extends GameObject {
 
     // This method (called in GameSurface.java) will take the spritesheet we provide it with and create arrays holding the bitmaps of each sprite
 
-    public Character(GameSurface gameSurface, Bitmap image, int x, int y, int spriteSheetRows, int spriteSheetColumns, float velocity, int hitPoints) {
+    public Character(GameSurface gameSurface, Bitmap image, int x, int y, int spriteSheetRows, int spriteSheetColumns, float velocity, int hitPoints, int attackDamage) {
         super(image, spriteSheetRows, spriteSheetColumns, x, y); // Calls
 
 
         this.gameSurface= gameSurface;
         this.velocity = velocity;
         this.hitPoints = hitPoints;
+        this.attackDamage = attackDamage;
 
 
 
@@ -271,8 +273,6 @@ public class Character extends GameObject {
     }
 
     public void attack() {
-
-
 
       //  if(itemList.size() != 0){itemList.get(0).inCombat();}
         if(!ai.getType()){
