@@ -15,6 +15,7 @@ public class StuffFactory {
 
     public Character newPlayer() {
         Bitmap characterBitmap1 = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.spritesheet);
+
         Character player = new Character(gameSurface, characterBitmap1, 100, 50, 4, 4, 0.4f, 100, 10 );
         gameSurface.characterList.add(player);
         PlayerAI playerAI = new PlayerAI(player);
@@ -22,7 +23,7 @@ public class StuffFactory {
         player.setCharacterAI(playerAI);
 
         Bitmap playerHitbox1 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.characterhitbox);
-        HitBox hitBox1 = new HitBox(gameSurface, playerHitbox1, 100, 50, player);
+        HitBox hitBox1 = new HitBox(gameSurface, playerHitbox1, 200, 200, player);
         hitBox1.object = player;
         player.setObjectHitbox(hitBox1);
         return player;
