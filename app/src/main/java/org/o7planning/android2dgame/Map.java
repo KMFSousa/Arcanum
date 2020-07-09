@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 
 import android.os.Build;
 import android.util.Log;
+import android.util.Pair;
 
 public class Map {
     protected Bitmap currentRoomBitmap;
@@ -114,21 +115,22 @@ public class Map {
         return -1;
     }
 
-    public boolean canMove(int x, int y, int height, int width) {
+    public Pair<Boolean, Boolean> canMove(int xSrc, int ySrc, int xDest, int yDest, int height, int width) {
         // Character calls this function to determine if it can move to particular x and y
+        // We break it down into if it can move in the x direction or the y direction
 
-        // Step 1: Figure out what tiles the incoming x and y belong to
-        int row = this.getRowFromY(y + Math.round(height/2));
-        int col = this.getColFromX(x + Math.round(width/2));
+        // Step 1: Figure out what tiles the new xDestination and yDestination belong to, as well as the current x and y tiles
+        int destRow = this.getRowFromY(yDest + Math.round(height/2));
+        int destCol = this.getColFromX(xDest + Math.round(width/2));
+        int srcRow = this.getRowFromY(ySrc + Math.round(height/2));
+        int srcCol = this.getColFromX(xSrc + Math.round(width/2));
 
-        // Step 2: Index into tile array to get the right tiles
-        Tile tile = this.tileArray[row][col];
+        // Step 2: Index into tile array to get the tiles associated with the destination for both x and y
+        Tile newColTile = this.tileArray[srcRow][destCol];
+        Tile newRowTile = this.tileArray[destRow][srcCol];
 
-        // Step 3: Check if tile is collidable
-        if (tile.isCollidable()) {
-            return false;
-        }
-        return true;
+        // Step 3: Return a pair that defines whether you can move in the x direction or y direction
+        return new Pair<Boolean, Boolean>(!newColTile.isCollidable(), !newRowTile.isCollidable());
     }
 
     public void draw (Canvas canvas) {
