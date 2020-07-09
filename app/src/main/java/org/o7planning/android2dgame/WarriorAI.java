@@ -41,8 +41,8 @@ public class WarriorAI extends CharacterAI {
             wander();
         }
 
-        if(spreadCount < 1 && Math.random() < 0.1 )
-           spread();
+        //if(spreadCount < 1 && Math.random() < 0.1 )
+        //   spread();
 
         updateCounter++;
     }
