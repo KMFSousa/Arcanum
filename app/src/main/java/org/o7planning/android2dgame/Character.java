@@ -272,8 +272,8 @@ public class Character extends GameObject {
         canvas.drawBitmap(bitmap, x, y, null);
         // Last draw time.
         this.lastDrawNanoTime= System.nanoTime();
-        hitBox.draw(canvas);
-        hurtBox.draw(canvas);
+//        hitBox.draw(canvas);
+//        hurtBox.draw(canvas);
     }
 
     public void setMovingVector(int movingVectorX, int movingVectorY)  {

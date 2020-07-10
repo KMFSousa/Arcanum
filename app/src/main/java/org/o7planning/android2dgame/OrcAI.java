@@ -1,9 +1,8 @@
 package org.o7planning.android2dgame;
 
-import java.util.Iterator;
 import java.util.List;
 
-public class SlimeAI extends CharacterAI {
+public class OrcAI extends CharacterAI {
 
     private GameSurface gameSurface;
     private List<Character> playerList;
@@ -16,22 +15,12 @@ public class SlimeAI extends CharacterAI {
     private int distanceToPlayerY;
 
     private int updateCounter;
-
-    private int spreadCount;
-
-    public SlimeAI(Character character, GameSurface gameSurface, StuffFactory factory) {
+    public OrcAI(Character character, GameSurface gameSurface) {
         super(character);
-        this.gameSurface = gameSurface;
-        this.factory = factory;
-        List<Character> playerList = gameSurface.characterList;
-        Iterator<Character> iter = playerList.iterator();
-        this.player = iter.next();
-
+        this.player = gameSurface.characterList.get(0);
     }
 
     public void onUpdate() {
-
-
 
         if (closeToPlayer()) {
             character.setMovingVector(distanceToPlayerX, distanceToPlayerY);
@@ -40,25 +29,8 @@ public class SlimeAI extends CharacterAI {
             updateCounter = 0;
             wander();
         }
+        updateCounter++;
 
-        if(spreadCount < 1 && Math.random() < 0.1 && gameSurface.monsterList.size() < 10)
-           spread();
-
-
-            updateCounter++;
-    }
-
-    private void spread() {
-        int x = character.x +(int)(Math.random() * 200 - 100);
-        int y = character.y +(int)(Math.random() * 200 - 100);
-
-        Character child = factory.newMonster();
-        child.x = x;
-        child.y = y;
-        child.hitBox.x = x;
-        child.hitBox.y = y;
-
-        spreadCount++;
     }
 
     public boolean closeToPlayer() {
@@ -70,7 +42,6 @@ public class SlimeAI extends CharacterAI {
 
         int distanceToPlayer = GameObject.getDistanceBetweenObjects(this.character, player);
 
-       // Log.d("Distance" ,"Movement" + distanceToPlayer);
 
         if (distanceToPlayer <= 560) {
             return true;
@@ -79,11 +50,4 @@ public class SlimeAI extends CharacterAI {
         return false;
     }
 
-    public boolean hasWeapon(){
-        return false;
-    }
-    public boolean isPlayer(){
-        return false;
-    }
 }
-

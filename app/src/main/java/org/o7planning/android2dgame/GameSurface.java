@@ -50,9 +50,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
                 }else{
                     MainActivity.healthBar.setText("DEAD :(");
                 }
-
             }
-
         }
 
         for (Character monster : monsterList) {

@@ -41,7 +41,7 @@ public class MainActivity extends Activity {
 
                     double movingVectorX =  Math.cos(radAngle) * 10 * strength;
                     double movingVectorY = Math.sin(radAngle) * -10 * strength;
-                    //Log.d("Joystick", angle + ": "+movingVectorX+", "+movingVectorY);
+                    Log.d("Joystick", angle + ": "+movingVectorX+", "+movingVectorY);
                     character.setMovingVector((int)movingVectorX, (int)movingVectorY);
                 }
                 // do whatever you want
