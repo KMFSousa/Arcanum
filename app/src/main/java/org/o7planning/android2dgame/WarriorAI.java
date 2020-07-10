@@ -42,9 +42,10 @@ public class WarriorAI extends CharacterAI {
         }
 
         if(spreadCount < 1 && Math.random() < 0.1 )
-           // spread();
+           //spread();
 
-        updateCounter++;
+
+            updateCounter++;
     }
 
     private void spread() {

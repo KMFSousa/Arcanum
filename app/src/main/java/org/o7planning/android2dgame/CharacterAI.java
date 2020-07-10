@@ -1,5 +1,7 @@
 package org.o7planning.android2dgame;
 
+import java.util.Iterator;
+
 public class CharacterAI {
     protected Character character;
 
@@ -23,5 +25,9 @@ public class CharacterAI {
 
     public boolean getType() {
         return false;
+    }
+
+    public void attack() {
+
     }
 }

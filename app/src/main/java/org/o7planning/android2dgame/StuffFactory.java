@@ -26,6 +26,13 @@ public class StuffFactory {
         HitBox hitBox1 = new HitBox(gameSurface, playerHitbox1, 200, 200, player);
         hitBox1.object = player;
         player.setObjectHitbox(hitBox1);
+
+        Bitmap playerHurtbox1 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.characterhitbox);
+        HitBox hurtBox1 = new HitBox(gameSurface, playerHurtbox1, 200, 200, player);
+        hurtBox1.object = player;
+        player.setObjectHurtbox(hurtBox1);
+
+
         return player;
     }
 
@@ -41,6 +48,12 @@ public class StuffFactory {
         HitBox hitBox1 = new HitBox(gameSurface, monsterHitbox1, 500, 500, monster1);
         hitBox1.object = monster1;
         monster1.setObjectHitbox(hitBox1);
+
+        Bitmap monsterHurtbox1 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.characterhitbox);
+        HitBox hurtBox1 = new HitBox(gameSurface, monsterHurtbox1, 500, 500, monster1);
+        hurtBox1.object = monster1;
+        monster1.setObjectHurtbox(hurtBox1);
+
         return monster1;
     }
 

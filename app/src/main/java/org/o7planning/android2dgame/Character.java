@@ -133,11 +133,6 @@ public class Character extends GameObject {
         //update character moving vector and animate
         move(map);
 
-        //TODO: IS THIS THE BEST PLACE FOR THIS?
-        hitBox.x = this.getX() + this.getWidth()/2 - 30;
-        hitBox.y = this.getY(); //+ this.getHeight()/2-16;
-
-
         //update AI
          ai.onUpdate();
 
@@ -208,7 +203,35 @@ public class Character extends GameObject {
             this.gameSurface.dungeon.transitionVertical(-1);
         }
 
-        //TODO: CLEAN UP THIS CODE. PROBABLY MOVE IT INTO THE SWORD/ITEM CLASS
+        //Move the hitbox and hurtbox with the character
+        hitBox.x = this.getX() + this.getWidth()/2 - 30;
+        hitBox.y = this.getY();
+
+        if(!ai.getType()) {
+            switch (this.rowUsing) {
+                case ROW_LEFT_TO_RIGHT:
+                    hurtBox.x = hitBox.getX() + hitBox.getWidth(); //+ this.getWidth()/2 - 30 ;
+                    hurtBox.y = this.getY();
+                    break;
+                case ROW_BOTTOM_TO_TOP:
+                    hurtBox.x = hitBox.getX();
+                    hurtBox.y = hitBox.getY() - hitBox.getHeight();
+                    break;
+                case ROW_RIGHT_TO_LEFT:
+                    hurtBox.x = this.getX();
+                    hurtBox.y = this.getY();
+                    break;
+                case ROW_TOP_TO_BOTTOM:
+                    hurtBox.x = hitBox.getX();
+                    hurtBox.y = hitBox.getY() + hitBox.getHeight();
+                    break;
+            }
+        }
+
+        if(ai.getType()){
+            hurtBox.x = hitBox.getX();
+            hurtBox.y = hitBox.getY();
+        }
         animate();
         if(itemList.size() != 0){
             itemList.get(0).x = this.x+50;
@@ -224,21 +247,23 @@ public class Character extends GameObject {
 
         // movingVectorX and movingVectorY are +/- values that will determine what direction we are moving in
         // based on the values of these vectors, we can decide which row of sprites we are using
-        if( movingVectorX > 0 )  {
-            if(movingVectorY > 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
-                this.rowUsing = ROW_TOP_TO_BOTTOM;
-            }else if(movingVectorY < 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
-                this.rowUsing = ROW_BOTTOM_TO_TOP;
-            }else  {
-                this.rowUsing = ROW_LEFT_TO_RIGHT;
-            }
-        } else {
-            if(movingVectorY > 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
-                this.rowUsing = ROW_TOP_TO_BOTTOM;
-            }else if(movingVectorY < 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
-                this.rowUsing = ROW_BOTTOM_TO_TOP;
-            }else  {
-                this.rowUsing = ROW_RIGHT_TO_LEFT;
+        if ( movingVectorX != 0 || movingVectorY != 0 ) {
+            if (movingVectorX > 0) {
+                if (movingVectorY > 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
+                    this.rowUsing = ROW_TOP_TO_BOTTOM;
+                } else if (movingVectorY < 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
+                    this.rowUsing = ROW_BOTTOM_TO_TOP;
+                } else {
+                    this.rowUsing = ROW_LEFT_TO_RIGHT;
+                }
+            } else {
+                if (movingVectorY > 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
+                    this.rowUsing = ROW_TOP_TO_BOTTOM;
+                } else if (movingVectorY < 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
+                    this.rowUsing = ROW_BOTTOM_TO_TOP;
+                } else {
+                    this.rowUsing = ROW_RIGHT_TO_LEFT;
+                }
             }
         }
     }
@@ -250,7 +275,8 @@ public class Character extends GameObject {
         canvas.drawBitmap(bitmap, x, y, null);
         // Last draw time.
         this.lastDrawNanoTime= System.nanoTime();
-        //hitBox.draw(canvas);
+        hitBox.draw(canvas);
+        hurtBox.draw(canvas);
     }
 
     public void setMovingVector(int movingVectorX, int movingVectorY)  {
@@ -281,6 +307,7 @@ public class Character extends GameObject {
       //  if(itemList.size() != 0){itemList.get(0).inCombat();}
         if(!ai.getType()){
             this.isAttacking = true;
+
 //            itemList.get(0).combatAnimationFinished = false;
         }
 //        Iterator<Character> iterator = gameSurface.monsterList.iterator();
@@ -294,7 +321,7 @@ public class Character extends GameObject {
                     this.hitBox.y + this.hitBox.height > other.hitBox.y){
                 other.hitPoints -= 1;
                 this.isAttacking = true;
-                Log.d("playerHitpoints", "" + other.hitPoints );
+               // Log.d("playerHitpoints", "" + other.hitPoints );
             }
         }
 //

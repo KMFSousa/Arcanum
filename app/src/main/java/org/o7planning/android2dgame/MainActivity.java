@@ -31,6 +31,7 @@ public class MainActivity extends Activity {
         RelativeLayout myLayout = findViewById(R.id.main);
         final GameSurface gameSurface = new GameSurface(this);
         myLayout.addView(gameSurface);
+
         JoystickView joystick = findViewById(R.id.joystickView);
         joystick.setOnMoveListener(new JoystickView.OnMoveListener() {
             @Override
@@ -40,7 +41,7 @@ public class MainActivity extends Activity {
 
                     double movingVectorX =  Math.cos(radAngle) * 10 * strength;
                     double movingVectorY = Math.sin(radAngle) * -10 * strength;
-                    //Log.d("Joystick", angle + ": "+movingVectorX+", "+movingVectorY);
+                    Log.d("Joystick", angle + ": "+movingVectorX+", "+movingVectorY);
                     character.setMovingVector((int)movingVectorX, (int)movingVectorY);
                 }
                 // do whatever you want
