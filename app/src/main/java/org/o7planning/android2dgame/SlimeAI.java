@@ -33,17 +33,15 @@ public class SlimeAI extends CharacterAI {
 
 
 
-        if (closeToPlayer()) {
-            character.setMovingVector(distanceToPlayerX, distanceToPlayerY);
-            character.attack();
-        } else if (updateCounter % 5 == 0) {
+
+        if (updateCounter % 5 == 0) {
             updateCounter = 0;
             wander();
         }
 
+
         if(spreadCount < 1 && Math.random() < 0.1 && gameSurface.monsterList.size() < 10)
            spread();
-
 
             updateCounter++;
     }
@@ -59,24 +57,6 @@ public class SlimeAI extends CharacterAI {
         child.hitBox.y = y;
 
         spreadCount++;
-    }
-
-    public boolean closeToPlayer() {
-        this.positionX = this.character.getX();
-        this.postitionY = this.character.getY();
-
-        distanceToPlayerX = player.getX() - positionX;
-        distanceToPlayerY = player.getY() - postitionY;
-
-        int distanceToPlayer = GameObject.getDistanceBetweenObjects(this.character, player);
-
-       // Log.d("Distance" ,"Movement" + distanceToPlayer);
-
-        if (distanceToPlayer <= 560) {
-            return true;
-        }
-
-        return false;
     }
 
     public boolean hasWeapon(){

@@ -16,6 +16,7 @@ public class StuffFactory {
     public Character newPlayer() {
         Bitmap characterBitmap1 = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.spritesheet);
 
+
         Character player = new Character(gameSurface, characterBitmap1, 100, 50, 4, 4, 0.3f, 100, 10 );
         gameSurface.characterList.add(player);
         PlayerAI playerAI = new PlayerAI(player);
@@ -58,19 +59,19 @@ public class StuffFactory {
     }
 
     public Character newOrc() {
-        Bitmap monsterBitmap2 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.slimes1);
-        Character monster2 = new Character(gameSurface, monsterBitmap2, 500, 500, 4, 5, 0.1f, 30, 1);
+        Bitmap monsterBitmap2 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc);
+        Character monster2 = new Character(gameSurface, monsterBitmap2, 500, 500, 4, 8, 0.1f, 30, 1);
         gameSurface.monsterList.add(monster2);
         OrcAI orcAI = new OrcAI(monster2, gameSurface);
         orcAI.character = monster2;
         monster2.setCharacterAI(orcAI);
 
-        Bitmap monsterHitbox2 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.characterhitbox);
-        HitBox hitBox2 = new HitBox(gameSurface, monsterHitbox2, 500, 500, monster1);
+        Bitmap monsterHitbox2 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc_body_hitbox);
+        HitBox hitBox2 = new HitBox(gameSurface, monsterHitbox2, 500, 500, monster2);
         hitBox2.object = monster2;
         monster2.setObjectHitbox(hitBox2);
 
-        Bitmap monsterHurtbox1 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.characterhitbox);
+        Bitmap monsterHurtbox1 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc_spear_extended_hurtbox);
         HitBox hurtBox1 = new HitBox(gameSurface, monsterHurtbox1, 500, 500, monster2);
         hurtBox1.object = monster2;
         monster2.setObjectHurtbox(hurtBox1);
