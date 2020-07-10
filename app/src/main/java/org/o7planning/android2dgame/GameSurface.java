@@ -84,9 +84,9 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    private void createCreatures(CharacterFactory characterFactory) {
-        Character player = characterFactory.newPlayer();
-        Character monster = characterFactory.newMonster();
+    private void createCreatures(CharacterFactory characterFactory, Dungeon dungeon) {
+        Character player = characterFactory.newPlayer(dungeon);
+        Character monster = characterFactory.newMonster(dungeon);
     }
 
     public void removeCharacter(Character other) {
@@ -100,9 +100,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     // The gameThread will be what calls the update method on the character
     public void surfaceCreated(SurfaceHolder holder) {
 
-        CharacterFactory characterFactory = new CharacterFactory(this);
-        createCreatures(characterFactory);
-
         Bitmap backgroundBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.testmap);
 
         Map map = new Map(this, backgroundBitmap, context);
@@ -115,6 +112,9 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         Dungeon dungeon = new Dungeon(this, mapArr);
 
         this.dungeon = dungeon;
+
+        CharacterFactory characterFactory = new CharacterFactory(this);
+        createCreatures(characterFactory, dungeon);
 
         // Create a thread that will handle the running of the game (character movements and such) that can be easily paused without having to add excess logic to the main thread
         this.gameThread = new GameThread(this, holder);
