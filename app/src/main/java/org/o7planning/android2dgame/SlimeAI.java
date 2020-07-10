@@ -3,7 +3,7 @@ package org.o7planning.android2dgame;
 import java.util.Iterator;
 import java.util.List;
 
-public class WarriorAI extends CharacterAI {
+public class SlimeAI extends CharacterAI {
 
     private GameSurface gameSurface;
     private List<Character> playerList;
@@ -19,7 +19,7 @@ public class WarriorAI extends CharacterAI {
 
     private int spreadCount;
 
-    public WarriorAI(Character character, GameSurface gameSurface, StuffFactory factory) {
+    public SlimeAI(Character character, GameSurface gameSurface, StuffFactory factory) {
         super(character);
         this.gameSurface = gameSurface;
         this.factory = factory;
@@ -79,8 +79,11 @@ public class WarriorAI extends CharacterAI {
         return false;
     }
 
-    public boolean getType(){
-        return true;
+    public boolean hasWeapon(){
+        return false;
+    }
+    public boolean isPlayer(){
+        return false;
     }
 }
 

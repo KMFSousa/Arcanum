@@ -21,8 +21,11 @@ public class PlayerAI extends CharacterAI {
 
     }
 
-    public boolean getType(){
-        return false;
+    public boolean hasWeapon(){
+        return true;
+    }
+    public boolean isPlayer(){
+        return true;
     }
 
 

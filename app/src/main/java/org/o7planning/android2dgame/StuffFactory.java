@@ -40,7 +40,7 @@ public class StuffFactory {
         Bitmap monsterBitmap1 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.slimes1);
         Character monster1 = new Character(gameSurface, monsterBitmap1, 500, 500, 4, 5, 0.1f, 30, 1);
         gameSurface.monsterList.add(monster1);
-        WarriorAI warriorAI = new WarriorAI(monster1, gameSurface, this);
+        SlimeAI warriorAI = new SlimeAI(monster1, gameSurface, this);
         warriorAI.character = monster1;
         monster1.setCharacterAI(warriorAI);
 

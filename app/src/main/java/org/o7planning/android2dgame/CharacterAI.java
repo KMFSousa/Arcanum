@@ -13,7 +13,6 @@ public class CharacterAI {
     //TODO: Different 'types' of enemies will have different AI classes that will extend this class
 
     public void wander() {
-
         int x = (int)(Math.random() * 200 - 100);
         int y = (int)(Math.random() * 200 - 100);
         character.setMovingVector(x, y);
@@ -23,11 +22,10 @@ public class CharacterAI {
 
     }
 
-    public boolean getType() {
+
+
+    public boolean hasWeapon(){ return false;}
+    public boolean isPlayer(){
         return false;
-    }
-
-    public void attack() {
-
     }
 }

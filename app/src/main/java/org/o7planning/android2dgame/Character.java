@@ -120,15 +120,12 @@ public class Character extends GameObject {
 
     public void update(Map map)  {
 
-        //check if in combat
-       // if(itemList.size() != 0){itemList.get(0).inCombat();}
-
         checkIfDead();
 
         //TODO: MOVE TO CHARACTER AI
-        if(!ai.getType()){
-            findItem();
-        }
+//        if(!ai.getType()){
+//            findItem();
+//        }
 
         //update character moving vector and animate
         move(map);
@@ -137,9 +134,9 @@ public class Character extends GameObject {
          ai.onUpdate();
 
         //update Weapon
-        if(itemList.size() != 0){
-            itemList.get(0).update();
-        }
+//        if(itemList.size() != 0){
+//            itemList.get(0).update();
+//        }
 
     }
 
@@ -207,7 +204,7 @@ public class Character extends GameObject {
         hitBox.x = this.getX() + this.getWidth()/2 - 30;
         hitBox.y = this.getY();
 
-        if(!ai.getType()) {
+        if(ai.hasWeapon()) {
             switch (this.rowUsing) {
                 case ROW_LEFT_TO_RIGHT:
                     hurtBox.x = hitBox.getX() + hitBox.getWidth(); //+ this.getWidth()/2 - 30 ;
@@ -228,7 +225,7 @@ public class Character extends GameObject {
             }
         }
 
-        if(ai.getType()){
+        if(!ai.hasWeapon()){
             hurtBox.x = hitBox.getX();
             hurtBox.y = hitBox.getY();
         }
@@ -305,46 +302,40 @@ public class Character extends GameObject {
     public void attack() {
 
       //  if(itemList.size() != 0){itemList.get(0).inCombat();}
-        if(!ai.getType()){
+        if(ai.isPlayer()){
             this.isAttacking = true;
-
-//            itemList.get(0).combatAnimationFinished = false;
-        }
-//        Iterator<Character> iterator = gameSurface.monsterList.iterator();
-
-        if(ai.getType() && !gameSurface.characterList.isEmpty()){
-            //Iterator<Character> iterator = gameSurface.characterList.iterator();
-            Character other = gameSurface.characterList.get(0);
-            if(this.hitBox.x < other.hitBox.x + other.hitBox.width &&
-                    this.hitBox.x + this.hitBox.width > other.hitBox.x &&
-                    this.hitBox.y < other.hitBox.y + other.hitBox.height &&
-                    this.hitBox.y + this.hitBox.height > other.hitBox.y){
-                other.hitPoints -= 1;
-                this.isAttacking = true;
-               // Log.d("playerHitpoints", "" + other.hitPoints );
+            Iterator<Character> iterator = gameSurface.monsterList.iterator();
+            while(iterator.hasNext()){
+                Character other = iterator.next();
+                if(this.hurtBox.x < other.hitBox.x + other.width &&
+                        this.hurtBox.x + this.hurtBox.width > other.x &&
+                        this.hurtBox.y < other.hitBox.y + other.height &&
+                        this.hurtBox.y + this.hurtBox.height > other.hitBox.y){
+                    other.hitPoints -= attackDamage;
+                    Log.d("Slime HP remaining", ": " + other.hitPoints);
+                }
             }
         }
-//
-//        while(iterator.hasNext()){
-//            Character other = iterator.next();
-//            if(this.getX() < other.x + other.getWidth() && other.x < this.getX() + this.getWidth()
-//                    && this.getY() < other.y && other.y < this.getY() + this.getHeight()){
-//                attack(other);
-//            }
-//
-//        }
+
+        if(!ai.isPlayer() && !gameSurface.characterList.isEmpty()){
+            //Iterator<Character> iterator = gameSurface.characterList.iterator();
+            Character other = gameSurface.characterList.get(0);
+            if(this.hurtBox.x < other.hitBox.x + other.hitBox.width &&
+                    this.hurtBox.x + this.hurtBox.width > other.hitBox.x &&
+                    this.hurtBox.y < other.hitBox.y + other.hitBox.height &&
+                    this.hurtBox.y + this.hurtBox.height > other.hitBox.y){
+                other.hitPoints -= attackDamage;
+                this.isAttacking = true;
+            }
+        }
     }
 
     public void checkIfDead() {
         if (this.hitPoints <= 0) {
-            if(ai.getType()){gameSurface.removalList.add(this);}
-            else if(!ai.getType()){((PlayerAI) ai).isDead = true;}
+            if(!ai.isPlayer()){gameSurface.removalList.add(this);}
+            else if(ai.isPlayer()){((PlayerAI) ai).isDead = true;}
         }
     }
-//
-//    public void attack(Character other) {
-//        if(!ai.getType())
-//            gameSurface.removeCharacter(other);
-//    }
+
 
 }
