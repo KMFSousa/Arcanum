@@ -58,8 +58,10 @@ public class MainActivity extends Activity {
             }
         });
 
-        Button healthBar = findViewById(R.id.healthBar);
-        this.healthBar = healthBar;
+        //TODO: Dont uncomment this, it breaks movement
+
+//        Button healthBar = findViewById(R.id.healthBar);
+//        this.healthBar = healthBar;
     }
 
 }

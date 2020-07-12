@@ -42,14 +42,14 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         for (Character character : characterList) {
             if(!characterList.isEmpty()){
                 character.update(currentMap);
-                // MainActivity.healthBar.setLayoutParams(new RelativeLayout.LayoutParams(characterList.get(0).hitPoints*2, 50));
 
-                if(characterList.get(0).hitPoints > 0){
-                    MainActivity.healthBar.setText("" + characterList.get(0).hitPoints + " HP");
-
-                }else{
-                    MainActivity.healthBar.setText("DEAD :(");
-                }
+                //TODO: Dont uncomment this, it breaks movement
+//                if(characterList.get(0).hitPoints > 0){
+//                    MainActivity.healthBar.setText("" + characterList.get(0).hitPoints + " HP");
+//
+//                }else{
+//                    MainActivity.healthBar.setText("DEAD :(");
+//                }
             }
         }
 
@@ -102,8 +102,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
     private void createCreatures(StuffFactory stuffFactory) {
         Character player = stuffFactory.newPlayer();
-        Character monster = stuffFactory.newMonster();
-        Character orc = stuffFactory.newOrc();
+       // Character monster = stuffFactory.newMonster();
+       // Character orc = stuffFactory.newOrc();
         //Item sword = stuffFactory.newSword();
     }
 
