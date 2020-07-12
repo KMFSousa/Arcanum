@@ -28,7 +28,7 @@ public class Map {
 
     private GameSurface gameSurface;
 
-    public Map(GameSurface gameSurface, Bitmap startingImage, Context context) {
+    public Map(GameSurface gameSurface, Bitmap startingImage, int collisionRes, Context context) {
         this.gameSurface = gameSurface;
         this.context = context;
 
@@ -51,7 +51,7 @@ public class Map {
         this.tileHeight = bitmapHeight/rows;
 
         this.csvValues = new int[rows][columns];
-        this.populateCsvArray("main.csv");
+        this.populateCsvArray(collisionRes);
 
         this.tileArray = new Tile[rows][columns];
         this.createTiles(currentRoomBitmap, rows, columns);
@@ -60,7 +60,7 @@ public class Map {
     private void createTiles (Bitmap image, int rows, int columns) {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                tileArray[i][j] = new Tile(createSubImageAt(image, i, j), j*tileWidth, i*tileHeight, this.csvValues[i][j] == 1 ? true : false);
+                tileArray[i][j] = new Tile(createSubImageAt(image, i, j), j*tileWidth, i*tileHeight, this.csvValues[i][j] == 1);
             }
         }
     }
@@ -76,9 +76,9 @@ public class Map {
         // Only update if the player interacts with something or we change rooms, we don't need to keep re-drawing the tiles
     }
 
-    private void populateCsvArray(String fileName) {
+    private void populateCsvArray(int collisionRes) {
         try {
-            InputStream inputStream = this.context.getResources().openRawResource(R.raw.main);
+            InputStream inputStream = this.context.getResources().openRawResource(collisionRes);
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
             int row = 0;

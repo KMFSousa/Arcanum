@@ -103,18 +103,17 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         CharacterFactory characterFactory = new CharacterFactory(this);
         createCreatures(characterFactory);
 
-        Bitmap backgroundBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.testmap);
+        Bitmap mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.testmap);
 
-        Map map = new Map(this, backgroundBitmap, context);
+        Map map = new Map(this, mapImage, R.raw.main, context);
         Map[][] mapArr = new Map[2][2];
-        for(int i = 0; i < 2; i ++){
-            for (int j = 0; j < 2; j++) {
-                mapArr[i][j] = map;
-            }
-        }
-        Dungeon dungeon = new Dungeon(this, mapArr);
-
-        this.dungeon = dungeon;
+        mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.red_room);
+        Map map2 = new Map(this, mapImage, R.raw.red_room, context);
+        mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.red_room);
+        Map map3 = new Map(this, mapImage, R.raw.red_room, context);
+        mapArr[1][0] = map2;
+        mapArr[0][1] = map3;
+        this.dungeon = new Dungeon(this, mapArr);
 
         // Create a thread that will handle the running of the game (character movements and such) that can be easily paused without having to add excess logic to the main thread
         this.gameThread = new GameThread(this, holder);
