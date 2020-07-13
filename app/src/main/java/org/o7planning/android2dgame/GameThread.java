@@ -55,9 +55,10 @@ public class GameThread extends Thread {
                     // IMPORTANT NOTE: The `draw()` method is what will actually draw the sprites to the canvas
                     this.gameSurface.draw(canvas);
                 }
-            }catch(Exception e)  {
+            } catch(Exception e)  {
                 Log.d("ERROR", "ERROR HAS OCCURED: " + e.getMessage());
-            }finally {
+            }
+            finally {
                 if(canvas!= null)  {
                     // Unlock Canvas.
                     this.surfaceHolder.unlockCanvasAndPost(canvas);
