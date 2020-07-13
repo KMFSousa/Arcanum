@@ -133,6 +133,14 @@ public class Map {
         return new Pair<Boolean, Boolean>(!newColTile.isCollidable(), !newRowTile.isCollidable());
     }
 
+    public Boolean isPointCollidable(int x, int y) {
+        int col = this.getColFromX(x);
+        int row = this.getRowFromY(y);
+
+        return this.tileArray[row][col].isCollidable();
+    }
+
+
     public void draw (Canvas canvas) {
 
         if (this.needsRedraw) {
