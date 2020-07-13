@@ -99,10 +99,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     // The surfaceCreated method is called immediately after the surface is first created (in MainActivity)
     // The gameThread will be what calls the update method on the character
     public void surfaceCreated(SurfaceHolder holder) {
-
-        CharacterFactory characterFactory = new CharacterFactory(this);
-        createCreatures(characterFactory);
-
         Map[][] mapArr = new Map[3][3];
         Bitmap mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.blue_room);
         Map map = new Map(this, mapImage, R.raw.blue_room, context);
