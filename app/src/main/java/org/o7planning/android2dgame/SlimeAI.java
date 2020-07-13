@@ -19,8 +19,8 @@ public class SlimeAI extends CharacterAI {
 
     private int spreadCount;
 
-    public SlimeAI(Character character, GameSurface gameSurface, StuffFactory factory) {
-        super(character);
+    public SlimeAI(Character character, GameSurface gameSurface, StuffFactory factory, Dungeon dungeon) {
+        super(character, dungeon);
         this.gameSurface = gameSurface;
         this.factory = factory;
         List<Character> playerList = gameSurface.characterList;
@@ -50,7 +50,7 @@ public class SlimeAI extends CharacterAI {
         int x = character.x +(int)(Math.random() * 200 - 100);
         int y = character.y +(int)(Math.random() * 200 - 100);
 
-        Character child = factory.newMonster();
+        Character child = factory.newMonster(dungeon);
         child.x = x;
         child.y = y;
         child.hitBox.x = x;

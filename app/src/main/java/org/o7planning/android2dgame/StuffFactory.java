@@ -13,13 +13,13 @@ public class StuffFactory {
 
     //TODO: UPDATE CHARACTER AND ITEM CONSTRUCTORS WITH ATTRIBUTES
 
-    public Character newPlayer() {
+    public Character newPlayer(Dungeon dungeon) {
         Bitmap characterBitmap1 = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.spritesheet);
 
 
         Character player = new Character(gameSurface, characterBitmap1, 100, 50, 4, 4, 0.3f, 100, 10 );
         gameSurface.characterList.add(player);
-        PlayerAI playerAI = new PlayerAI(player);
+        PlayerAI playerAI = new PlayerAI(player, dungeon);
         playerAI.character = player;
         player.setCharacterAI(playerAI);
 
@@ -37,11 +37,11 @@ public class StuffFactory {
         return player;
     }
 
-    public Character newMonster() {
+    public Character newMonster(Dungeon dungeon) {
         Bitmap monsterBitmap1 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.slimes1);
         Character monster1 = new Character(gameSurface, monsterBitmap1, 500, 500, 4, 5, 0.1f, 30, 1);
         gameSurface.monsterList.add(monster1);
-        SlimeAI warriorAI = new SlimeAI(monster1, gameSurface, this);
+        SlimeAI warriorAI = new SlimeAI(monster1, gameSurface, this, dungeon);
         warriorAI.character = monster1;
         monster1.setCharacterAI(warriorAI);
 
@@ -58,12 +58,12 @@ public class StuffFactory {
         return monster1;
     }
 
-    public Character newOrc() {
+    public Character newOrc(Dungeon dungeon) {
         Bitmap monsterBitmap2 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc);
         monsterBitmap2 = Bitmap.createScaledBitmap(monsterBitmap2, 2000, 1000, false);
         Character monster2 = new Character(gameSurface, monsterBitmap2, 500, 500, 4, 8, 0.1f, 30, 1);
         gameSurface.monsterList.add(monster2);
-        OrcAI orcAI = new OrcAI(monster2, gameSurface);
+        OrcAI orcAI = new OrcAI(monster2, dungeon, gameSurface);
         orcAI.character = monster2;
         monster2.setCharacterAI(orcAI);
 

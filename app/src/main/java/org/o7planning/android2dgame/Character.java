@@ -3,9 +3,10 @@ package org.o7planning.android2dgame;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.util.Log;
-
 import java.util.List;
 import java.util.ArrayList;
+import android.util.Pair;
+
 
 import java.util.Iterator;
 import java.util.logging.Logger;
@@ -48,6 +49,8 @@ public class Character extends GameObject {
 
     private int movingVectorX = 0;
     private int movingVectorY = 0;
+
+    private Pair<Boolean, Boolean> movePair;
 
     private long lastDrawNanoTime =-1;
 
@@ -178,8 +181,15 @@ public class Character extends GameObject {
         int xToMoveTo = this.x + (int)(distance* movingVectorX / movingVectorLength);
         int yToMoveTo = this.y + (int)(distance* movingVectorY / movingVectorLength);
 
-        if (map.canMove(xToMoveTo, yToMoveTo, this.height, this.width)) {
+        movePair = map.canMove(this.x, this.y, xToMoveTo, yToMoveTo, this.height, this.width);
+        boolean canMoveX = movePair.first;
+        boolean canMoveY = movePair.second;
+        if (canMoveX && canMoveY) {
             this.x = xToMoveTo;
+            this.y = yToMoveTo;
+        } else if (canMoveX) {
+            this.x = xToMoveTo;
+        } else if (canMoveY) {
             this.y = yToMoveTo;
         }
 
@@ -318,7 +328,6 @@ public class Character extends GameObject {
         }
 
         if(!ai.isPlayer() && !gameSurface.characterList.isEmpty()){
-            //Iterator<Character> iterator = gameSurface.characterList.iterator();
             Character other = gameSurface.characterList.get(0);
             if(this.hurtBox.x < other.hitBox.x + other.hitBox.width &&
                     this.hurtBox.x + this.hurtBox.width > other.hitBox.x &&

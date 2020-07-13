@@ -56,8 +56,8 @@ public class GameThread extends Thread {
                     this.gameSurface.draw(canvas);
                 }
             }catch(Exception e)  {
-                Log.d("ERROR", "ERROR HAS OCCURED: " + e);
-            } finally {
+                Log.d("ERROR", "ERROR HAS OCCURED: " + e.getMessage());
+            }finally {
                 if(canvas!= null)  {
                     // Unlock Canvas.
                     this.surfaceHolder.unlockCanvasAndPost(canvas);
