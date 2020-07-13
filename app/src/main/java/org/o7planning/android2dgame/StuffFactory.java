@@ -60,7 +60,7 @@ public class StuffFactory {
 
     public Character newOrc(Dungeon dungeon) {
         Bitmap monsterBitmap2 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc);
-        monsterBitmap2 = Bitmap.createScaledBitmap(monsterBitmap2, 2000, 1000, false);
+        monsterBitmap2 = Bitmap.createScaledBitmap(monsterBitmap2, 1000, 500, false);
         Character monster2 = new Character(gameSurface, monsterBitmap2, 500, 500, 4, 8, 0.1f, 30, 1);
         gameSurface.monsterList.add(monster2);
         OrcAI orcAI = new OrcAI(monster2, dungeon, gameSurface);
