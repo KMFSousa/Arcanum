@@ -86,7 +86,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
     private void createCreatures(CharacterFactory characterFactory) {
         Character player = characterFactory.newPlayer();
-        Character monster = characterFactory.newMonster();
+        //Character monster = characterFactory.newMonster();
     }
 
     public void removeCharacter(Character other) {
@@ -103,16 +103,31 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         CharacterFactory characterFactory = new CharacterFactory(this);
         createCreatures(characterFactory);
 
-        Bitmap mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.testmap);
+        Map[][] mapArr = new Map[3][3];
+        Bitmap mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.blue_room);
+        Map map = new Map(this, mapImage, R.raw.blue_room, context);
+        mapArr[0][0] = map;
 
-        Map map = new Map(this, mapImage, R.raw.main, context);
-        Map[][] mapArr = new Map[2][2];
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.red_room);
-        Map map2 = new Map(this, mapImage, R.raw.red_room, context);
-        mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.red_room);
-        Map map3 = new Map(this, mapImage, R.raw.red_room, context);
-        mapArr[1][0] = map2;
-        mapArr[0][1] = map3;
+        map = new Map(this, mapImage, R.raw.red_room, context);
+        mapArr[1][0] = map;
+
+        mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.box_room);
+        map = new Map(this, mapImage, R.raw.box_room, context);
+        mapArr[0][1] = map;
+
+        mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.green_room);
+        map = new Map(this, mapImage, R.raw.green_room, context);
+        mapArr[2][0] = map;
+
+        mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.sewers);
+        map = new Map(this, mapImage, R.raw.sewers, context);
+        mapArr[1][1] = map;
+
+        mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.boss_room);
+        map = new Map(this, mapImage, R.raw.boss_room, context);
+        mapArr[1][2] = map;
+
         this.dungeon = new Dungeon(this, mapArr);
 
         // Create a thread that will handle the running of the game (character movements and such) that can be easily paused without having to add excess logic to the main thread

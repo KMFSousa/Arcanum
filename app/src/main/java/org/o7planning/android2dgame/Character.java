@@ -152,10 +152,10 @@ public class Character extends GameObject {
 
         if(this.y < 0 )  {
             this.y = this.gameSurface.getHeight()-height;
-            this.gameSurface.dungeon.transitionVertical(1);
+            this.gameSurface.dungeon.transitionVertical(-1);
         } else if(this.y > this.gameSurface.getHeight()- height)  {
             this.y = 0;
-            this.gameSurface.dungeon.transitionVertical(-1);
+            this.gameSurface.dungeon.transitionVertical(1);
         }
 
         animate();
