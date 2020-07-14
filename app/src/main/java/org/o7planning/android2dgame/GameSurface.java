@@ -99,19 +99,32 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     // The surfaceCreated method is called immediately after the surface is first created (in MainActivity)
     // The gameThread will be what calls the update method on the character
     public void surfaceCreated(SurfaceHolder holder) {
+        Map[][] mapArr = new Map[3][3];
+        Bitmap mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.blue_room);
+        Map map = new Map(this, mapImage, R.raw.blue_room, context);
+        mapArr[0][0] = map;
 
-        Bitmap backgroundBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.testmap);
+        mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.red_room);
+        map = new Map(this, mapImage, R.raw.red_room, context);
+        mapArr[1][0] = map;
 
-        Map map = new Map(this, backgroundBitmap, context);
-        Map[][] mapArr = new Map[2][2];
-        for(int i = 0; i < 2; i ++){
-            for (int j = 0; j < 2; j++) {
-                mapArr[i][j] = map;
-            }
-        }
-        Dungeon dungeon = new Dungeon(this, mapArr);
+        mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.box_room);
+        map = new Map(this, mapImage, R.raw.box_room, context);
+        mapArr[0][1] = map;
 
-        this.dungeon = dungeon;
+        mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.green_room);
+        map = new Map(this, mapImage, R.raw.green_room, context);
+        mapArr[2][0] = map;
+
+        mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.sewers);
+        map = new Map(this, mapImage, R.raw.sewers, context);
+        mapArr[1][1] = map;
+
+        mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.boss_room);
+        map = new Map(this, mapImage, R.raw.boss_room, context);
+        mapArr[1][2] = map;
+
+        this.dungeon = new Dungeon(this, mapArr);
 
         CharacterFactory characterFactory = new CharacterFactory(this);
         createCreatures(characterFactory, dungeon);
