@@ -16,8 +16,7 @@ public class StuffFactory {
     public Character newPlayer(Dungeon dungeon) {
         Bitmap characterBitmap1 = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.spritesheet);
 
-
-        Character player = new Character(gameSurface, characterBitmap1, 100, 50, 4, 4, 0.3f, 100, 10 );
+        Character player = new Character(gameSurface, characterBitmap1, 200, 200, 4, 4, 0.3f, 100, 10 );
         gameSurface.characterList.add(player);
         PlayerAI playerAI = new PlayerAI(player, dungeon);
         playerAI.character = player;

@@ -46,7 +46,6 @@ public class Character extends GameObject {
     public int hitPoints;
     private int attackDamage;
 
-
     private int movingVectorX = 0;
     private int movingVectorY = 0;
 
@@ -195,19 +194,19 @@ public class Character extends GameObject {
 
         // When the game's character touches the edge of the screen, then change direction
         if(this.x < 0 )  {
-            this.x = 0;
+            this.x = this.gameSurface.getWidth()-width;
             this.gameSurface.dungeon.transitionHorizontal(-1);
         } else if(this.x > this.gameSurface.getWidth() -width)  {
-            this.x= this.gameSurface.getWidth()-width;
+            this.x = 0;
             this.gameSurface.dungeon.transitionHorizontal(1);
         }
 
         if(this.y < 0 )  {
+            this.y = this.gameSurface.getHeight()-height;
+            this.gameSurface.dungeon.transitionVertical(-1);
+        } else if(this.y > this.gameSurface.getHeight()- height)  {
             this.y = 0;
             this.gameSurface.dungeon.transitionVertical(1);
-        } else if(this.y > this.gameSurface.getHeight()- height)  {
-            this.y= this.gameSurface.getHeight()- height;
-            this.gameSurface.dungeon.transitionVertical(-1);
         }
 
         //Move the hitbox and hurtbox with the character
