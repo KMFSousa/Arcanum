@@ -4,14 +4,15 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Collections;
 
 public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
@@ -22,6 +23,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     public final List<Explosion> explosionList = new ArrayList<Explosion>();
     public final List<Character> monsterList = new ArrayList<Character>();
     public final List<Character> removalList = new ArrayList<Character>();
+    public final List<Item> itemList = new ArrayList<Item>();
     public GameSurface(Context context)  {
         super(context);
 
@@ -39,7 +41,17 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     public void update() {
         Map currentMap = dungeon.getCurrentRoom();
         for (Character character : characterList) {
-            character.update(currentMap);
+            if(!characterList.isEmpty()){
+                character.update(currentMap);
+
+                //TODO: Dont uncomment this, it breaks movement
+//                if(characterList.get(0).hitPoints > 0){
+//                    MainActivity.healthBar.setText("" + characterList.get(0).hitPoints + " HP");
+//
+//                }else{
+//                    MainActivity.healthBar.setText("DEAD :(");
+//                }
+            }
         }
 
         for (Character monster : monsterList) {
@@ -60,6 +72,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         monsterList.removeAll(removalList);
+        characterList.removeAll(removalList);
     }
 
     @Override
@@ -79,14 +92,22 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
             monster.draw(canvas);
         }
 
+        for (Item item : itemList) {
+            item.draw(canvas);
+        }
+
         for (Explosion explosion : explosionList) {
             explosion.draw(canvas);
         }
     }
 
-    private void createCreatures(CharacterFactory characterFactory, Dungeon dungeon) {
-        Character player = characterFactory.newPlayer(dungeon);
-        Character monster = characterFactory.newMonster(dungeon);
+
+    private void createCreatures(StuffFactory stuffFactory, Dungeon dungeon) {
+        Character player = stuffFactory.newPlayer(dungeon);
+        Character monster = stuffFactory.newMonster(dungeon);
+        Character orc = stuffFactory.newOrc(dungeon);
+        //Item sword = stuffFactory.newSword();
+
     }
 
     public void removeCharacter(Character other) {
@@ -94,8 +115,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     // Implements method of SurfaceHolder.Callback
-    @Override
 
+    @Override
     // The surfaceCreated method is called immediately after the surface is first created (in MainActivity)
     // The gameThread will be what calls the update method on the character
     public void surfaceCreated(SurfaceHolder holder) {
@@ -126,8 +147,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
         this.dungeon = new Dungeon(this, mapArr);
 
-        CharacterFactory characterFactory = new CharacterFactory(this);
-        createCreatures(characterFactory, dungeon);
+        StuffFactory stuffFactory = new StuffFactory(this);
+        createCreatures(stuffFactory, dungeon);
 
         // Create a thread that will handle the running of the game (character movements and such) that can be easily paused without having to add excess logic to the main thread
         this.gameThread = new GameThread(this, holder);

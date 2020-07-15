@@ -29,18 +29,20 @@ public class Map {
 
     private GameSurface gameSurface;
 
+    private int screenWidth;
+    private int screenHeight;
+
     public Map(GameSurface gameSurface, Bitmap startingImage, int collisionRes, Context context) {
         this.gameSurface = gameSurface;
         this.context = context;
 
-        int screenWidth, screenHeight;
         if(Build.FINGERPRINT.contains("generic")) { //Emulator
-            screenWidth = Resources.getSystem().getDisplayMetrics().heightPixels;
-            screenHeight = Resources.getSystem().getDisplayMetrics().widthPixels;
+            this.screenWidth = Resources.getSystem().getDisplayMetrics().heightPixels;
+            this.screenHeight = Resources.getSystem().getDisplayMetrics().widthPixels;
         }
         else { //Hardware Phone
-            screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
-            screenHeight =  Resources.getSystem().getDisplayMetrics().heightPixels;
+            this.screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+            this.screenHeight =  Resources.getSystem().getDisplayMetrics().heightPixels;
         }
 
         this.currentRoomBitmap = Bitmap.createScaledBitmap(startingImage, screenWidth, screenHeight, true);
@@ -115,22 +117,32 @@ public class Map {
         return -1;
     }
 
-    public Pair<Boolean, Boolean> canMove(int xSrc, int ySrc, int xDest, int yDest, int height, int width) {
+    public Pair<Boolean, Boolean> canMove(boolean isPlayer, int xSrc, int ySrc, int xDest, int yDest, int height, int width) {
         // Character calls this function to determine if it can move to particular x and y
         // We break it down into if it can move in the x direction or the y direction
 
         // Step 1: Figure out what tiles the new xDestination and yDestination belong to, as well as the current x and y tiles
-        int destRow = this.getRowFromY(yDest + Math.round(height/2));
-        int destCol = this.getColFromX(xDest + Math.round(width/2));
-        int srcRow = this.getRowFromY(ySrc + Math.round(height/2));
-        int srcCol = this.getColFromX(xSrc + Math.round(width/2));
+        int xDestWithWidth = xDest + Math.round(width / 2);
+        int xSrcWithWidth = xSrc + Math.round(width / 2);
+        int yDestWithHeight = yDest + Math.round(height / 2);
+        int ySrcWithHeight = ySrc + Math.round(height / 2);
+        // This if check prevents the AI from moving "off the map" and triggering out-of-bounds errors
+        // However, the player needs to be able to move "off the map" to trigger the transition, which is what the "isPlayer" check is for
+        if (isPlayer || (xDestWithWidth > 0 && xDestWithWidth < this.screenWidth && yDestWithHeight > 0 && yDestWithHeight < this.screenHeight)) {
+            int destRow = this.getRowFromY(yDestWithHeight);
+            int destCol = this.getColFromX(xDestWithWidth);
+            int srcRow = this.getRowFromY(ySrcWithHeight);
+            int srcCol = this.getColFromX(xSrcWithWidth);
 
-        // Step 2: Index into tile array to get the tiles associated with the destination for both x and y
-        Tile newColTile = this.tileArray[srcRow][destCol];
-        Tile newRowTile = this.tileArray[destRow][srcCol];
+            // Step 2: Index into tile array to get the tiles associated with the destination for both x and y
+            Tile newColTile = this.tileArray[srcRow][destCol];
+            Tile newRowTile = this.tileArray[destRow][srcCol];
 
-        // Step 3: Return a pair that defines whether you can move in the x direction or y direction
-        return new Pair<Boolean, Boolean>(!newColTile.isCollidable(), !newRowTile.isCollidable());
+            // Step 3: Return a pair that defines whether you can move in the x direction or y direction
+            return new Pair<Boolean, Boolean>(!newColTile.isCollidable(), !newRowTile.isCollidable());
+        } else {
+            return new Pair<Boolean, Boolean>(false, false);
+        }
     }
 
     public Boolean isPointCollidable(int x, int y) {

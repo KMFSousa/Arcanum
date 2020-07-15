@@ -3,6 +3,8 @@ package org.o7planning.android2dgame;
 import android.graphics.Canvas;
 import android.util.Log;
 import android.view.SurfaceHolder;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 // A thread is a thread of execution in a program.
 // The JVM allows an application to have multiple threads of execution running concurrently.
@@ -56,8 +58,11 @@ public class GameThread extends Thread {
                     this.gameSurface.draw(canvas);
                 }
             }catch(Exception e)  {
-                Log.d("ERROR", "ERROR HAS OCCURED!");
-            } finally {
+                StringWriter sw  = new StringWriter();
+                e.printStackTrace(new PrintWriter(sw));
+                String exceptionAsString = sw.toString();
+                Log.d("ERROR", "ERROR HAS OCCURED: " + exceptionAsString);
+            }finally {
                 if(canvas!= null)  {
                     // Unlock Canvas.
                     this.surfaceHolder.unlockCanvasAndPost(canvas);

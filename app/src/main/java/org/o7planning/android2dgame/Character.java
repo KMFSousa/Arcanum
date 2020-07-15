@@ -2,9 +2,14 @@ package org.o7planning.android2dgame;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.util.Log;
+import java.util.List;
+import java.util.ArrayList;
 import android.util.Pair;
 
+
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 public class Character extends GameObject {
 
@@ -21,6 +26,8 @@ public class Character extends GameObject {
     private static final int ROW_LEFT_TO_RIGHT = 2;
     private static final int ROW_BOTTOM_TO_TOP = 3;
 
+    private final List<Item> itemList = new ArrayList<Item>();
+
     // Row index of Image are being used.
     private int rowUsing = ROW_LEFT_TO_RIGHT;
 
@@ -33,7 +40,11 @@ public class Character extends GameObject {
     private Bitmap[] bottomToTops;
 
     // Velocity of game character (pixel/millisecond)
-    public static final float VELOCITY = 0.2f;
+    private float velocity;
+    private  boolean isAttacking;
+
+    public int hitPoints;
+    private int attackDamage;
 
     private int movingVectorX = 0;
     private int movingVectorY = 0;
@@ -42,15 +53,31 @@ public class Character extends GameObject {
 
     private long lastDrawNanoTime =-1;
 
+    private boolean isPlayer;
+
     private CharacterAI ai;
     public void setCharacterAI(CharacterAI ai) {   this.ai = ai; }
 
+    //TODO: IMPLEMENT A ROLL MECHANIC (INCREASED SPEED, ANIMATION)
+    //TODO: IMPLEMENT CHARACTERS STATS (FOR COMBAT AND LEVELING(?))
+    //TODO: BROAD PHASE HIT DETECTION (SO WE'RE NOT CONSTANTLY CHECKING EVERY MONSTER)
+    //TODO: ATTACK ANIMATIONS
+    //TODO: ON HIT EFFECTS (KNOCKBACK, BLOOD(?))
+
+
+
     // This method (called in GameSurface.java) will take the spritesheet we provide it with and create arrays holding the bitmaps of each sprite
 
-    public Character(GameSurface gameSurface, Bitmap image, int x, int y) {
-        super(image, 4, 3, x, y); // Calls
+    public Character(GameSurface gameSurface, Bitmap image, int x, int y, boolean isPlayer, int spriteSheetRows, int spriteSheetColumns, float velocity, int hitPoints, int attackDamage) {
+        super(image, spriteSheetRows, spriteSheetColumns, x, y); // Calls
 
+        this.isPlayer = isPlayer;
         this.gameSurface= gameSurface;
+        this.velocity = velocity;
+        this.hitPoints = hitPoints;
+        this.attackDamage = attackDamage;
+
+
 
         this.topToBottoms = new Bitmap[colCount]; // 3
         this.rightToLefts = new Bitmap[colCount]; // 3
@@ -97,14 +124,23 @@ public class Character extends GameObject {
 
     public void update(Map map)  {
 
-        //check if in combat
-        inCombat();
+        checkIfDead();
+
+        //TODO: MOVE TO CHARACTER AI
+//        if(!ai.getType()){
+//            findItem();
+//        }
 
         //update character moving vector and animate
         move(map);
 
         //update AI
          ai.onUpdate();
+
+        //update Weapon
+//        if(itemList.size() != 0){
+//            itemList.get(0).update();
+//        }
 
     }
 
@@ -114,13 +150,20 @@ public class Character extends GameObject {
 
         // Update which column we are using by 1 for each iteration
         // Used in getCurrentMoveBitmap() to grab the next sprite to render on the canvas
-        if (movingVectorLength > 0) {
+        if (movingVectorLength > 0 || this.colUsing == this.colCount - 1) {
             this.colUsing++;
         }
         // Once we have cycled through all the sprites for a certain direction, start back at the first one
-        if(colUsing >= this.colCount)  {
+        //TODO: CYCLE THROUGH STATES, NOT ATTACK STATE
+        if(colUsing >= this.colCount -1 )  {
             this.colUsing =0;
         }
+
+        if(isAttacking) {
+            this.colUsing = this.colCount - 1;
+            isAttacking = false;
+        }
+
         // Current time in nanoseconds
         long now = System.nanoTime();
 
@@ -133,13 +176,13 @@ public class Character extends GameObject {
         int deltaTime = (int) ((now - lastDrawNanoTime)/ 1000000 );
 
         // Distance moved per time unit
-        float distance = VELOCITY * deltaTime;
+        float distance = velocity * deltaTime;
 
         // Calculate the new position of the game character.
         int xToMoveTo = this.x + (int)(distance* movingVectorX / movingVectorLength);
         int yToMoveTo = this.y + (int)(distance* movingVectorY / movingVectorLength);
 
-        movePair = map.canMove(this.x, this.y, xToMoveTo, yToMoveTo, this.height, this.width);
+        movePair = map.canMove(this.isPlayer, this.x, this.y, xToMoveTo, yToMoveTo, this.height, this.width);
         boolean canMoveX = movePair.first;
         boolean canMoveY = movePair.second;
         if (canMoveX && canMoveY) {
@@ -152,44 +195,85 @@ public class Character extends GameObject {
         }
 
         // When the game's character touches the edge of the screen, then change direction
-        if(this.x < 0 )  {
-            this.x = this.gameSurface.getWidth()-width;
-            this.gameSurface.dungeon.transitionHorizontal(-1);
-        } else if(this.x > this.gameSurface.getWidth() -width)  {
-            this.x = 0;
-            this.gameSurface.dungeon.transitionHorizontal(1);
+        if (this.isPlayer) {
+            if(this.x < 0 )  {
+                this.x = this.gameSurface.getWidth()-width;
+                this.gameSurface.dungeon.transitionHorizontal(-1);
+            } else if(this.x > this.gameSurface.getWidth() -width)  {
+                this.x = 0;
+                this.gameSurface.dungeon.transitionHorizontal(1);
+            }
+
+            if(this.y < 0 )  {
+                this.y = this.gameSurface.getHeight()-height;
+                this.gameSurface.dungeon.transitionVertical(-1);
+            } else if(this.y > this.gameSurface.getHeight()- height)  {
+                this.y = 0;
+                this.gameSurface.dungeon.transitionVertical(1);
+            }
         }
 
-        if(this.y < 0 )  {
-            this.y = this.gameSurface.getHeight()-height;
-            this.gameSurface.dungeon.transitionVertical(-1);
-        } else if(this.y > this.gameSurface.getHeight()- height)  {
-            this.y = 0;
-            this.gameSurface.dungeon.transitionVertical(1);
+        //Move the hitbox and hurtbox with the character
+        hitBox.x = this.getX() + this.getWidth()/2 - 30;
+        hitBox.y = this.getY();
+
+        if(ai.hasWeapon()) {
+            switch (this.rowUsing) {
+                case ROW_LEFT_TO_RIGHT:
+                    hurtBox.x = hitBox.getX() + hitBox.getWidth(); //+ this.getWidth()/2 - 30 ;
+                    hurtBox.y = this.getY();
+                    break;
+                case ROW_BOTTOM_TO_TOP:
+                    hurtBox.x = hitBox.getX();
+                    hurtBox.y = hitBox.getY() - hitBox.getHeight();
+                    break;
+                case ROW_RIGHT_TO_LEFT:
+                    hurtBox.x = this.getX();
+                    hurtBox.y = this.getY();
+                    break;
+                case ROW_TOP_TO_BOTTOM:
+                    hurtBox.x = hitBox.getX();
+                    hurtBox.y = hitBox.getY() + hitBox.getHeight();
+                    break;
+            }
         }
 
+        if(!ai.hasWeapon()){
+            hurtBox.x = hitBox.getX();
+            hurtBox.y = hitBox.getY();
+        }
         animate();
+        if(itemList.size() != 0){
+            itemList.get(0).x = this.x+50;
+            itemList.get(0).y = this.y+20;
+            itemList.get(0).hitBox.x = itemList.get(0).x;
+            itemList.get(0).hitBox.y = itemList.get(0).y;
+        }
+
+
     }
 
     public void animate() {
 
         // movingVectorX and movingVectorY are +/- values that will determine what direction we are moving in
         // based on the values of these vectors, we can decide which row of sprites we are using
-        if( movingVectorX > 0 )  {
-            if(movingVectorY > 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
-                this.rowUsing = ROW_TOP_TO_BOTTOM;
-            }else if(movingVectorY < 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
-                this.rowUsing = ROW_BOTTOM_TO_TOP;
-            }else  {
-                this.rowUsing = ROW_LEFT_TO_RIGHT;
-            }
-        } else {
-            if(movingVectorY > 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
-                this.rowUsing = ROW_TOP_TO_BOTTOM;
-            }else if(movingVectorY < 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
-                this.rowUsing = ROW_BOTTOM_TO_TOP;
-            }else  {
-                this.rowUsing = ROW_RIGHT_TO_LEFT;
+        if ( movingVectorX != 0 || movingVectorY != 0 ) {
+            if (movingVectorX > 0) {
+                if (movingVectorY > 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
+                    this.rowUsing = ROW_TOP_TO_BOTTOM;
+                } else if (movingVectorY < 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
+                    this.rowUsing = ROW_BOTTOM_TO_TOP;
+                } else {
+                    this.rowUsing = ROW_LEFT_TO_RIGHT;
+                }
+            } else {
+                if (movingVectorY > 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
+                    this.rowUsing = ROW_TOP_TO_BOTTOM;
+                } else if (movingVectorY < 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
+                    this.rowUsing = ROW_BOTTOM_TO_TOP;
+                } else {
+                    this.rowUsing = ROW_RIGHT_TO_LEFT;
+                }
             }
         }
     }
@@ -201,6 +285,8 @@ public class Character extends GameObject {
         canvas.drawBitmap(bitmap, x, y, null);
         // Last draw time.
         this.lastDrawNanoTime= System.nanoTime();
+//        hitBox.draw(canvas);
+//        hurtBox.draw(canvas);
     }
 
     public void setMovingVector(int movingVectorX, int movingVectorY)  {
@@ -208,22 +294,60 @@ public class Character extends GameObject {
         this.movingVectorY = movingVectorY;
     }
 
-    public void inCombat() {
-        Iterator<Character> iterator = gameSurface.monsterList.iterator();
+    //TODO: COLLISION DETECTION CAN BE MOVED WITHIN THE HITBOX CLASS AS A SEPARATE METHOD
+    public void findItem() {
+        Iterator<Item> iterator = gameSurface.itemList.iterator();
 
-        while(iterator.hasNext()){
-            Character other = iterator.next();
+        while(iterator.hasNext()) {
+            Item other = iterator.next();
             if(this.getX() < other.x + other.getWidth() && other.x < this.getX() + this.getWidth()
-                    && this.getY() < other.y && other.y < this.getY() + this.getHeight()){
-                attack(other);
+                    && this.getY() < other.y && other.y < this.getY() + this.getHeight()) {
+                pickupItem(other);
             }
-
         }
     }
 
-    public void attack(Character other) {
-        if(!ai.getType())
-            gameSurface.removeCharacter(other);
+    public void pickupItem(Item other) {
+        itemList.add(other);
+        //gameSurface.itemList.remove(other);
     }
+
+    public void attack() {
+
+      //  if(itemList.size() != 0){itemList.get(0).inCombat();}
+        if(ai.isPlayer()){
+            this.isAttacking = true;
+            Iterator<Character> iterator = gameSurface.monsterList.iterator();
+            while(iterator.hasNext()){
+                Character other = iterator.next();
+                if(this.hurtBox.x < other.hitBox.x + other.width &&
+                        this.hurtBox.x + this.hurtBox.width > other.x &&
+                        this.hurtBox.y < other.hitBox.y + other.height &&
+                        this.hurtBox.y + this.hurtBox.height > other.hitBox.y){
+                    other.hitPoints -= attackDamage;
+                    Log.d("Slime HP remaining", ": " + other.hitPoints);
+                }
+            }
+        }
+
+        if(!ai.isPlayer() && !gameSurface.characterList.isEmpty()){
+            Character other = gameSurface.characterList.get(0);
+            if(this.hurtBox.x < other.hitBox.x + other.hitBox.width &&
+                    this.hurtBox.x + this.hurtBox.width > other.hitBox.x &&
+                    this.hurtBox.y < other.hitBox.y + other.hitBox.height &&
+                    this.hurtBox.y + this.hurtBox.height > other.hitBox.y){
+                other.hitPoints -= attackDamage;
+                this.isAttacking = true;
+            }
+        }
+    }
+
+    public void checkIfDead() {
+        if (this.hitPoints <= 0) {
+            if(!ai.isPlayer()){gameSurface.removalList.add(this);}
+            else if(ai.isPlayer()){((PlayerAI) ai).isDead = true;}
+        }
+    }
+
 
 }
