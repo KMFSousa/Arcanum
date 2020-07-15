@@ -53,6 +53,8 @@ public class Character extends GameObject {
 
     private long lastDrawNanoTime =-1;
 
+    private boolean isPlayer;
+
     private CharacterAI ai;
     public void setCharacterAI(CharacterAI ai) {   this.ai = ai; }
 
@@ -66,10 +68,10 @@ public class Character extends GameObject {
 
     // This method (called in GameSurface.java) will take the spritesheet we provide it with and create arrays holding the bitmaps of each sprite
 
-    public Character(GameSurface gameSurface, Bitmap image, int x, int y, int spriteSheetRows, int spriteSheetColumns, float velocity, int hitPoints, int attackDamage) {
+    public Character(GameSurface gameSurface, Bitmap image, int x, int y, boolean isPlayer, int spriteSheetRows, int spriteSheetColumns, float velocity, int hitPoints, int attackDamage) {
         super(image, spriteSheetRows, spriteSheetColumns, x, y); // Calls
 
-
+        this.isPlayer = isPlayer;
         this.gameSurface= gameSurface;
         this.velocity = velocity;
         this.hitPoints = hitPoints;
@@ -180,7 +182,7 @@ public class Character extends GameObject {
         int xToMoveTo = this.x + (int)(distance* movingVectorX / movingVectorLength);
         int yToMoveTo = this.y + (int)(distance* movingVectorY / movingVectorLength);
 
-        movePair = map.canMove(this.x, this.y, xToMoveTo, yToMoveTo, this.height, this.width);
+        movePair = map.canMove(this.isPlayer, this.x, this.y, xToMoveTo, yToMoveTo, this.height, this.width);
         boolean canMoveX = movePair.first;
         boolean canMoveY = movePair.second;
         if (canMoveX && canMoveY) {
@@ -193,20 +195,22 @@ public class Character extends GameObject {
         }
 
         // When the game's character touches the edge of the screen, then change direction
-        if(this.x < 0 )  {
-            this.x = this.gameSurface.getWidth()-width;
-            this.gameSurface.dungeon.transitionHorizontal(-1);
-        } else if(this.x > this.gameSurface.getWidth() -width)  {
-            this.x = 0;
-            this.gameSurface.dungeon.transitionHorizontal(1);
-        }
+        if (this.isPlayer) {
+            if(this.x < 0 )  {
+                this.x = this.gameSurface.getWidth()-width;
+                this.gameSurface.dungeon.transitionHorizontal(-1);
+            } else if(this.x > this.gameSurface.getWidth() -width)  {
+                this.x = 0;
+                this.gameSurface.dungeon.transitionHorizontal(1);
+            }
 
-        if(this.y < 0 )  {
-            this.y = this.gameSurface.getHeight()-height;
-            this.gameSurface.dungeon.transitionVertical(-1);
-        } else if(this.y > this.gameSurface.getHeight()- height)  {
-            this.y = 0;
-            this.gameSurface.dungeon.transitionVertical(1);
+            if(this.y < 0 )  {
+                this.y = this.gameSurface.getHeight()-height;
+                this.gameSurface.dungeon.transitionVertical(-1);
+            } else if(this.y > this.gameSurface.getHeight()- height)  {
+                this.y = 0;
+                this.gameSurface.dungeon.transitionVertical(1);
+            }
         }
 
         //Move the hitbox and hurtbox with the character
