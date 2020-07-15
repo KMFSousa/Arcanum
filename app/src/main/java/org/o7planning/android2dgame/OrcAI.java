@@ -16,8 +16,8 @@ public class OrcAI extends CharacterAI {
 
     private int updateCounter;
 
-    public OrcAI(Character character, Dungeon dungeon, GameSurface gameSurface) {
-        super(character, dungeon);
+    public OrcAI(Character character, GameSurface gameSurface) {
+        super(character);
         this.gameSurface = gameSurface;
         this.factory = factory;
         this.player = gameSurface.characterList.get(0);
@@ -44,7 +44,7 @@ public class OrcAI extends CharacterAI {
 
             int distanceToPlayer = GameObject.getDistanceBetweenObjects(this.character, player);
 
-            int tileWidth = this.dungeon.getCurrentRoom().tileWidth;
+            int tileWidth = this.gameSurface.dungeon.getCurrentRoom().tileWidth;
 
             int numTileChecks = (int) Math.ceil(distanceToPlayer/(tileWidth/4));
 
@@ -57,7 +57,7 @@ public class OrcAI extends CharacterAI {
                 xValToCheck = this.positionX + i*((distanceToPlayerX)/numTileChecks);
                 yValToCheck = this.positionY + i*((distanceToPlayerY)/numTileChecks);
 
-                if (this.dungeon.getCurrentRoom().isPointCollidable(xValToCheck, yValToCheck)) {
+                if (this.gameSurface.dungeon.getCurrentRoom().isPointCollidable(xValToCheck, yValToCheck)) {
                     lineOfSight = false;
                 }
             }

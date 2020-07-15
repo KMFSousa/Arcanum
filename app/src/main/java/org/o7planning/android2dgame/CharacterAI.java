@@ -4,12 +4,10 @@ import java.util.Iterator;
 
 public class CharacterAI {
     protected Character character;
-    protected Dungeon dungeon;
 
-    public CharacterAI(Character character, Dungeon dungeon) {
+    public CharacterAI(Character character) {
 //        this.character = character;
 //        this.character.setCharacterAI(this);
-        this.dungeon = dungeon;
     }
 
     //TODO: Different 'types' of enemies will have different AI classes that will extend this class

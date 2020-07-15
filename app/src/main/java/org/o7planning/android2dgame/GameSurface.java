@@ -9,6 +9,10 @@ import android.view.SurfaceView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -19,11 +23,10 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     private GameThread gameThread;
     public Dungeon dungeon;
     private Context context;
-    public final List<Character> characterList = new ArrayList<Character>();
-    public final List<Explosion> explosionList = new ArrayList<Explosion>();
-    public final List<Character> monsterList = new ArrayList<Character>();
-    public final List<Character> removalList = new ArrayList<Character>();
-    public final List<Item> itemList = new ArrayList<Item>();
+    public List<Character> characterList = new ArrayList<Character>();
+    public List<Explosion> explosionList = new ArrayList<Explosion>();
+    public List<Character> removalList = new ArrayList<Character>();
+    public List<Item> itemList = new ArrayList<Item>();
     public GameSurface(Context context)  {
         super(context);
 
@@ -54,7 +57,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
             }
         }
 
-        for (Character monster : monsterList) {
+        for (Character monster : this.dungeon.currentMonsterList) {
             monster.update(currentMap);
         }
 
@@ -71,7 +74,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
             }
         }
 
-        monsterList.removeAll(removalList);
+        this.dungeon.currentMonsterList.removeAll(removalList);
         characterList.removeAll(removalList);
     }
 
@@ -88,7 +91,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
             character.draw(canvas);
         }
 
-        for (Character monster : monsterList) {
+        for (Character monster : this.dungeon.currentMonsterList) {
             monster.draw(canvas);
         }
 
@@ -102,14 +105,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     }
 
 
-    private void createCreatures(StuffFactory stuffFactory, Dungeon dungeon) {
-        Character player = stuffFactory.newPlayer(dungeon);
-        Character monster = stuffFactory.newMonster(dungeon);
-        Character orc = stuffFactory.newOrc(dungeon);
-        //Item sword = stuffFactory.newSword();
-
-    }
-
     public void removeCharacter(Character other) {
         removalList.add(other);
     }
@@ -120,35 +115,42 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     // The surfaceCreated method is called immediately after the surface is first created (in MainActivity)
     // The gameThread will be what calls the update method on the character
     public void surfaceCreated(SurfaceHolder holder) {
+
+        StuffFactory stuffFactory = new StuffFactory(this);
+
+        this.dungeon = new Dungeon(this);
+
+        Character player = stuffFactory.newPlayer(this.characterList, 200, 200);
+
         Map[][] mapArr = new Map[3][3];
+
         Bitmap mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.blue_room);
-        Map map = new Map(this, mapImage, R.raw.blue_room, context);
+        Map map = new Map(this, mapImage, "blue_room", stuffFactory, context);
         mapArr[0][0] = map;
 
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.red_room);
-        map = new Map(this, mapImage, R.raw.red_room, context);
+        map = new Map(this, mapImage, "red_room", stuffFactory, context);
         mapArr[1][0] = map;
 
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.box_room);
-        map = new Map(this, mapImage, R.raw.box_room, context);
+        map = new Map(this, mapImage, "box_room", stuffFactory, context);
         mapArr[0][1] = map;
 
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.green_room);
-        map = new Map(this, mapImage, R.raw.green_room, context);
+        map = new Map(this, mapImage, "green_room", stuffFactory, context);
         mapArr[2][0] = map;
 
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.sewers);
-        map = new Map(this, mapImage, R.raw.sewers, context);
+        map = new Map(this, mapImage, "sewers", stuffFactory, context);
         mapArr[1][1] = map;
 
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.boss_room);
-        map = new Map(this, mapImage, R.raw.boss_room, context);
+        map = new Map(this, mapImage, "boss_room", stuffFactory, context);
         mapArr[1][2] = map;
 
-        this.dungeon = new Dungeon(this, mapArr);
+        this.dungeon.populateMapArray(mapArr);
 
-        StuffFactory stuffFactory = new StuffFactory(this);
-        createCreatures(stuffFactory, dungeon);
+        this.dungeon.currentMonsterList = mapArr[0][0].monsterList;
 
         // Create a thread that will handle the running of the game (character movements and such) that can be easily paused without having to add excess logic to the main thread
         this.gameThread = new GameThread(this, holder);

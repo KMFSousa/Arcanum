@@ -317,7 +317,7 @@ public class Character extends GameObject {
       //  if(itemList.size() != 0){itemList.get(0).inCombat();}
         if(ai.isPlayer()){
             this.isAttacking = true;
-            Iterator<Character> iterator = gameSurface.monsterList.iterator();
+            Iterator<Character> iterator = gameSurface.dungeon.currentMonsterList.iterator();
             while(iterator.hasNext()){
                 Character other = iterator.next();
                 if(this.hurtBox.x < other.hitBox.x + other.width &&
