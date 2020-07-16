@@ -1,6 +1,7 @@
 package org.o7planning.android2dgame;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.util.Log;
 import java.util.List;
@@ -47,6 +48,7 @@ public class Character extends GameObject {
     boolean attackAnimationInProgress = false;
 
     public int hitPoints;
+    public int MAXHITPOINTS;
     private int attackDamage;
 
     private int movingVectorX = 0;
@@ -69,7 +71,7 @@ public class Character extends GameObject {
 
 
 
-    // This method (called in GameSurface.java) will take the spritesheet we provide it with and create arrays holding the bitmaps of each sprite
+    // This method (called in GameSurface.java) will take the sprite sheet we provide it with and create arrays holding the bitmaps of each sprite
 
     public Character(GameSurface gameSurface, Bitmap image, int x, int y, boolean isPlayer, int spriteSheetRows, int spriteSheetColumns, float velocity, int hitPoints, int attackDamage, int attackAnimationIndex) {
         super(image, spriteSheetRows, spriteSheetColumns, x, y); // Calls
@@ -78,6 +80,7 @@ public class Character extends GameObject {
         this.gameSurface= gameSurface;
         this.velocity = velocity;
         this.hitPoints = hitPoints;
+        this.MAXHITPOINTS = hitPoints;
         this.attackDamage = attackDamage;
         this.attackAnimationIndex = attackAnimationIndex;
 
@@ -142,11 +145,12 @@ public class Character extends GameObject {
         move(map);
 
         //update AI
-         ai.onUpdate();
 
-         if(!isPlayer) {
-             attack();
-         }
+        ai.onUpdate();
+        if(!this.isPlayer){
+            attack();
+        }
+
         //update Weapon
 //        if(itemList.size() != 0){
 //            itemList.get(0).update();
@@ -224,7 +228,7 @@ public class Character extends GameObject {
             if(this.y < 0 )  {
                 this.y = this.gameSurface.getHeight()-height;
                 this.gameSurface.dungeon.transitionVertical(-1);
-            } else if(this.y > this.gameSurface.getHeight()- height)  {
+            } else if(this.y > this.gameSurface.getHeight() - height)  {
                 this.y = 0;
                 this.gameSurface.dungeon.transitionVertical(1);
             }
@@ -233,6 +237,11 @@ public class Character extends GameObject {
         //Move the hitbox and hurtbox with the character
         hitBox.x = this.getX() + this.getWidth()/2 - 30;
         hitBox.y = this.getY();
+
+        if(!this.isPlayer && this.hitPoints < this.MAXHITPOINTS){ // If it's a player it will never move
+            healthBar.x = this.getX() + this.getWidth()/2 - 100;
+            healthBar.y = this.getY() - this.getHeight() + 10;
+        }
 
         if(ai.hasWeapon()) {
             switch (this.rowUsing) {
@@ -304,7 +313,27 @@ public class Character extends GameObject {
         this.lastDrawNanoTime= System.nanoTime();
 //        hitBox.draw(canvas);
 //        hurtBox.draw(canvas);
+
+        // healthBar Logic = Always draw for player, draw if taken damage, and don't draw if dead //TODO the last part shouldn't be necessary but for the demo it looks nicer
+        if((this.isPlayer || this.hitPoints < this.MAXHITPOINTS) && this.hitPoints != 0){
+            healthBar.draw(canvas);
+        }
     }
+
+    public void reduceHitPointsBy(int attackDamage)  {
+        this.hitPoints -= attackDamage;
+        if(this.hitPoints < 0){
+            this.hitPoints = 0;
+        }
+
+        this.healthBar.width = (int) (((float) this.hitPoints/ (float) this.MAXHITPOINTS)*this.healthBar.originalSpriteWidth); //Hardcoded initial width of healthBar
+        if(this.healthBar.width <= 0){ // We cannot draw bitmaps of width = 0, so we draw a thin sliver of width 1.
+            this.healthBar.width = 1;
+        }
+
+        this.healthBar.image = Bitmap.createScaledBitmap(this.healthBar.image,this.healthBar.width, this.healthBar.height,false);
+    }
+
 
     public void setMovingVector(int movingVectorX, int movingVectorY)  {
         this.movingVectorX = movingVectorX;
@@ -342,7 +371,7 @@ public class Character extends GameObject {
                         this.hurtBox.x + this.hurtBox.width > other.x &&
                         this.hurtBox.y < other.hitBox.y + other.height &&
                         this.hurtBox.y + this.hurtBox.height > other.hitBox.y){
-                    other.hitPoints -= attackDamage;
+                    other.reduceHitPointsBy(attackDamage);
                     Log.d("Slime HP remaining", ": " + other.hitPoints);
                 }
             }
@@ -354,7 +383,9 @@ public class Character extends GameObject {
                     this.hurtBox.x + this.hurtBox.width > other.hitBox.x &&
                     this.hurtBox.y < other.hitBox.y + other.hitBox.height &&
                     this.hurtBox.y + this.hurtBox.height > other.hitBox.y){
-                other.hitPoints -= attackDamage;
+                other.reduceHitPointsBy(attackDamage);
+                Log.d("Player HP remaining", ": " + other.hitPoints);
+
                 this.isAttacking = true;
             }
         }

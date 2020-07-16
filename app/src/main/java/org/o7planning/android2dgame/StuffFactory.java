@@ -32,6 +32,10 @@ public class StuffFactory {
         hurtBox1.object = player;
         player.setObjectHurtbox(hurtBox1);
 
+        Bitmap playerHealthBar = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.healthbar);
+        playerHealthBar = Bitmap.createScaledBitmap(playerHealthBar, 400, 40,false);
+        GameObject healthBar = new GameObject(playerHealthBar, 1, 1, 15, 15);
+        player.setHealthBar(healthBar);
 
         return player;
     }
@@ -54,6 +58,12 @@ public class StuffFactory {
         hurtBox1.object = monster1;
         monster1.setObjectHurtbox(hurtBox1);
 
+        Bitmap monsterHealthBar = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.healthbar);
+        monsterHealthBar = Bitmap.createScaledBitmap(monsterHealthBar, 200, 20,false);
+        GameObject healthBar = new GameObject(monsterHealthBar, 1, 1, monster1.x, monster1.y);
+        monster1.setHealthBar(healthBar);
+
+
         return monster1;
     }
 
@@ -75,6 +85,11 @@ public class StuffFactory {
         HitBox hurtBox1 = new HitBox(gameSurface, monsterHurtbox1, 500, 500, monster2);
         hurtBox1.object = monster2;
         monster2.setObjectHurtbox(hurtBox1);
+
+        Bitmap monsterHealthBar = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.healthbar);
+        monsterHealthBar = Bitmap.createScaledBitmap(monsterHealthBar, 200, 20,false);
+        GameObject healthBar = new GameObject(monsterHealthBar, 1, 1, monster2.x, monster2.y);
+        monster2.setHealthBar(healthBar);
 
         return monster2;
     }

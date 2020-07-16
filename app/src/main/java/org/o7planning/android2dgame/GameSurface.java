@@ -44,13 +44,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
             if(!characterList.isEmpty()){
                 character.update(currentMap);
 
-                //TODO: Dont uncomment this, it breaks movement
-//                if(characterList.get(0).hitPoints > 0){
-//                    MainActivity.healthBar.setText("" + characterList.get(0).hitPoints + " HP");
-//
-//                }else{
-//                    MainActivity.healthBar.setText("DEAD :(");
-//                }
             }
         }
 
