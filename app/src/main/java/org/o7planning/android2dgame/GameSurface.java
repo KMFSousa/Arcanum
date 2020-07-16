@@ -42,7 +42,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     // MASTER UPDATE CONTROL
     // CALL ALL UPDATE METHODS FOR OBJECTS HERE
     public void update() {
-
         for (Character monster : this.dungeon.getCurrentRoom().monsterList) {
             monster.update(this.dungeon.getCurrentRoom());
         }
@@ -65,14 +64,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         for (Character character : characterList) {
             if(!characterList.isEmpty()){
                 character.update(this.dungeon.getCurrentRoom());
-
-                //TODO: Dont uncomment this, it breaks movement
-//                if(characterList.get(0).hitPoints > 0){
-//                    MainActivity.healthBar.setText("" + characterList.get(0).hitPoints + " HP");
-//
-//                }else{
-//                    MainActivity.healthBar.setText("DEAD :(");
-//                }
             }
         }
 

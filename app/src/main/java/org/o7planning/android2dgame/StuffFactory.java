@@ -34,6 +34,10 @@ public class StuffFactory {
         hurtBox1.object = player;
         player.setObjectHurtbox(hurtBox1);
 
+        Bitmap playerHealthBar = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.healthbar);
+        playerHealthBar = Bitmap.createScaledBitmap(playerHealthBar, 400, 40,false);
+        GameObject healthBar = new GameObject(playerHealthBar, 1, 1, 15, 15);
+        player.setHealthBar(healthBar);
 
         return player;
     }
@@ -56,13 +60,18 @@ public class StuffFactory {
         hurtBox1.object = slime;
         slime.setObjectHurtbox(hurtBox1);
 
+        Bitmap slimeHealthBar = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.healthbar);
+        slimeHealthBar = Bitmap.createScaledBitmap(slimeHealthBar, 200, 20,false);
+        GameObject healthBar = new GameObject(slimeHealthBar, 1, 1, slime.x, slime.y);
+        slime.setHealthBar(healthBar);
+
         return slime;
     }
 
     public Character newOrc(List<Character> characterList, int x, int y) {
         Bitmap orcBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc);
         orcBitmap = Bitmap.createScaledBitmap(orcBitmap, 1000, 500, false);
-        Character orc = new Character(gameSurface, orcBitmap, x, y, false,4, 8, 0.1f, 30, 1);
+        Character orc = new Character(gameSurface, orcBitmap, x, y, false, 4, 8, 0.1f, 30, 1);
         characterList.add(orc);
         OrcAI orcAI = new OrcAI(orc, gameSurface);
         orcAI.character = orc;
@@ -78,9 +87,13 @@ public class StuffFactory {
         hurtBox1.object = orc;
         orc.setObjectHurtbox(hurtBox1);
 
+        Bitmap orcHealthBar = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.healthbar);
+        orcHealthBar = Bitmap.createScaledBitmap(orcHealthBar, 200, 20, false);
+        GameObject healthBar = new GameObject(orcHealthBar, 1, 1, orc.x, orc.y);
+        orc.setHealthBar(healthBar);
+
         return orc;
     }
-
 //    public Item newSword() {
 //        Bitmap swordBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.sword_attack_animation);
 //        Item sword = new Item(gameSurface, swordBitmap, "sword", 100, 100, 1, 5, 10);
