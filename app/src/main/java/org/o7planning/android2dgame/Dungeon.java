@@ -19,7 +19,7 @@ public class Dungeon {
 
     public void populateMapArray(Map[][] rooms) {
         this.rooms = rooms;
-        roomX = 0;
+        roomX = 2;
         roomY = 0;
     }
 

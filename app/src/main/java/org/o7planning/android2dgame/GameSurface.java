@@ -112,7 +112,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
         this.dungeon = new Dungeon(this);
 
-        Character player = stuffFactory.newPlayer(this.characterList, 200, 200);
+        Character player = stuffFactory.newPlayer(this.characterList, 850, 500);
 
         Map[][] mapArr = new Map[3][3];
 
@@ -142,7 +142,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
         this.dungeon.populateMapArray(mapArr);
 
-        this.dungeon.getCurrentRoom().monsterList = new ArrayList<Character>(mapArr[0][0].monsterList);
+        this.dungeon.getCurrentRoom().monsterList = new ArrayList<Character>(mapArr[2][0].monsterList);
 
         // Create a thread that will handle the running of the game (character movements and such) that can be easily paused without having to add excess logic to the main thread
         this.gameThread = new GameThread(this, holder);
