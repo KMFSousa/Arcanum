@@ -41,14 +41,14 @@ public class Map {
         this.context = context;
         this.csvName = csvName;
 
-        if(Build.FINGERPRINT.contains("generic")) { //Emulator
-            this.screenWidth = Resources.getSystem().getDisplayMetrics().heightPixels;
-            this.screenHeight = Resources.getSystem().getDisplayMetrics().widthPixels;
-        }
-        else { //Hardware Phone
+        //if(Build.FINGERPRINT.contains("generic")) { //Emulator
+        //    this.screenWidth = Resources.getSystem().getDisplayMetrics().heightPixels;
+        //    this.screenHeight = Resources.getSystem().getDisplayMetrics().widthPixels;
+        //}
+        //else { //Hardware Phone
             this.screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
             this.screenHeight =  Resources.getSystem().getDisplayMetrics().heightPixels;
-        }
+        //}
 
         this.currentRoomBitmap = Bitmap.createScaledBitmap(startingImage, screenWidth, screenHeight, true);
         int bitmapWidth = currentRoomBitmap.getWidth();
@@ -90,12 +90,14 @@ public class Map {
         }
     }
 
-    private int callCorrectStuffFactoryMethod(String name, int xSpawnLocation, int ySpawnLocation, StuffFactory stuffFactory) throws Exception {
+    private void callCorrectStuffFactoryMethod(String name, int xSpawnLocation, int ySpawnLocation, StuffFactory stuffFactory) throws Exception {
         switch(name) {
             case "orc":
                 stuffFactory.newOrc(this.monsterList, xSpawnLocation, ySpawnLocation);
+                break;
             case "slime":
                 stuffFactory.newSlime(this.monsterList, xSpawnLocation, ySpawnLocation);
+                break;
             default:
                 throw new Exception("Error: No Monster Found for Given Type.");
         }

@@ -42,23 +42,9 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     // MASTER UPDATE CONTROL
     // CALL ALL UPDATE METHODS FOR OBJECTS HERE
     public void update() {
-        Map currentMap = dungeon.getCurrentRoom();
-        for (Character character : characterList) {
-            if(!characterList.isEmpty()){
-                character.update(currentMap);
 
-                //TODO: Dont uncomment this, it breaks movement
-//                if(characterList.get(0).hitPoints > 0){
-//                    MainActivity.healthBar.setText("" + characterList.get(0).hitPoints + " HP");
-//
-//                }else{
-//                    MainActivity.healthBar.setText("DEAD :(");
-//                }
-            }
-        }
-
-        for (Character monster : this.dungeon.currentMonsterList) {
-            monster.update(currentMap);
+        for (Character monster : this.dungeon.getCurrentRoom().monsterList) {
+            monster.update(this.dungeon.getCurrentRoom());
         }
 
         for (Explosion explosion : this.explosionList) {
@@ -74,7 +60,22 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
             }
         }
 
-        this.dungeon.currentMonsterList.removeAll(removalList);
+        this.dungeon.getCurrentRoom().monsterList.removeAll(removalList);
+
+        for (Character character : characterList) {
+            if(!characterList.isEmpty()){
+                character.update(this.dungeon.getCurrentRoom());
+
+                //TODO: Dont uncomment this, it breaks movement
+//                if(characterList.get(0).hitPoints > 0){
+//                    MainActivity.healthBar.setText("" + characterList.get(0).hitPoints + " HP");
+//
+//                }else{
+//                    MainActivity.healthBar.setText("DEAD :(");
+//                }
+            }
+        }
+
         characterList.removeAll(removalList);
     }
 
@@ -91,7 +92,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
             character.draw(canvas);
         }
 
-        for (Character monster : this.dungeon.currentMonsterList) {
+        for (Character monster : this.dungeon.getCurrentRoom().monsterList) {
             monster.draw(canvas);
         }
 
@@ -150,7 +151,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
         this.dungeon.populateMapArray(mapArr);
 
-        this.dungeon.currentMonsterList = mapArr[0][0].monsterList;
+        this.dungeon.getCurrentRoom().monsterList = new ArrayList<Character>(mapArr[0][0].monsterList);
 
         // Create a thread that will handle the running of the game (character movements and such) that can be easily paused without having to add excess logic to the main thread
         this.gameThread = new GameThread(this, holder);

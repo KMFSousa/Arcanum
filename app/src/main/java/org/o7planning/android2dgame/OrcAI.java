@@ -1,5 +1,7 @@
 package org.o7planning.android2dgame;
 
+import android.util.Log;
+
 import java.util.List;
 
 public class OrcAI extends CharacterAI {
@@ -25,10 +27,8 @@ public class OrcAI extends CharacterAI {
     }
 
     public void onUpdate() {
-
         if (closeToPlayer()) {
 
-        }
             // TODO: Base pathing in accordance to line of sight
             // Draw a vector from monster to player
             // Sample along the vector and calculate if there is a tile that is collidable at each sample.
@@ -68,6 +68,7 @@ public class OrcAI extends CharacterAI {
                 this.updateCounter = 0;
                 this.wander();
             }
+        }
 
         updateCounter++;
 

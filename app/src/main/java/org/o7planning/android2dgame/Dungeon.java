@@ -10,11 +10,11 @@ public class Dungeon {
     private Map[][] rooms;
     private int roomX, roomY;
     private GameSurface gameSurface;
-    public List<Character> currentMonsterList;
+    //public List<Character> currentMonsterList;
 
     public Dungeon(GameSurface gameSurface) {
         this.gameSurface = gameSurface;
-        this.currentMonsterList = new ArrayList<Character>();
+        //this.currentMonsterList = new ArrayList<Character>();
     }
 
     public void populateMapArray(Map[][] rooms) {
@@ -25,7 +25,7 @@ public class Dungeon {
 
 
     public Map getCurrentRoom(){
-        return rooms[roomX][roomY];
+        return this.rooms[this.roomX][this.roomY];
     }
 
     public void draw(Canvas canvas) {
@@ -36,19 +36,19 @@ public class Dungeon {
     }
 
     public void transitionVertical(int direction){ //Direction should be +1 for upwards room change, -1 for downwards
-        if(roomY + direction >= 0  && roomY + direction < rooms[0].length) {
-            this.getCurrentRoom().monsterList = this.currentMonsterList;
-            roomY += direction;
-            this.currentMonsterList = this.getCurrentRoom().monsterList;
+        if(this.roomY + direction >= 0  && this.roomY + direction < this.rooms[0].length) {
+            //this.getCurrentRoom().monsterList = new ArrayList<Character>(this.currentMonsterList);
+            this.roomY += direction;
+            //this.currentMonsterList = new ArrayList<Character>(this.getCurrentRoom().monsterList);
             Log.d("Dungeon","Vertical Transition: " + direction);
         }
     }
 
     public void transitionHorizontal(int direction){ //Direction should be +1 for right room change, -1 for left
-        if(roomX + direction >= 0  && roomX + direction < rooms[0].length) {
-            this.getCurrentRoom().monsterList = this.currentMonsterList;
-            roomX += direction;
-            this.currentMonsterList = this.getCurrentRoom().monsterList;
+        if(this.roomX + direction >= 0  && this.roomX + direction < this.rooms[0].length) {
+            //this.getCurrentRoom().monsterList = new ArrayList<Character>(this.currentMonsterList);
+            this.roomX += direction;
+            //this.currentMonsterList = new ArrayList<Character>(this.getCurrentRoom().monsterList);
             Log.d("Dungeon","Horizontal Transition: " + direction);
         }
     }

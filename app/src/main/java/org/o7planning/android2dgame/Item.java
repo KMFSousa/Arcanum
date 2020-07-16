@@ -63,7 +63,7 @@ public class Item extends GameObject {
 
     //TODO: COLLISION DETECTION CAN BE MOVED WITHIN THE HITBOX CLASS AS A SEPARATE METHOD
     public void inCombat() {
-        Iterator<Character> iterator = gameSurface.dungeon.currentMonsterList.iterator();
+        Iterator<Character> iterator = gameSurface.dungeon.getCurrentRoom().monsterList.iterator();
         combatAnimationFinished = false;
         while(iterator.hasNext()){
             Character other = iterator.next();
