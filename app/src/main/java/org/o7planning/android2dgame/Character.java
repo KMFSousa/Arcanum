@@ -34,6 +34,8 @@ public class Character extends GameObject {
     // `colUsing` will tell us which stage of the animation we are on
     private int colUsing;
 
+    private int attackAnimationIndex;
+
     private Bitmap[] leftToRights;
     private Bitmap[] rightToLefts;
     private Bitmap[] topToBottoms;
@@ -42,6 +44,7 @@ public class Character extends GameObject {
     // Velocity of game character (pixel/millisecond)
     private float velocity;
     private  boolean isAttacking;
+    boolean attackAnimationInProgress = false;
 
     public int hitPoints;
     private int attackDamage;
@@ -68,7 +71,7 @@ public class Character extends GameObject {
 
     // This method (called in GameSurface.java) will take the spritesheet we provide it with and create arrays holding the bitmaps of each sprite
 
-    public Character(GameSurface gameSurface, Bitmap image, int x, int y, boolean isPlayer, int spriteSheetRows, int spriteSheetColumns, float velocity, int hitPoints, int attackDamage) {
+    public Character(GameSurface gameSurface, Bitmap image, int x, int y, boolean isPlayer, int spriteSheetRows, int spriteSheetColumns, float velocity, int hitPoints, int attackDamage, int attackAnimationIndex) {
         super(image, spriteSheetRows, spriteSheetColumns, x, y); // Calls
 
         this.isPlayer = isPlayer;
@@ -76,6 +79,10 @@ public class Character extends GameObject {
         this.velocity = velocity;
         this.hitPoints = hitPoints;
         this.attackDamage = attackDamage;
+        this.attackAnimationIndex = attackAnimationIndex;
+
+
+
 
 
 
@@ -137,6 +144,9 @@ public class Character extends GameObject {
         //update AI
          ai.onUpdate();
 
+         if(!isPlayer) {
+             attack();
+         }
         //update Weapon
 //        if(itemList.size() != 0){
 //            itemList.get(0).update();
@@ -150,18 +160,25 @@ public class Character extends GameObject {
 
         // Update which column we are using by 1 for each iteration
         // Used in getCurrentMoveBitmap() to grab the next sprite to render on the canvas
-        if (movingVectorLength > 0 || this.colUsing == this.colCount - 1) {
+        if (movingVectorLength > 0 || isAttacking) {
             this.colUsing++;
         }
         // Once we have cycled through all the sprites for a certain direction, start back at the first one
         //TODO: CYCLE THROUGH STATES, NOT ATTACK STATE
-        if(colUsing >= this.colCount -1 )  {
+        if(colUsing >= this.attackAnimationIndex -1 && !isAttacking )  {
             this.colUsing =0;
         }
 
         if(isAttacking) {
-            this.colUsing = this.colCount - 1;
-            isAttacking = false;
+            if(!attackAnimationInProgress) {
+                this.colUsing = this.attackAnimationIndex;
+                attackAnimationInProgress = true;
+                
+            }
+            if(this.colUsing == this.colCount - 1) {
+                isAttacking = false;
+                attackAnimationInProgress = false;
+            }
         }
 
         // Current time in nanoseconds
@@ -317,6 +334,7 @@ public class Character extends GameObject {
       //  if(itemList.size() != 0){itemList.get(0).inCombat();}
         if(ai.isPlayer()){
             this.isAttacking = true;
+            attackAnimationInProgress = false;
             Iterator<Character> iterator = gameSurface.monsterList.iterator();
             while(iterator.hasNext()){
                 Character other = iterator.next();
