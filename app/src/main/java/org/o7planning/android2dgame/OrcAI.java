@@ -1,5 +1,7 @@
 package org.o7planning.android2dgame;
 
+import android.util.Log;
+
 import java.util.List;
 
 public class OrcAI extends CharacterAI {
@@ -16,8 +18,8 @@ public class OrcAI extends CharacterAI {
 
     private int updateCounter;
 
-    public OrcAI(Character character, Dungeon dungeon, GameSurface gameSurface) {
-        super(character, dungeon);
+    public OrcAI(Character character, GameSurface gameSurface) {
+        super(character);
         this.gameSurface = gameSurface;
         this.factory = factory;
         this.player = gameSurface.characterList.get(0);
@@ -25,10 +27,8 @@ public class OrcAI extends CharacterAI {
     }
 
     public void onUpdate() {
-
         if (closeToPlayer()) {
 
-        }
             // TODO: Base pathing in accordance to line of sight
             // Draw a vector from monster to player
             // Sample along the vector and calculate if there is a tile that is collidable at each sample.
@@ -44,7 +44,7 @@ public class OrcAI extends CharacterAI {
 
             int distanceToPlayer = GameObject.getDistanceBetweenObjects(this.character, player);
 
-            int tileWidth = this.dungeon.getCurrentRoom().tileWidth;
+            int tileWidth = this.gameSurface.dungeon.getCurrentRoom().tileWidth;
 
             int numTileChecks = (int) Math.ceil(distanceToPlayer/(tileWidth/4));
 
@@ -57,7 +57,7 @@ public class OrcAI extends CharacterAI {
                 xValToCheck = this.positionX + i*((distanceToPlayerX)/numTileChecks);
                 yValToCheck = this.positionY + i*((distanceToPlayerY)/numTileChecks);
 
-                if (this.dungeon.getCurrentRoom().isPointCollidable(xValToCheck, yValToCheck)) {
+                if (this.gameSurface.dungeon.getCurrentRoom().isPointCollidable(xValToCheck, yValToCheck)) {
                     lineOfSight = false;
                 }
             }
@@ -68,6 +68,7 @@ public class OrcAI extends CharacterAI {
                 this.updateCounter = 0;
                 this.wander();
             }
+        }
 
         updateCounter++;
 

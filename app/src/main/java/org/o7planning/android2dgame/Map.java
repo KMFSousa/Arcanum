@@ -9,6 +9,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.os.Build;
 import android.util.Log;
@@ -17,6 +19,8 @@ import android.util.Pair;
 public class Map {
     protected Bitmap currentRoomBitmap;
     protected Tile[][] tileArray;
+    protected List<Character> monsterList = new ArrayList<Character>();
+    protected String csvName;
     private int[][] csvValues;
     protected int rows;
     protected int columns;
@@ -32,18 +36,19 @@ public class Map {
     private int screenWidth;
     private int screenHeight;
 
-    public Map(GameSurface gameSurface, Bitmap startingImage, int collisionRes, Context context) {
+    public Map(GameSurface gameSurface, Bitmap startingImage, String csvName, StuffFactory stuffFactory, Context context) {
         this.gameSurface = gameSurface;
         this.context = context;
+        this.csvName = csvName;
 
-        if(Build.FINGERPRINT.contains("generic")) { //Emulator
-            this.screenWidth = Resources.getSystem().getDisplayMetrics().heightPixels;
-            this.screenHeight = Resources.getSystem().getDisplayMetrics().widthPixels;
-        }
-        else { //Hardware Phone
+        //if(Build.FINGERPRINT.contains("generic")) { //Emulator
+        //    this.screenWidth = Resources.getSystem().getDisplayMetrics().heightPixels;
+        //    this.screenHeight = Resources.getSystem().getDisplayMetrics().widthPixels;
+        //}
+        //else { //Hardware Phone
             this.screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
             this.screenHeight =  Resources.getSystem().getDisplayMetrics().heightPixels;
-        }
+        //}
 
         this.currentRoomBitmap = Bitmap.createScaledBitmap(startingImage, screenWidth, screenHeight, true);
         int bitmapWidth = currentRoomBitmap.getWidth();
@@ -54,10 +59,67 @@ public class Map {
         this.tileHeight = bitmapHeight/rows;
 
         this.csvValues = new int[rows][columns];
-        this.populateCsvArray(collisionRes);
+        this.populateCsvArray();
 
         this.tileArray = new Tile[rows][columns];
         this.createTiles(currentRoomBitmap, rows, columns);
+
+        this.populateMonsterList(stuffFactory);
+    }
+
+    private void populateMonsterList(StuffFactory stuffFactory) {
+        try {
+            InputStream inputStream = this.context.getResources().openRawResource(R.raw.monster_spawns);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] lineArray = line.split(",");
+                String roomName = lineArray[0];
+                if (roomName.equals(this.csvName)) {
+                    String monsterType = lineArray[1];
+                    int xSpawnLocation = Integer.parseInt(lineArray[2]);
+                    int ySpawnLocation = Integer.parseInt(lineArray[3]);
+
+                    this.callCorrectStuffFactoryMethod(monsterType, xSpawnLocation, ySpawnLocation, stuffFactory);
+                }
+            }
+        } catch (Exception e) {
+            // Bad
+            System.out.println("Error reading from monster spawns CSV in Game Surface:");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void callCorrectStuffFactoryMethod(String name, int xSpawnLocation, int ySpawnLocation, StuffFactory stuffFactory) throws Exception {
+        switch(name) {
+            case "orc":
+                stuffFactory.newOrc(this.monsterList, xSpawnLocation, ySpawnLocation);
+                break;
+            case "slime":
+                stuffFactory.newSlime(this.monsterList, xSpawnLocation, ySpawnLocation);
+                break;
+            default:
+                throw new Exception("Error: No Monster Found for Given Type.");
+        }
+    }
+
+    private int getResourceFromCSVName(String name) throws Exception {
+        switch(name) {
+            case "blue_room":
+                return R.raw.blue_room;
+            case "red_room":
+                return R.raw.red_room;
+            case "green_room":
+                return R.raw.green_room;
+            case "box_room":
+                return R.raw.box_room;
+            case "sewers":
+                return R.raw.sewers;
+            case "boss_room":
+                return R.raw.boss_room;
+            default:
+                throw new Exception("Error: No Resource Found for CSV.");
+        }
     }
 
     private void createTiles (Bitmap image, int rows, int columns) {
@@ -79,9 +141,9 @@ public class Map {
         // Only update if the player interacts with something or we change rooms, we don't need to keep re-drawing the tiles
     }
 
-    private void populateCsvArray(int collisionRes) {
+    private void populateCsvArray() {
         try {
-            InputStream inputStream = this.context.getResources().openRawResource(collisionRes);
+            InputStream inputStream = this.context.getResources().openRawResource(this.getResourceFromCSVName(this.csvName));
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
             int row = 0;
@@ -94,8 +156,9 @@ public class Map {
                 }
                 row++;
             }
-        } catch (IOException e) {
-            // Bad
+        } catch (Exception e) {
+            System.out.println("Exception when populating map CSV array:");
+            System.out.println(e.getMessage());
         }
     }
 

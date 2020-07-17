@@ -7,8 +7,8 @@ public class PlayerAI extends CharacterAI {
     public static boolean isDead;
     private GameSurface gameSurface;
 
-    public PlayerAI(Character character, Dungeon dungeon) {
-        super(character, dungeon);
+    public PlayerAI(Character character) {
+        super(character);
         this.isDead = isDead;
 
     }

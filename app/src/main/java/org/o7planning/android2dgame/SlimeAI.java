@@ -19,8 +19,8 @@ public class SlimeAI extends CharacterAI {
 
     private int spreadCount;
 
-    public SlimeAI(Character character, GameSurface gameSurface, StuffFactory factory, Dungeon dungeon) {
-        super(character, dungeon);
+    public SlimeAI(Character character, GameSurface gameSurface, StuffFactory factory) {
+        super(character);
         this.gameSurface = gameSurface;
         this.factory = factory;
         List<Character> playerList = gameSurface.characterList;
@@ -31,26 +31,23 @@ public class SlimeAI extends CharacterAI {
 
     public void onUpdate() {
 
-
-
-
         if (updateCounter % 5 == 0) {
             updateCounter = 0;
             wander();
         }
 
 
-        if(spreadCount < 1 && Math.random() < 0.1 && gameSurface.monsterList.size() < 10)
+        if(spreadCount < 1 && Math.random() < 0.1 && gameSurface.dungeon.getCurrentRoom().monsterList.size() < 10)
            spread();
 
             updateCounter++;
     }
 
     private void spread() {
-        int x = character.x +(int)(Math.random() * 200 - 100);
-        int y = character.y +(int)(Math.random() * 200 - 100);
+        int x = character.x;
+        int y = character.y;
 
-        Character child = factory.newMonster(dungeon);
+        Character child = factory.newSlime(this.gameSurface.dungeon.getCurrentRoom().monsterList, x, y);
         child.x = x;
         child.y = y;
         child.hitBox.x = x;

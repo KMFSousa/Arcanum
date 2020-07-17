@@ -3,6 +3,8 @@ package org.o7planning.android2dgame;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import java.util.List;
+
 
 public class StuffFactory {
     private GameSurface gameSurface;
@@ -13,22 +15,22 @@ public class StuffFactory {
 
     //TODO: UPDATE CHARACTER AND ITEM CONSTRUCTORS WITH ATTRIBUTES
 
-    public Character newPlayer(Dungeon dungeon) {
+    public Character newPlayer(List<Character> characterList, int x, int y) {
         Bitmap characterBitmap1 = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.spritesheet);
 
-        Character player = new Character(gameSurface, characterBitmap1,200, 200, true, 4, 4, 0.3f, 100, 10, 3 );
-        gameSurface.characterList.add(player);
-        PlayerAI playerAI = new PlayerAI(player, dungeon);
+        Character player = new Character(gameSurface, characterBitmap1, x, y, true, 4, 4, 0.3f, 100, 10, 3 );
+        characterList.add(player);
+        PlayerAI playerAI = new PlayerAI(player);
         playerAI.character = player;
         player.setCharacterAI(playerAI);
 
         Bitmap playerHitbox1 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.characterhitbox);
-        HitBox hitBox1 = new HitBox(gameSurface, playerHitbox1, 200, 200, player);
+        HitBox hitBox1 = new HitBox(gameSurface, playerHitbox1, x, y, player);
         hitBox1.object = player;
         player.setObjectHitbox(hitBox1);
 
         Bitmap playerHurtbox1 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.characterhitbox);
-        HitBox hurtBox1 = new HitBox(gameSurface, playerHurtbox1, 200, 200, player);
+        HitBox hurtBox1 = new HitBox(gameSurface, playerHurtbox1, x, y, player);
         hurtBox1.object = player;
         player.setObjectHurtbox(hurtBox1);
 
@@ -40,60 +42,58 @@ public class StuffFactory {
         return player;
     }
 
-    public Character newMonster(Dungeon dungeon) {
-        Bitmap monsterBitmap1 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.slimes1);
-        Character monster1 = new Character(gameSurface, monsterBitmap1, 500, 500, false, 4, 5, 0.1f, 30, 1, 4);
-        gameSurface.monsterList.add(monster1);
-        SlimeAI warriorAI = new SlimeAI(monster1, gameSurface, this, dungeon);
-        warriorAI.character = monster1;
-        monster1.setCharacterAI(warriorAI);
+    public Character newSlime(List<Character> characterList, int x, int y) {
+        Bitmap slimeBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.slimes1);
+        Character slime = new Character(gameSurface, slimeBitmap, x, y, false, 4, 5, 0.1f, 30, 1, 4);
+        characterList.add(slime);
+        SlimeAI slimeAI = new SlimeAI(slime, gameSurface, this);
+        slimeAI.character = slime;
+        slime.setCharacterAI(slimeAI);
 
-        Bitmap monsterHitbox1 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.characterhitbox);
-        HitBox hitBox1 = new HitBox(gameSurface, monsterHitbox1, 500, 500, monster1);
-        hitBox1.object = monster1;
-        monster1.setObjectHitbox(hitBox1);
+        Bitmap slimeHitbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.characterhitbox);
+        HitBox hitBox1 = new HitBox(gameSurface, slimeHitbox, x, y, slime);
+        hitBox1.object = slime;
+        slime.setObjectHitbox(hitBox1);
 
-        Bitmap monsterHurtbox1 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.characterhitbox);
-        HitBox hurtBox1 = new HitBox(gameSurface, monsterHurtbox1, 500, 500, monster1);
-        hurtBox1.object = monster1;
-        monster1.setObjectHurtbox(hurtBox1);
+        Bitmap slimeHurtbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.characterhitbox);
+        HitBox hurtBox1 = new HitBox(gameSurface, slimeHurtbox, x, y, slime);
+        hurtBox1.object = slime;
+        slime.setObjectHurtbox(hurtBox1);
 
-        Bitmap monsterHealthBar = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.healthbar);
-        monsterHealthBar = Bitmap.createScaledBitmap(monsterHealthBar, 200, 20,false);
-        GameObject healthBar = new GameObject(monsterHealthBar, 1, 1, monster1.x, monster1.y);
-        monster1.setHealthBar(healthBar);
+        Bitmap slimeHealthBar = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.healthbar);
+        slimeHealthBar = Bitmap.createScaledBitmap(slimeHealthBar, 200, 20,false);
+        GameObject healthBar = new GameObject(slimeHealthBar, 1, 1, slime.x, slime.y);
+        slime.setHealthBar(healthBar);
 
-
-        return monster1;
+        return slime;
     }
 
-    public Character newOrc(Dungeon dungeon) {
-        Bitmap monsterBitmap2 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc);
-        monsterBitmap2 = Bitmap.createScaledBitmap(monsterBitmap2, 1000, 500, false);
-        Character monster2 = new Character(gameSurface, monsterBitmap2, 500, 500, false,4, 8, 0.1f, 30, 1, 4);
-        gameSurface.monsterList.add(monster2);
-        OrcAI orcAI = new OrcAI(monster2, dungeon, gameSurface);
-        orcAI.character = monster2;
-        monster2.setCharacterAI(orcAI);
+    public Character newOrc(List<Character> characterList, int x, int y) {
+        Bitmap orcBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc);
+        orcBitmap = Bitmap.createScaledBitmap(orcBitmap, 1000, 500, false);
+        Character orc = new Character(gameSurface, orcBitmap, x, y, false, 4, 8, 0.1f, 30, 1, 4);
+        characterList.add(orc);
+        OrcAI orcAI = new OrcAI(orc, gameSurface);
+        orcAI.character = orc;
+        orc.setCharacterAI(orcAI);
 
-        Bitmap monsterHitbox2 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc_body_hitbox);
-        HitBox hitBox2 = new HitBox(gameSurface, monsterHitbox2, 500, 500, monster2);
-        hitBox2.object = monster2;
-        monster2.setObjectHitbox(hitBox2);
+        Bitmap orcHitbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc_body_hitbox);
+        HitBox hitBox2 = new HitBox(gameSurface, orcHitbox, x, y, orc);
+        hitBox2.object = orc;
+        orc.setObjectHitbox(hitBox2);
 
-        Bitmap monsterHurtbox1 = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc_spear_extended_hurtbox);
-        HitBox hurtBox1 = new HitBox(gameSurface, monsterHurtbox1, 500, 500, monster2);
-        hurtBox1.object = monster2;
-        monster2.setObjectHurtbox(hurtBox1);
+        Bitmap orcHurtbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc_spear_extended_hurtbox);
+        HitBox hurtBox1 = new HitBox(gameSurface, orcHurtbox, x, y, orc);
+        hurtBox1.object = orc;
+        orc.setObjectHurtbox(hurtBox1);
 
-        Bitmap monsterHealthBar = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.healthbar);
-        monsterHealthBar = Bitmap.createScaledBitmap(monsterHealthBar, 200, 20,false);
-        GameObject healthBar = new GameObject(monsterHealthBar, 1, 1, monster2.x, monster2.y);
-        monster2.setHealthBar(healthBar);
+        Bitmap orcHealthBar = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.healthbar);
+        orcHealthBar = Bitmap.createScaledBitmap(orcHealthBar, 200, 20, false);
+        GameObject healthBar = new GameObject(orcHealthBar, 1, 1, orc.x, orc.y);
+        orc.setHealthBar(healthBar);
 
-        return monster2;
+        return orc;
     }
-
 //    public Item newSword() {
 //        Bitmap swordBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.sword_attack_animation);
 //        Item sword = new Item(gameSurface, swordBitmap, "sword", 100, 100, 1, 5, 10);
