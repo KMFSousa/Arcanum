@@ -44,12 +44,12 @@ public class Character extends GameObject {
 
     // Velocity of game character (pixel/millisecond)
     private float velocity;
-    private  boolean isAttacking;
+    public   boolean isAttacking;
     boolean attackAnimationInProgress = false;
 
     public int hitPoints;
     public int MAXHITPOINTS;
-    private int attackDamage;
+    public int attackDamage;
 
     private int movingVectorX = 0;
     private int movingVectorY = 0;
@@ -60,7 +60,7 @@ public class Character extends GameObject {
 
     private boolean isPlayer;
 
-    private CharacterAI ai;
+    public CharacterAI ai;
     public void setCharacterAI(CharacterAI ai) {   this.ai = ai; }
 
     //TODO: IMPLEMENT A ROLL MECHANIC (INCREASED SPEED, ANIMATION)
@@ -147,9 +147,9 @@ public class Character extends GameObject {
         //update AI
 
         ai.onUpdate();
-        if(!this.isPlayer){
-            attack();
-        }
+//        if(!this.isPlayer){
+//            attack();
+//        }
 
         //update Weapon
 //        if(itemList.size() != 0){
@@ -358,39 +358,39 @@ public class Character extends GameObject {
         //gameSurface.itemList.remove(other);
     }
 
-    public void attack() {
-
-      //  if(itemList.size() != 0){itemList.get(0).inCombat();}
-        if(ai.isPlayer()){
-            this.isAttacking = true;
-            this.attackAnimationInProgress = false;
-            Iterator<Character> iterator = gameSurface.dungeon.getCurrentRoom().monsterList.iterator();
-
-            while(iterator.hasNext()){
-                Character other = iterator.next();
-                if(this.hurtBox.x < other.hitBox.x + other.width &&
-                        this.hurtBox.x + this.hurtBox.width > other.x &&
-                        this.hurtBox.y < other.hitBox.y + other.height &&
-                        this.hurtBox.y + this.hurtBox.height > other.hitBox.y){
-                    other.reduceHitPointsBy(attackDamage);
-                    Log.d("Slime HP remaining", ": " + other.hitPoints);
-                }
-            }
-        }
-
-        if(!ai.isPlayer() && !gameSurface.characterList.isEmpty()){
-            Character other = gameSurface.characterList.get(0);
-            if(this.hurtBox.x < other.hitBox.x + other.hitBox.width &&
-                    this.hurtBox.x + this.hurtBox.width > other.hitBox.x &&
-                    this.hurtBox.y < other.hitBox.y + other.hitBox.height &&
-                    this.hurtBox.y + this.hurtBox.height > other.hitBox.y){
-                other.reduceHitPointsBy(attackDamage);
-                Log.d("Player HP remaining", ": " + other.hitPoints);
-
-                this.isAttacking = true;
-            }
-        }
-    }
+//    public void attack() {
+//
+//      //  if(itemList.size() != 0){itemList.get(0).inCombat();}
+//        if(ai.isPlayer()){
+//            this.isAttacking = true;
+//            this.attackAnimationInProgress = false;
+//            Iterator<Character> iterator = gameSurface.dungeon.getCurrentRoom().monsterList.iterator();
+//
+//            while(iterator.hasNext()){
+//                Character other = iterator.next();
+//                if(this.hurtBox.x < other.hitBox.x + other.width &&
+//                        this.hurtBox.x + this.hurtBox.width > other.x &&
+//                        this.hurtBox.y < other.hitBox.y + other.height &&
+//                        this.hurtBox.y + this.hurtBox.height > other.hitBox.y){
+//                    other.reduceHitPointsBy(attackDamage);
+//                    Log.d("Slime HP remaining", ": " + other.hitPoints);
+//                }
+//            }
+//        }
+//
+//        if(!ai.isPlayer() && !gameSurface.characterList.isEmpty()){
+//            Character other = gameSurface.characterList.get(0);
+//            if(this.hurtBox.x < other.hitBox.x + other.hitBox.width &&
+//                    this.hurtBox.x + this.hurtBox.width > other.hitBox.x &&
+//                    this.hurtBox.y < other.hitBox.y + other.hitBox.height &&
+//                    this.hurtBox.y + this.hurtBox.height > other.hitBox.y){
+//                other.reduceHitPointsBy(attackDamage);
+//                Log.d("Player HP remaining", ": " + other.hitPoints);
+//
+//                this.isAttacking = true;
+//            }
+//        }
+//    }
 
     public void checkIfDead() {
         if (this.hitPoints <= 0) {

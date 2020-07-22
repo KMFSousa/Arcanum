@@ -20,7 +20,7 @@ public class StuffFactory {
 
         Character player = new Character(gameSurface, characterBitmap1, x, y, true, 4, 4, 0.3f, 100, 10, 3 );
         characterList.add(player);
-        PlayerAI playerAI = new PlayerAI(player);
+        PlayerAI playerAI = new PlayerAI(player, gameSurface);
         playerAI.character = player;
         player.setCharacterAI(playerAI);
 

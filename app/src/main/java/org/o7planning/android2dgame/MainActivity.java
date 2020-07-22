@@ -53,7 +53,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 for (Character character: gameSurface.characterList) {
-                    character.attack();
+                    character.ai.attack();
                 }
             }
         });
