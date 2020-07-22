@@ -8,6 +8,9 @@ public class PlayerAI implements CharacterAI {
 
     public static boolean isDead;
     public Character character;
+    public String attackStyle = "Melee";
+    private int attackVectorX = 0;
+    private int attackVectorY = 0;
     private GameSurface gameSurface;
 
     public PlayerAI(Character character, GameSurface gameSurface) {
@@ -16,6 +19,10 @@ public class PlayerAI implements CharacterAI {
         this.gameSurface = gameSurface;
     }
 
+    public void setAttackVector(int x, int y) {
+        this.attackVectorX = x;
+        this.attackVectorY = y;
+    }
 
     public void wander() {
     }
@@ -23,7 +30,8 @@ public class PlayerAI implements CharacterAI {
     public void onUpdate() {
     }
 
-    public void attack() {
+    // TODO: Implement attack speed so things don't die instantly
+    private void meleeAttack() {
         if(this.isPlayer()){
             character.isAttacking = true;
             character.attackAnimationInProgress = false;
@@ -39,6 +47,20 @@ public class PlayerAI implements CharacterAI {
                 }
             }
         }
+    }
+
+    private void rangedAttack() {
+        // Create projectile in correct direction
+    }
+
+
+    public void attack() {
+        if (this.attackStyle.equals("Melee")) {
+            this.meleeAttack();
+        } else {
+            this.rangedAttack();
+        }
+
     }
 
     public boolean hasWeapon(){
