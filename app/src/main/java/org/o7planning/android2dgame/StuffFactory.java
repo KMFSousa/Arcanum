@@ -78,11 +78,14 @@ public class StuffFactory {
         orc.setCharacterAI(orcAI);
 
         Bitmap orcHitbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc_body_hitbox);
+        orcHitbox = Bitmap.createScaledBitmap(orcHitbox, 80, 80, false);
         HitBox hitBox2 = new HitBox(gameSurface, orcHitbox, x, y, orc);
         hitBox2.object = orc;
         orc.setObjectHitbox(hitBox2);
 
-        Bitmap orcHurtbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc_spear_extended_hurtbox);
+//        Bitmap orcHurtbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc_spear_extended_hurtbox);
+        Bitmap orcHurtbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc_body_hitbox);
+        orcHurtbox = Bitmap.createScaledBitmap(orcHurtbox, 80, 80, false);
         HitBox hurtBox1 = new HitBox(gameSurface, orcHurtbox, x, y, orc);
         hurtBox1.object = orc;
         orc.setObjectHurtbox(hurtBox1);

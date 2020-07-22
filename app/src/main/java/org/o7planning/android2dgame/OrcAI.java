@@ -86,4 +86,8 @@ public class OrcAI extends CharacterAI {
         return false;
     }
 
+    public boolean hasWeapon(){
+        return true;
+    }
+
 }
