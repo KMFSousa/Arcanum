@@ -1,6 +1,7 @@
 package org.o7planning.android2dgame;
 
 import android.util.Log;
+import android.util.Pair;
 
 import java.util.Iterator;
 
@@ -24,6 +25,10 @@ public class PlayerAI implements CharacterAI {
     public void setAttackVector(int x, int y) {
         this.attackVectorX = x;
         this.attackVectorY = y;
+    }
+
+    public Pair<Integer, Integer> getAttackVector() {
+        return new Pair<Integer, Integer>(this.attackVectorX, this.attackVectorY);
     }
 
     public void wander() {

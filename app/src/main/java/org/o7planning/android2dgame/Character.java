@@ -280,19 +280,35 @@ public class Character extends GameObject {
 
         // movingVectorX and movingVectorY are +/- values that will determine what direction we are moving in
         // based on the values of these vectors, we can decide which row of sprites we are using
-        if ( movingVectorX != 0 || movingVectorY != 0 ) {
-            if (movingVectorX > 0) {
-                if (movingVectorY > 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
+
+        int vectorX = movingVectorX;
+        int vectorY = movingVectorY;
+
+        if (this.ai instanceof PlayerAI) {
+            PlayerAI playerAI = (PlayerAI) this.ai;
+            if (this.isAttacking) {
+                Pair<Integer, Integer> attackVectors = playerAI.getAttackVector();
+                vectorX = attackVectors.first;
+                vectorY = attackVectors.second;
+            }
+        }
+
+        int vectorXAbsolute = Math.abs(vectorX);
+        int vectorYAbsolute = Math.abs(vectorY);
+
+        if ( vectorX != 0 || vectorY != 0 ) {
+            if (vectorX > 0) {
+                if (vectorY > 0 && vectorXAbsolute < vectorYAbsolute) {
                     this.rowUsing = ROW_TOP_TO_BOTTOM;
-                } else if (movingVectorY < 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
+                } else if (vectorY < 0 && vectorXAbsolute < vectorYAbsolute) {
                     this.rowUsing = ROW_BOTTOM_TO_TOP;
                 } else {
                     this.rowUsing = ROW_LEFT_TO_RIGHT;
                 }
             } else {
-                if (movingVectorY > 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
+                if (vectorY > 0 && vectorXAbsolute < vectorYAbsolute) {
                     this.rowUsing = ROW_TOP_TO_BOTTOM;
-                } else if (movingVectorY < 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
+                } else if (vectorY < 0 && vectorXAbsolute < vectorYAbsolute) {
                     this.rowUsing = ROW_BOTTOM_TO_TOP;
                 } else {
                     this.rowUsing = ROW_RIGHT_TO_LEFT;
