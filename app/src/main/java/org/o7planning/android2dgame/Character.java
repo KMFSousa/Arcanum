@@ -283,6 +283,7 @@ public class Character extends GameObject {
 
         // movingVectorX and movingVectorY are +/- values that will determine what direction we are moving in
         // based on the values of these vectors, we can decide which row of sprites we are using
+        //TODO: update rowusing based on direction of attacks (once twin stick implementation is finished)
         if ( movingVectorX != 0 || movingVectorY != 0 ) {
             if (movingVectorX > 0) {
                 if (movingVectorY > 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
