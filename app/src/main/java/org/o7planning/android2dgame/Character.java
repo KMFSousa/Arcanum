@@ -47,9 +47,10 @@ public class Character extends GameObject {
     public   boolean isAttacking;
     boolean attackAnimationInProgress = false;
 
-    public int hitPoints;
-    public int MAXHITPOINTS;
+    public double hitPoints;
+    public double MAXHITPOINTS;
     public int attackDamage;
+    public double attackSpeed;
 
     private int movingVectorX = 0;
     private int movingVectorY = 0;
@@ -73,7 +74,7 @@ public class Character extends GameObject {
 
     // This method (called in GameSurface.java) will take the sprite sheet we provide it with and create arrays holding the bitmaps of each sprite
 
-    public Character(GameSurface gameSurface, Bitmap image, int x, int y, boolean isPlayer, int spriteSheetRows, int spriteSheetColumns, float velocity, int hitPoints, int attackDamage, int attackAnimationIndex) {
+    public Character(GameSurface gameSurface, Bitmap image, int x, int y, boolean isPlayer, int spriteSheetRows, int spriteSheetColumns, float velocity, double hitPoints, int attackDamage, double attackSpeed, int attackAnimationIndex) {
         super(image, spriteSheetRows, spriteSheetColumns, x, y); // Calls
 
         this.isPlayer = isPlayer;
@@ -82,12 +83,8 @@ public class Character extends GameObject {
         this.hitPoints = hitPoints;
         this.MAXHITPOINTS = hitPoints;
         this.attackDamage = attackDamage;
+        this.attackSpeed = attackSpeed;
         this.attackAnimationIndex = attackAnimationIndex;
-
-
-
-
-
 
         this.topToBottoms = new Bitmap[colCount]; // 3
         this.rightToLefts = new Bitmap[colCount]; // 3
@@ -320,8 +317,8 @@ public class Character extends GameObject {
         }
     }
 
-    public void reduceHitPointsBy(int attackDamage)  {
-        this.hitPoints -= attackDamage;
+    public void reduceHitPointsBy(double damageDealt)  {
+        this.hitPoints -= damageDealt;
         if(this.hitPoints < 0){
             this.hitPoints = 0;
         }

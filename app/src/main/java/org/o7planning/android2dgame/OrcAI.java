@@ -84,7 +84,7 @@ public class OrcAI implements CharacterAI {
                     character.hurtBox.x + character.hurtBox.width > other.hitBox.x &&
                     character.hurtBox.y < other.hitBox.y + other.hitBox.height &&
                     character.hurtBox.y + character.hurtBox.height > other.hitBox.y){
-                other.reduceHitPointsBy(character.attackDamage);
+                other.reduceHitPointsBy((double) character.attackDamage);
                 character.isAttacking = true;
             }
         }
