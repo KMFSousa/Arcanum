@@ -12,7 +12,6 @@ public interface CharacterAI {
 
     public void attack();
 
-
     public boolean hasWeapon();
 
     public boolean isPlayer();
