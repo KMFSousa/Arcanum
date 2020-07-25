@@ -41,6 +41,7 @@ public class Projectile extends GameObject {
         //TODO: check for collision (either with PC or NPC), pass in respective list from gamesurface
         checkCharacterCollision(gameSurface.dungeon.getCurrentRoom().monsterList);
         //TODO:check for collision with environment
+        checkEnvironmentCollision();
     }
 
     public void draw(Canvas canvas){
