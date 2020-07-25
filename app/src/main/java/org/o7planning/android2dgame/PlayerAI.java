@@ -71,7 +71,6 @@ public class PlayerAI implements CharacterAI {
 
         // If time between attacks was greater than 1 second, for example if they stop attacking
         if (deltaTime > (((double) 1)/((double) this.character.hitsPerSecond))*1000) {
-            Log.i("tag", "Deltatime: " + deltaTime + ", blah: " + (((double) 1)/((double) this.character.hitsPerSecond))*1000);
             if (this.attackStyle.equals("Melee")) {
                 this.meleeAttack();
             } else {

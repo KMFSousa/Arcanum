@@ -43,6 +43,7 @@ public class MainActivity extends Activity {
                     double movingVectorY = Math.sin(radAngle) * -10 * strength;
                     //Log.d("Joystick", angle + ": "+movingVectorX+", "+movingVectorY);
                     character.setMovingVector((int)movingVectorX, (int)movingVectorY);
+
                 }
                 // do whatever you want
             }
@@ -56,8 +57,8 @@ public class MainActivity extends Activity {
                 for (Character character: gameSurface.characterList) {
                     PlayerAI playerAI = (PlayerAI) character.ai;
 
-                    double attackVectorX = Math.cos(radAngle) * 10;
-                    double attackVectorY = Math.sin(radAngle) * -10;
+                    double attackVectorX = Math.cos(radAngle) * 10 * strength;
+                    double attackVectorY = Math.sin(radAngle) * -10 * strength;
 
                     // Set character attack vector
                     playerAI.setAttackVector((int) attackVectorX, (int) attackVectorY);

@@ -286,11 +286,12 @@ public class Character extends GameObject {
 
         if (this.ai instanceof PlayerAI) {
             PlayerAI playerAI = (PlayerAI) this.ai;
-            if (this.isAttacking) {
-                Log.i("hype", "yes");
-                Pair<Integer, Integer> attackVectors = playerAI.getAttackVector();
-                vectorX = attackVectors.first;
-                vectorY = attackVectors.second;
+            Pair<Integer, Integer> attackVectors = playerAI.getAttackVector();
+            int tempVectorX = attackVectors.first;
+            int tempVectorY = attackVectors.second;
+            if (tempVectorX != 0 || tempVectorY != 0) {
+                vectorX = tempVectorX;
+                vectorY = tempVectorY;
             }
         }
 
