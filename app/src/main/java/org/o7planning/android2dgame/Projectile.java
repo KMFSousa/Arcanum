@@ -15,6 +15,8 @@ public class Projectile extends GameObject {
     private int attackDamage = 0;
     private boolean isPlayerOwned = true;
     private long lastDrawNanoTime =-1;
+    private int xToMoveTo;
+    private int yToMoveTo;
 
     public Projectile(boolean isPlayerOwned, Bitmap image, int rowCount, int colCount, int x, int y, int movingVectorX, int movingVectorY, GameSurface gameSurface, float velocity, int attackDamage) {
         super(image, rowCount, colCount, x, y);
@@ -25,8 +27,13 @@ public class Projectile extends GameObject {
         this.velocity = velocity;
         this.attackDamage = attackDamage;
         this.isPlayerOwned = isPlayerOwned;
-
+        this.yToMoveTo = yToMoveTo;
+        this.xToMoveTo = xToMoveTo;
     }
+
+    //TODO: If attack vector is 0 do not spawn a projectile
+    //TODO: Fine tune the projectile speed
+
 
     public void update(){
         //TODO: call move()
@@ -59,8 +66,8 @@ public class Projectile extends GameObject {
         float distance = velocity * deltaTime;
 
         // Calculate the new position of the game character.
-        int xToMoveTo = this.x + (int)(distance* movingVectorX / movingVectorLength);
-        int yToMoveTo = this.y + (int)(distance* movingVectorY / movingVectorLength);
+         xToMoveTo = this.x + (int)(distance* movingVectorX / movingVectorLength);
+         yToMoveTo = this.y + (int)(distance* movingVectorY / movingVectorLength);
         this.x = xToMoveTo;
         this.y = yToMoveTo;
 
@@ -88,7 +95,9 @@ public class Projectile extends GameObject {
 
     public void checkEnvironmentCollision(){
         //TODO:Check if the projectile is out of bounds
-
+        if(!gameSurface.dungeon.getCurrentRoom().canMoveProjectile(xToMoveTo, yToMoveTo, this.getWidth(), this.getHeight())) {
+            gameSurface.projectileRemovalList.add(this);
+        }
     }
 
     public void onCollision(){

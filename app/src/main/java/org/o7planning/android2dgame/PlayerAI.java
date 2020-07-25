@@ -63,8 +63,10 @@ public class PlayerAI implements CharacterAI {
 
     private void rangedAttack() {
         // Create projectile in correct direction
-        Bitmap projectileBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.fireball);
-        Projectile projectile = factory.projectile(projectileBitmap, attackVectorX, attackVectorY, true, character.getX(), character.getY());
+        if(attackVectorX != 0 || attackVectorY != 0) {
+            Bitmap projectileBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.fireball);
+            Projectile projectile = factory.projectile(projectileBitmap, attackVectorX, attackVectorY, true, character.getX(), character.getY());
+        }
     }
 
 

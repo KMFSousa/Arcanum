@@ -27,6 +27,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     public List<Explosion> explosionList = new ArrayList<Explosion>();
     public List<Character> removalList = new ArrayList<Character>();
     public List<Projectile> projectileList = new ArrayList<Projectile>();
+    public List<Projectile> projectileRemovalList = new ArrayList<Projectile>();
     public List<Item> itemList = new ArrayList<Item>();
     public GameSurface(Context context)  {
         super(context);
@@ -73,6 +74,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         characterList.removeAll(removalList);
+        projectileList.removeAll(projectileRemovalList);
     }
 
     @Override
