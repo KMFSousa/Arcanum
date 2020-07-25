@@ -78,11 +78,13 @@ public class StuffFactory {
         orc.setCharacterAI(orcAI);
 
         Bitmap orcHitbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc_body_hitbox);
+        orcHitbox = Bitmap.createScaledBitmap(orcHitbox, 90, 90, false);
         HitBox hitBox2 = new HitBox(gameSurface, orcHitbox, x, y, orc);
         hitBox2.object = orc;
         orc.setObjectHitbox(hitBox2);
 
         Bitmap orcHurtbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc_spear_extended_hurtbox);
+        orcHurtbox = Bitmap.createScaledBitmap(orcHurtbox, 90, 90, false);
         HitBox hurtBox1 = new HitBox(gameSurface, orcHurtbox, x, y, orc);
         hurtBox1.object = orc;
         orc.setObjectHurtbox(hurtBox1);
@@ -96,7 +98,7 @@ public class StuffFactory {
     }
 
     public Projectile projectile(Bitmap projectileBitmap, int movingVectorX, int movingVectorY, boolean isPlayerOwned, int originX, int originY ){
-        Projectile projectile = new Projectile(isPlayerOwned, projectileBitmap, 1, 1, originX, originY, movingVectorX, movingVectorY, gameSurface, 0.375f, 50);
+        Projectile projectile = new Projectile(isPlayerOwned, projectileBitmap, 1, 1, originX, originY, movingVectorX, movingVectorY, gameSurface, 0.1f, 50);
         gameSurface.projectileList.add(projectile);
 
         Bitmap projectileHurtbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.characterhitbox);

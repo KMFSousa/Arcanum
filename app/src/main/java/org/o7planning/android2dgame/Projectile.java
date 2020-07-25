@@ -75,6 +75,8 @@ public class Projectile extends GameObject {
         hurtBox.x = this.getX();
         hurtBox.y = this.getY();
 
+        lastDrawNanoTime = now;
+
     }
 
     public void checkCharacterCollision(List<Character> targetList) {
