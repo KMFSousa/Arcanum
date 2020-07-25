@@ -212,12 +212,15 @@ public class Map {
         int xDestWithWidth = xDest + Math.round(width);
         int yDestWithHeight = yDest + Math.round(height);
 
-        int destRow = this.getRowFromY(yDestWithHeight);
-        int destCol = this.getColFromX(xDestWithWidth);
+        if (xDestWithWidth > 0 && xDestWithWidth < this.screenWidth && yDestWithHeight > 0 && yDestWithHeight < this.screenHeight) {
+            int destRow = this.getRowFromY(yDestWithHeight);
+            int destCol = this.getColFromX(xDestWithWidth);
 
-        Tile destTile = this.tileArray[destRow][destCol];
+            Tile destTile = this.tileArray[destRow][destCol];
 
-        return !destTile.isCollidable();
+            return !destTile.isCollidable();
+        }
+        return false;
     }
 
     public Boolean isPointCollidable(int x, int y) {
