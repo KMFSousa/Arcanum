@@ -217,7 +217,7 @@ public class Map {
 
         Tile destTile = this.tileArray[destRow][destCol];
 
-        return destTile.isCollidable();
+        return !destTile.isCollidable();
     }
 
     public Boolean isPointCollidable(int x, int y) {
