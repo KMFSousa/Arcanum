@@ -3,6 +3,7 @@ package org.o7planning.android2dgame;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class Projectile extends GameObject {
@@ -24,7 +25,6 @@ public class Projectile extends GameObject {
         this.velocity = velocity;
         this.attackDamage = attackDamage;
         this.isPlayerOwned = isPlayerOwned;
-        this.hurtBox = hurtBox;
 
     }
 
@@ -32,6 +32,7 @@ public class Projectile extends GameObject {
         //TODO: call move()
         move();
         //TODO: check for collision (either with PC or NPC), pass in respective list from gamesurface
+        checkCharacterCollision(gameSurface.dungeon.getCurrentRoom().monsterList);
         //TODO:check for collision with environment
     }
 
@@ -62,14 +63,32 @@ public class Projectile extends GameObject {
         int yToMoveTo = this.y + (int)(distance* movingVectorY / movingVectorLength);
         this.x = xToMoveTo;
         this.y = yToMoveTo;
+
+        hurtBox.x = this.getX();
+        hurtBox.y = this.getY();
+
     }
 
-    public void checkCharacterCollision(List<Character> targetList){
+    public void checkCharacterCollision(List<Character> targetList) {
         //TODO:Check the hurtbox of the projectile against the hitbox(es) of its target(s)
+        if (!targetList.isEmpty()) {
+            Iterator<Character> iterator = targetList.iterator();
+
+            while (iterator.hasNext()) {
+                Character other = iterator.next();
+                if (this.hurtBox.x < other.hitBox.x + other.width &&
+                        this.hurtBox.x + this.hurtBox.width > other.x &&
+                        this.hurtBox.y < other.hitBox.y + other.height &&
+                        this.hurtBox.y + this.hurtBox.height > other.hitBox.y) {
+                    other.reduceHitPointsBy(this.attackDamage);
+                }
+            }
+        }
     }
 
     public void checkEnvironmentCollision(){
         //TODO:Check if the projectile is out of bounds
+
     }
 
     public void onCollision(){
