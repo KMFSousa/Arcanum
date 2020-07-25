@@ -280,20 +280,35 @@ public class Character extends GameObject {
 
         // movingVectorX and movingVectorY are +/- values that will determine what direction we are moving in
         // based on the values of these vectors, we can decide which row of sprites we are using
-        //TODO: update rowusing based on direction of attacks (once twin stick implementation is finished)
-        if ( movingVectorX != 0 || movingVectorY != 0 ) {
-            if (movingVectorX > 0) {
-                if (movingVectorY > 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
+        int vectorX = movingVectorX;
+        int vectorY = movingVectorY;
+
+        if (this.ai instanceof PlayerAI) {
+            PlayerAI playerAI = (PlayerAI) this.ai;
+            if (this.isAttacking) {
+                Pair<Integer, Integer> attackVectors = playerAI.getAttackVector();
+                vectorX = attackVectors.first;
+                vectorY = attackVectors.second;
+            }
+        }
+
+        int vectorXAbsolute = Math.abs(vectorX);
+        int vectorYAbsolute = Math.abs(vectorY);
+
+        if ( vectorX != 0 || vectorY != 0 ) {
+            if (vectorX > 0) {
+                if (vectorY > 0 && vectorXAbsolute < vectorYAbsolute) {
+
                     this.rowUsing = ROW_TOP_TO_BOTTOM;
-                } else if (movingVectorY < 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
+                } else if (vectorY < 0 && vectorXAbsolute < vectorYAbsolute) {
                     this.rowUsing = ROW_BOTTOM_TO_TOP;
                 } else {
                     this.rowUsing = ROW_LEFT_TO_RIGHT;
                 }
             } else {
-                if (movingVectorY > 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
+                if (vectorY > 0 && vectorXAbsolute < vectorYAbsolute) {
                     this.rowUsing = ROW_TOP_TO_BOTTOM;
-                } else if (movingVectorY < 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
+                } else if (vectorY < 0 && vectorXAbsolute < vectorYAbsolute) {
                     this.rowUsing = ROW_BOTTOM_TO_TOP;
                 } else {
                     this.rowUsing = ROW_RIGHT_TO_LEFT;
@@ -309,8 +324,8 @@ public class Character extends GameObject {
         canvas.drawBitmap(bitmap, x, y, null);
         // Last draw time.
         this.lastDrawNanoTime= System.nanoTime();
-//        hitBox.draw(canvas);
-//        hurtBox.draw(canvas);
+        hitBox.draw(canvas);
+        hurtBox.draw(canvas);
 
         // healthBar Logic = Always draw for player, draw if taken damage, and don't draw if dead //TODO the last part shouldn't be necessary but for the demo it looks nicer
         if((this.isPlayer || this.hitPoints < this.MAXHITPOINTS) && this.hitPoints != 0){

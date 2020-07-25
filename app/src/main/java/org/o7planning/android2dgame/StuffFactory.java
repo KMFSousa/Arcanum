@@ -20,7 +20,7 @@ public class StuffFactory {
 
         Character player = new Character(gameSurface, characterBitmap1, x, y, true, 4, 4, 0.3f, 100, 10, 0.5, 3 );
         characterList.add(player);
-        PlayerAI playerAI = new PlayerAI(player, gameSurface);
+        PlayerAI playerAI = new PlayerAI(player, gameSurface, this);
         playerAI.character = player;
         player.setCharacterAI(playerAI);
 
@@ -93,6 +93,18 @@ public class StuffFactory {
         orc.setHealthBar(healthBar);
 
         return orc;
+    }
+
+    public Projectile projectile(Bitmap projectileBitmap, int movingVectorX, int movingVectorY, boolean isPlayerOwned, int originX, int originY ){
+        Projectile projectile = new Projectile(isPlayerOwned, projectileBitmap, 1, 1, originX, originY, movingVectorX, movingVectorY, gameSurface, 0.6f, 50);
+        gameSurface.projectileList.add(projectile);
+
+        Bitmap projectileHurtbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.characterhitbox);
+        HitBox hitBox = new HitBox(gameSurface, projectileHurtbox, originX, originY, projectile);
+        hitBox.object = projectile;
+        projectile.setObjectHitbox(hitBox);
+
+        return projectile;
     }
 //    public Item newSword() {
 //        Bitmap swordBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.sword_attack_animation);

@@ -27,11 +27,10 @@ public class OrcAI implements CharacterAI {
     }
 
     public void onUpdate() {
-        if(closeToPlayer(250)) {
+        if(closeToPlayer(50)) {
+            character.setMovingVector(0, 0);
             attack();
-        }
-
-        if (closeToPlayer(1200)) {
+        } else if (closeToPlayer(1200)) {
 
             // TODO: Base pathing in accordance to line of sight
             // Draw a vector from monster to player
@@ -102,7 +101,6 @@ public class OrcAI implements CharacterAI {
 
     public boolean closeToPlayer(int requiredDistance) {
         int distanceToPlayer = GameObject.getDistanceBetweenObjects(this.character, player);
-
 
         if (distanceToPlayer <= requiredDistance) {
             return true;

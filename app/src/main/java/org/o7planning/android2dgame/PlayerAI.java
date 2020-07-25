@@ -1,6 +1,9 @@
 package org.o7planning.android2dgame;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
+import android.util.Pair;
 
 import java.util.Iterator;
 
@@ -14,16 +17,22 @@ public class PlayerAI implements CharacterAI {
     private GameSurface gameSurface;
     private long lastAttackNanoTime = -1;
     private double damageDealt = 0;
+    private StuffFactory factory;
 
-    public PlayerAI(Character character, GameSurface gameSurface) {
+    public PlayerAI(Character character, GameSurface gameSurface, StuffFactory factory) {
         this.character = character;
         this.isDead = isDead;
         this.gameSurface = gameSurface;
+        this.factory = factory;
     }
 
     public void setAttackVector(int x, int y) {
         this.attackVectorX = x;
         this.attackVectorY = y;
+    }
+
+    public Pair<Integer, Integer> getAttackVector() {
+        return new Pair<Integer, Integer>(this.attackVectorX, this.attackVectorY);
     }
 
     public void wander() {
@@ -53,6 +62,8 @@ public class PlayerAI implements CharacterAI {
 
     private void rangedAttack() {
         // Create projectile in correct direction
+        Bitmap projectileBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.fireball);
+        Projectile projectile = factory.projectile(projectileBitmap, attackVectorX, attackVectorY, true, character.getX(), character.getY());
     }
 
 
