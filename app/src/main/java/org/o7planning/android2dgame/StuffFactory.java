@@ -96,14 +96,13 @@ public class StuffFactory {
     }
 
     public Projectile projectile(Bitmap projectileBitmap, int movingVectorX, int movingVectorY, boolean isPlayerOwned, int originX, int originY ){
-        Projectile projectile = new Projectile(isPlayerOwned, projectileBitmap, 1, 1, originX, originY, movingVectorX, movingVectorY, gameSurface, 0.6f, 50);
+        Projectile projectile = new Projectile(isPlayerOwned, projectileBitmap, 1, 1, originX, originY, movingVectorX, movingVectorY, gameSurface, 0.375f, 50);
         gameSurface.projectileList.add(projectile);
 
         Bitmap projectileHurtbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.characterhitbox);
-        HitBox hitBox = new HitBox(gameSurface, projectileHurtbox, originX, originY, projectile);
-        hitBox.object = projectile;
-        projectile.setObjectHitbox(hitBox);
-
+        HitBox hurtBox3 = new HitBox(gameSurface, projectileHurtbox, originX, originY, projectile);
+        hurtBox3.object = projectile;
+        projectile.setObjectHurtbox(hurtBox3);
         return projectile;
     }
 //    public Item newSword() {
