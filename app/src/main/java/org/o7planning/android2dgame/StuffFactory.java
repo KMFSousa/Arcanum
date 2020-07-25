@@ -18,7 +18,7 @@ public class StuffFactory {
     public Character newPlayer(List<Character> characterList, int x, int y) {
         Bitmap characterBitmap1 = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.spritesheet);
 
-        Character player = new Character(gameSurface, characterBitmap1, x, y, true, 4, 4, 0.3f, 100, 10, 0.5, 3 );
+        Character player = new Character(gameSurface, characterBitmap1, x, y, true, 4, 4, 0.3f, 100, 10, 3, 3 );
         characterList.add(player);
         PlayerAI playerAI = new PlayerAI(player, gameSurface, this);
         playerAI.character = player;
@@ -44,7 +44,7 @@ public class StuffFactory {
 
     public Character newSlime(List<Character> characterList, int x, int y) {
         Bitmap slimeBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.slimes1);
-        Character slime = new Character(gameSurface, slimeBitmap, x, y, false, 4, 5, 0.1f, 30, 1, 0.5, 4);
+        Character slime = new Character(gameSurface, slimeBitmap, x, y, false, 4, 5, 0.1f, 30, 1, 3, 4);
         characterList.add(slime);
         SlimeAI slimeAI = new SlimeAI(slime, gameSurface, this);
         slimeAI.character = slime;
@@ -71,7 +71,7 @@ public class StuffFactory {
     public Character newOrc(List<Character> characterList, int x, int y) {
         Bitmap orcBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc);
         orcBitmap = Bitmap.createScaledBitmap(orcBitmap, 1000, 500, false);
-        Character orc = new Character(gameSurface, orcBitmap, x, y, false, 4, 8, 0.1f, 30, 1, 0.5, 4);
+        Character orc = new Character(gameSurface, orcBitmap, x, y, false, 4, 8, 0.1f, 30, 1, 3, 4);
         characterList.add(orc);
         OrcAI orcAI = new OrcAI(orc, gameSurface);
         orcAI.character = orc;

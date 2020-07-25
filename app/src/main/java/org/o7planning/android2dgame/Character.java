@@ -47,10 +47,10 @@ public class Character extends GameObject {
     public   boolean isAttacking;
     boolean attackAnimationInProgress = false;
 
-    public double hitPoints;
-    public double MAXHITPOINTS;
+    public int hitPoints;
+    public int MAXHITPOINTS;
     public int attackDamage;
-    public double attackSpeed;
+    public int hitsPerSecond;
 
     private int movingVectorX = 0;
     private int movingVectorY = 0;
@@ -74,7 +74,7 @@ public class Character extends GameObject {
 
     // This method (called in GameSurface.java) will take the sprite sheet we provide it with and create arrays holding the bitmaps of each sprite
 
-    public Character(GameSurface gameSurface, Bitmap image, int x, int y, boolean isPlayer, int spriteSheetRows, int spriteSheetColumns, float velocity, double hitPoints, int attackDamage, double attackSpeed, int attackAnimationIndex) {
+    public Character(GameSurface gameSurface, Bitmap image, int x, int y, boolean isPlayer, int spriteSheetRows, int spriteSheetColumns, float velocity, int hitPoints, int attackDamage, int hitsPerSecond, int attackAnimationIndex) {
         super(image, spriteSheetRows, spriteSheetColumns, x, y); // Calls
 
         this.isPlayer = isPlayer;
@@ -83,7 +83,7 @@ public class Character extends GameObject {
         this.hitPoints = hitPoints;
         this.MAXHITPOINTS = hitPoints;
         this.attackDamage = attackDamage;
-        this.attackSpeed = attackSpeed;
+        this.hitsPerSecond = hitsPerSecond;
         this.attackAnimationIndex = attackAnimationIndex;
 
         this.topToBottoms = new Bitmap[colCount]; // 3
@@ -285,10 +285,12 @@ public class Character extends GameObject {
 
         if (this.ai instanceof PlayerAI) {
             PlayerAI playerAI = (PlayerAI) this.ai;
-            if (this.isAttacking) {
-                Pair<Integer, Integer> attackVectors = playerAI.getAttackVector();
-                vectorX = attackVectors.first;
-                vectorY = attackVectors.second;
+            Pair<Integer, Integer> attackVectors = playerAI.getAttackVector();
+            int tempVectorX = attackVectors.first;
+            int tempVectorY = attackVectors.second;
+            if (tempVectorX != 0 || tempVectorY != 0) {
+                vectorX = tempVectorX;
+                vectorY = tempVectorY;
             }
         }
 
@@ -333,7 +335,7 @@ public class Character extends GameObject {
         }
     }
 
-    public void reduceHitPointsBy(double damageDealt)  {
+    public void reduceHitPointsBy(int damageDealt)  {
         this.hitPoints -= damageDealt;
         if(this.hitPoints < 0){
             this.hitPoints = 0;

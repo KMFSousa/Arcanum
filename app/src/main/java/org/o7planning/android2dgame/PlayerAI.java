@@ -19,6 +19,7 @@ public class PlayerAI implements CharacterAI {
     private double damageDealt = 0;
     private StuffFactory factory;
 
+
     public PlayerAI(Character character, GameSurface gameSurface, StuffFactory factory) {
         this.character = character;
         this.isDead = isDead;
@@ -54,7 +55,7 @@ public class PlayerAI implements CharacterAI {
                         character.hurtBox.x + character.hurtBox.width > other.x &&
                         character.hurtBox.y < other.hitBox.y + other.height &&
                         character.hurtBox.y + character.hurtBox.height > other.hitBox.y){
-                    other.reduceHitPointsBy(this.damageDealt);
+                    other.reduceHitPointsBy(this.character.attackDamage);
                 }
             }
         }
@@ -77,28 +78,14 @@ public class PlayerAI implements CharacterAI {
         double deltaTime = (double) ((now - this.lastAttackNanoTime)/1000000);
 
         // If time between attacks was greater than 1 second, for example if they stop attacking
-        if (deltaTime > 1000) {
-            // Cap deltaTime at 1 second -- this means their first hit will do full damage
-            // TODO: Can adjust as necessary
-            deltaTime = 1000;
-        }
-
-        // Let's say we want a DPS equal to the character's attack damage, which for argument's sake is 10
-        // We need to scale down the damage done based on how much time has passed such that only 10 damage can occur in 1 second
-        // If, for example, a tick occurred in 14 milliseconds, we would need 1 second/14 milliseconds = ~71 ticks to make up 1 seconds
-        // If we want 10 DPS, this means that we should be dividing our wanted DPS by the # of ticks to get how much damage we should be doing per tick
-        if (now != this.lastAttackNanoTime) {
-            double numTicksForOneSecond = 1000/deltaTime;
-            this.damageDealt = this.character.attackDamage/numTicksForOneSecond;
-
+        if (deltaTime > (((double) 1)/((double) this.character.hitsPerSecond))*1000) {
             if (this.attackStyle.equals("Melee")) {
                 this.meleeAttack();
             } else {
                 this.rangedAttack();
             }
+            this.lastAttackNanoTime = now;
         }
-
-        this.lastAttackNanoTime = now;
     }
 
     public boolean hasWeapon(){
