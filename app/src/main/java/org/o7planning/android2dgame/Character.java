@@ -88,7 +88,6 @@ public class Character extends GameObject {
 
 
 
-
         this.topToBottoms = new Bitmap[colCount]; // 3
         this.rightToLefts = new Bitmap[colCount]; // 3
         this.leftToRights = new Bitmap[colCount]; // 3

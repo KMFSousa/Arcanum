@@ -110,11 +110,11 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
         StuffFactory stuffFactory = new StuffFactory(this);
 
-        int difficulty = 1; // Default Value? Can be changed (Values 1 - 3)
+        int difficulty = 3; // Default Value? Can be changed (Values 1 - 3)
 
         this.dungeon = new Dungeon(this);
 
-        Character player = stuffFactory.newPlayer(this.characterList, 850, 500);
+        Character player = stuffFactory.newPlayer(this.characterList, 850, 500, difficulty);
 
         Map[][] mapArr = new Map[3][3];
 
