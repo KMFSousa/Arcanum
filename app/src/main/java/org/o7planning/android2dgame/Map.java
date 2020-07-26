@@ -36,7 +36,13 @@ public class Map {
     private int screenWidth;
     private int screenHeight;
 
-    public Map(GameSurface gameSurface, Bitmap startingImage, String csvName, StuffFactory stuffFactory, Context context) {
+    private int difficulty;
+    private int spawnCount;
+    private String mapType;
+    private String[] monsterTypes;
+    private int[][] spawnPoints;
+
+    public Map(GameSurface gameSurface, Bitmap startingImage, String csvName, StuffFactory stuffFactory, Context context, int difficulty) {
         this.gameSurface = gameSurface;
         this.context = context;
         this.csvName = csvName;
@@ -64,7 +70,33 @@ public class Map {
         this.tileArray = new Tile[rows][columns];
         this.createTiles(currentRoomBitmap, rows, columns);
 
+        this.difficulty = difficulty;
+
+        this.setMonsterSpawnAndTypes(this.difficulty, this.mapType);
+
         this.populateMonsterList(stuffFactory);
+    }
+
+    private void setMonsterSpawnAndTypes(int difficulty, String mapType) {
+        if (mapType == "SPAWN") {
+            this.spawnCount = 0;
+            this.monsterTypes = new String[0];
+        } else if (mapType == "BOSS"){
+            this.spawnCount = difficulty + 2; // Temporary
+            this.monsterTypes = new String[]{"slime"};
+        } else if (mapType == "REGULAR"){
+            if (difficulty == 1) {
+                this.spawnCount = this.difficulty + (int)(Math.random() * 2);
+                this.monsterTypes = new String[]{"orc"};
+            } else {
+                this.spawnCount = this.difficulty + (int)(Math.random() * 3);
+                this.monsterTypes = new String[]{"orc", "slime"};
+            }
+        } else {
+            // Unknown Map Type
+            this.spawnCount = 0;
+            this.monsterTypes = new String[0];
+        }
     }
 
     private void populateMonsterList(StuffFactory stuffFactory) {
@@ -106,16 +138,22 @@ public class Map {
     private int getResourceFromCSVName(String name) throws Exception {
         switch(name) {
             case "blue_room":
+                mapType = "REGULAR";
                 return R.raw.blue_room;
             case "red_room":
+                mapType = "REGULAR";
                 return R.raw.red_room;
             case "green_room":
+                mapType = "SPAWN";
                 return R.raw.green_room;
             case "box_room":
+                mapType = "REGULAR";
                 return R.raw.box_room;
             case "sewers":
+                mapType = "REGULAR";
                 return R.raw.sewers;
             case "boss_room":
+                mapType = "BOSS";
                 return R.raw.boss_room;
             default:
                 throw new Exception("Error: No Resource Found for CSV.");

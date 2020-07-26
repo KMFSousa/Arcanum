@@ -110,6 +110,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
         StuffFactory stuffFactory = new StuffFactory(this);
 
+        int difficulty = 1; // Default Value? Can be changed (Values 1 - 3)
+
         this.dungeon = new Dungeon(this);
 
         Character player = stuffFactory.newPlayer(this.characterList, 850, 500);
@@ -117,27 +119,27 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         Map[][] mapArr = new Map[3][3];
 
         Bitmap mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.blue_room);
-        Map map = new Map(this, mapImage, "blue_room", stuffFactory, context);
+        Map map = new Map(this, mapImage, "blue_room", stuffFactory, context, difficulty);
         mapArr[0][0] = map;
 
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.red_room);
-        map = new Map(this, mapImage, "red_room", stuffFactory, context);
+        map = new Map(this, mapImage, "red_room", stuffFactory, context, difficulty);
         mapArr[1][0] = map;
 
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.box_room);
-        map = new Map(this, mapImage, "box_room", stuffFactory, context);
+        map = new Map(this, mapImage, "box_room", stuffFactory, context, difficulty);
         mapArr[0][1] = map;
 
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.green_room);
-        map = new Map(this, mapImage, "green_room", stuffFactory, context);
+        map = new Map(this, mapImage, "green_room", stuffFactory, context, difficulty);
         mapArr[2][0] = map;
 
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.sewers);
-        map = new Map(this, mapImage, "sewers", stuffFactory, context);
+        map = new Map(this, mapImage, "sewers", stuffFactory, context, difficulty);
         mapArr[1][1] = map;
 
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.boss_room);
-        map = new Map(this, mapImage, "boss_room", stuffFactory, context);
+        map = new Map(this, mapImage, "boss_room", stuffFactory, context, difficulty);
         mapArr[1][2] = map;
 
         this.dungeon.populateMapArray(mapArr);
