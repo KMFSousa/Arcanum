@@ -6,11 +6,12 @@ public class PlayerAI extends CharacterAI {
 
     public static boolean isDead;
     private GameSurface gameSurface;
+    public Character character;
 
     public PlayerAI(Character character, Dungeon dungeon) {
         super(character, dungeon);
         this.isDead = isDead;
-
+        this.character = character;
     }
 
     public void onUpdate() {

@@ -7,26 +7,30 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.*;
+
+import static java.lang.Integer.parseInt;
 
 public class LootTables {
 //    protected final int mobID;
-    private String[][] dropTable;
-    private String[][] mobTable;
+    protected String[][] dropTable;
+    protected String[][] mobTable;
     protected int dropRows;
     protected int dropCol;
     protected int mobRow;
     protected int mobCol;
+    public Character player;
     private Context context;
-    public LootTables(Context context) {
+    public LootTables(Context context ) {
         this.context = context;
-        this.mobRow = 4;
-        this.mobCol = 6;
-        this.dropRows = 7;
+        this.mobRow = 3;
+        this.mobCol = 7;
+        this.dropRows = 6;
         this.dropCol = 3;
         this.dropTable = new String[dropRows][dropCol];
         this.mobTable = new String[mobRow][mobCol];
         this.populateCsvArray();
-
+        this.player = player;
     }
 
     public void  populateCsvArray() {
@@ -46,7 +50,7 @@ public class LootTables {
                     if (row != 0) {
                         String value = lineArray[col];
                         Log.i("Col Val:", value);
-                        this.dropTable[row][col] = value;
+                        this.dropTable[row-1][col] = value;
                     }
                 }
                 row++;
@@ -59,7 +63,9 @@ public class LootTables {
                     if (row != 0) {
                         String value = lineArray[col];
                         Log.i("Col Val:", value);
-                        this.mobTable[row][col] = value;
+                        Log.i("row and col", lineArray.length + "") ;
+
+                        this.mobTable[row-1][col] = value;
                     }
                 }
                 row++;
@@ -85,8 +91,70 @@ public class LootTables {
         }
     }
 
-    public String[] roulette (int mobID) {
-        int itemQuantity =
-        String[] output = new String[];
+    public List<Integer> roulette (int mobID) {
+        int itemQuantity = parseInt(this.mobTable[mobID][5]);
+        List<Integer> output = new ArrayList<Integer>();
+        int itemLB = parseInt(this.mobTable[mobID][3]);
+        int itemUB = parseInt(this.mobTable[mobID][4]);
+        int num_items = 0;
+        Random ran = new Random();
+        int roulette[] = new int[] {
+                -1, -1, -1, -1, -1, -1
+        };
+
+        for(int i = 0; i < this.dropTable.length; i ++) {
+//
+            int dropVal = parseInt(this.dropTable[i][2]);
+            if (dropVal <= itemUB && dropVal >= itemLB) {
+                roulette[num_items] = parseInt(this.dropTable[i][0]);
+                num_items++;
+            }
+        }
+//        Log.i("Test:", itemQuantity + " Wtff");
+//        for (int j =0; j < roulette.length; j++) {
+//            Log.i("Roulette Items", roulette[j]);
+//        }
+
+        int index = 0;
+        for (int i = 0; i < itemQuantity; i++) {
+            int randomInt = ran.nextInt(roulette.length);
+            output.add(roulette[randomInt]);
+//            Log.i("Test Output:", output[index]);
+            index ++;
+        }
+
+        return output;
     }
+
+    public void applyItems (List<Integer> items, Character player) {
+
+        for (int item : items) {
+            Log.i("ApplyItems", item+"");
+            if(item == 0){
+                Log.i("Here: ", "IT SHOULD WORK " + player.hitPoints);
+                player.hitPoints = player.MAXHITPOINTS;
+                Log.i("Hit points", player.hitPoints + "");
+            } else if(item == 1) {
+                Log.i("Attack Before:", player.attackDamage + "");
+                player.attackDamage +=100;
+                Log.i("Attack after:", player.attackDamage + "");
+            } else if(item == 2) {
+                player.defence += 1;
+            } else if(item == 3) {
+                // Implement Speed change
+            } else if(item == 4) {
+                Log.i("Attack Before:", player.attackDamage + "");
+                player.attackDamage += 1;
+                Log.i("Attack after:", player.attackDamage + "");
+            } else if(item == 5) {
+                player.numRocks ++;
+                if (player.numRocks == 5) {
+                    player.attackDamage +=1;
+                    player.numRocks = 0;
+                }
+            }
+        }
+    }
+
 }
+

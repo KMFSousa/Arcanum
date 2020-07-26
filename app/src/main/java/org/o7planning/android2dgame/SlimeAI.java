@@ -11,6 +11,7 @@ public class SlimeAI extends CharacterAI {
     private StuffFactory factory;
     private int positionX;
     private int postitionY;
+    private int mobID;
 
     private int distanceToPlayerX;
     private int distanceToPlayerY;
@@ -26,6 +27,7 @@ public class SlimeAI extends CharacterAI {
         List<Character> playerList = gameSurface.characterList;
         Iterator<Character> iter = playerList.iterator();
         this.player = iter.next();
+        this.mobID = 0;
 
     }
 

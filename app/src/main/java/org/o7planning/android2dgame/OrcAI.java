@@ -10,6 +10,7 @@ public class OrcAI extends CharacterAI {
     private StuffFactory factory;
     private int positionX;
     private int positionY;
+    private int mobID;
 
     private int distanceToPlayerX;
     private int distanceToPlayerY;
@@ -21,7 +22,7 @@ public class OrcAI extends CharacterAI {
         this.gameSurface = gameSurface;
         this.factory = factory;
         this.player = gameSurface.characterList.get(0);
-
+        this.mobID = 1;
     }
 
     public void onUpdate() {

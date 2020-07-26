@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.util.Log;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 import android.util.Pair;
@@ -11,6 +13,8 @@ import android.util.Pair;
 
 import java.util.Iterator;
 import java.util.logging.Logger;
+
+import static java.lang.Integer.parseInt;
 
 public class Character extends GameObject {
 
@@ -49,11 +53,15 @@ public class Character extends GameObject {
 
     public int hitPoints;
     public int MAXHITPOINTS;
-    private int attackDamage;
-
+    public int attackDamage;
+    public int defence;
+    public int numRocks;
     private int movingVectorX = 0;
     private int movingVectorY = 0;
-
+    protected int mobID;
+    public int[] mobDefense = new int[] {
+            1,3,5, 0
+    };
     private Pair<Boolean, Boolean> movePair;
 
     private long lastDrawNanoTime =-1;
@@ -73,15 +81,16 @@ public class Character extends GameObject {
 
     // This method (called in GameSurface.java) will take the sprite sheet we provide it with and create arrays holding the bitmaps of each sprite
 
-    public Character(GameSurface gameSurface, Bitmap image, int x, int y, boolean isPlayer, int spriteSheetRows, int spriteSheetColumns, float velocity, int hitPoints, int attackDamage, int attackAnimationIndex) {
+    public Character(GameSurface gameSurface, Bitmap image, int x, int y, boolean isPlayer, int spriteSheetRows, int spriteSheetColumns, float velocity, int hitPoints, int attackDamage, int attackAnimationIndex, int mobID) {
         super(image, spriteSheetRows, spriteSheetColumns, x, y); // Calls
-
+        this.mobID = mobID;
         this.isPlayer = isPlayer;
         this.gameSurface= gameSurface;
         this.velocity = velocity;
         this.hitPoints = hitPoints;
         this.MAXHITPOINTS = hitPoints;
         this.attackDamage = attackDamage;
+        this.defence = this.mobDefense[mobID];
         this.attackAnimationIndex = attackAnimationIndex;
 
 
@@ -321,7 +330,11 @@ public class Character extends GameObject {
     }
 
     public void reduceHitPointsBy(int attackDamage)  {
-        this.hitPoints -= attackDamage;
+        if (attackDamage > this.defence) {
+            this.hitPoints -= attackDamage - defence;
+        } else {
+            this.hitPoints --;
+        }
         if(this.hitPoints < 0){
             this.hitPoints = 0;
         }
@@ -391,12 +404,26 @@ public class Character extends GameObject {
         }
     }
 
+    public void applyItem(String item) {
+
+    }
+
     public void checkIfDead() {
+        List<Integer> items;
+
         if (this.hitPoints <= 0) {
-            if(!ai.isPlayer()){gameSurface.removalList.add(this);}
+            if(!ai.isPlayer()){
+                Log.i("Mob ID:", mobID +"");
+                items = this.gameSurface.lootTables.roulette(mobID);
+                for (int i = 0; i < items.size(); i++) {
+                    Log.i("ITEM:", items.get(i)+"");
+                }
+                gameSurface.upgradeList.addAll(items);
+//                this.gameSurface.lootTables.applyItems(items, this.gameSurface.player);
+                gameSurface.removalList.add(this);
+            }
             else if(ai.isPlayer()){((PlayerAI) ai).isDead = true;}
         }
     }
-
 
 }

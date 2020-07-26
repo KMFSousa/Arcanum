@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.LinearLayout;
@@ -23,8 +24,10 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     public final List<Explosion> explosionList = new ArrayList<Explosion>();
     public final List<Character> monsterList = new ArrayList<Character>();
     public final List<Character> removalList = new ArrayList<Character>();
+    public final List<Integer> upgradeList = new ArrayList<Integer>();
     public final List<Item> itemList = new ArrayList<Item>();
     public LootTables lootTables;
+    public Character player;
     public GameSurface(Context context)  {
         super(context);
 
@@ -35,6 +38,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
         // Set callback.
         this.getHolder().addCallback(this);
+        this.lootTables = new LootTables(this.context);
     }
 
     // MASTER UPDATE CONTROL
@@ -64,7 +68,10 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
                 iterator.remove();
             }
         }
-
+        if(!upgradeList.isEmpty()) {
+            lootTables.applyItems(upgradeList, this.player);
+            upgradeList.clear();
+        }
         monsterList.removeAll(removalList);
         characterList.removeAll(removalList);
     }
@@ -98,6 +105,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
     private void createCreatures(StuffFactory stuffFactory, Dungeon dungeon) {
         Character player = stuffFactory.newPlayer(dungeon);
+        this.player = player;
         Character monster = stuffFactory.newMonster(dungeon);
         Character orc = stuffFactory.newOrc(dungeon);
         //Item sword = stuffFactory.newSword();
@@ -114,7 +122,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     // The surfaceCreated method is called immediately after the surface is first created (in MainActivity)
     // The gameThread will be what calls the update method on the character
     public void surfaceCreated(SurfaceHolder holder) {
-        lootTables = new LootTables(this.context);
+
         Map[][] mapArr = new Map[3][3];
         Bitmap mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.blue_room);
         Map map = new Map(this, mapImage, R.raw.blue_room, context);
@@ -142,7 +150,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
         this.dungeon = new Dungeon(this, mapArr);
 
-        StuffFactory stuffFactory = new StuffFactory(this);
+        StuffFactory stuffFactory = new StuffFactory(this, context);
         createCreatures(stuffFactory, dungeon);
 
         // Create a thread that will handle the running of the game (character movements and such) that can be easily paused without having to add excess logic to the main thread
