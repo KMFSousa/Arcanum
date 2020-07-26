@@ -15,10 +15,10 @@ public class StuffFactory {
 
     //TODO: UPDATE CHARACTER AND ITEM CONSTRUCTORS WITH ATTRIBUTES
 
-    public Character newPlayer(List<Character> characterList, int x, int y) {
+    public Character newPlayer(List<Character> characterList, int x, int y, int difficulty) {
         Bitmap characterBitmap1 = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.spritesheet);
 
-        Character player = new Character(gameSurface, characterBitmap1, x, y, true, 4, 4, 0.3f, 100, 10, 3, 3 );
+        Character player = new Character(gameSurface, characterBitmap1, x, y, true, 4, 4, 0.3f, 120 - (difficulty * 20), 11 - difficulty, 3, 4);
         characterList.add(player);
         PlayerAI playerAI = new PlayerAI(player, gameSurface, this);
         playerAI.character = player;
