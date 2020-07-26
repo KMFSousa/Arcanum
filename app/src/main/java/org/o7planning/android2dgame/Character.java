@@ -347,6 +347,16 @@ public class Character extends GameObject {
         this.healthBar.image = Bitmap.createScaledBitmap(this.healthBar.image,this.healthBar.width, this.healthBar.height,false);
     }
 
+    public void replenishHitpoints()  {
+
+        this.healthBar.width = (int) (((float) this.hitPoints/ (float) this.MAXHITPOINTS)*this.healthBar.originalSpriteWidth); //Hardcoded initial width of healthBar
+        if(this.healthBar.width <= 0){ // We cannot draw bitmaps of width = 0, so we draw a thin sliver of width 1.
+            this.healthBar.width = 1;
+        }
+
+        this.healthBar.image = Bitmap.createScaledBitmap(this.healthBar.image,this.healthBar.width, this.healthBar.height,false);
+    }
+
 
     public void setMovingVector(int movingVectorX, int movingVectorY)  {
         this.movingVectorX = movingVectorX;

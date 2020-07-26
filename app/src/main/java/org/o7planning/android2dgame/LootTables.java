@@ -134,9 +134,10 @@ public class LootTables {
                 Log.i("Here: ", "IT SHOULD WORK " + player.hitPoints);
                 player.hitPoints = player.MAXHITPOINTS;
                 Log.i("Hit points", player.hitPoints + "");
+                player.replenishHitpoints();
             } else if(item == 1) {
                 Log.i("Attack Before:", player.attackDamage + "");
-                player.attackDamage +=100;
+                player.attackDamage +=10;
                 Log.i("Attack after:", player.attackDamage + "");
             } else if(item == 2) {
                 player.defence += 1;
@@ -144,12 +145,12 @@ public class LootTables {
                 // Implement Speed change
             } else if(item == 4) {
                 Log.i("Attack Before:", player.attackDamage + "");
-                player.attackDamage += 1;
+                player.MAXHITPOINTS += 10;
                 Log.i("Attack after:", player.attackDamage + "");
             } else if(item == 5) {
                 player.numRocks ++;
                 if (player.numRocks == 5) {
-                    player.attackDamage +=1;
+                    player.attackDamage +=10;
                     player.numRocks = 0;
                 }
             }
