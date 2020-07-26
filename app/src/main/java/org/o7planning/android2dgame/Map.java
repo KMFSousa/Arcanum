@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import android.os.Build;
 import android.util.Log;
@@ -40,7 +41,7 @@ public class Map {
     private int spawnCount;
     private String mapType;
     private String[] monsterTypes;
-    private int[][] spawnPoints;
+    private ArrayList<int[]> spawnPoints;
 
     public Map(GameSurface gameSurface, Bitmap startingImage, String csvName, StuffFactory stuffFactory, Context context, int difficulty) {
         this.gameSurface = gameSurface;
@@ -74,6 +75,8 @@ public class Map {
 
         this.setMonsterSpawnAndTypes(this.difficulty, this.mapType);
 
+        this.determinePossibleSpawnPoints(this.csvValues);
+
         this.populateMonsterList(stuffFactory);
     }
 
@@ -99,21 +102,35 @@ public class Map {
         }
     }
 
-    private void populateMonsterList(StuffFactory stuffFactory) {
-        try {
-            InputStream inputStream = this.context.getResources().openRawResource(R.raw.monster_spawns);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] lineArray = line.split(",");
-                String roomName = lineArray[0];
-                if (roomName.equals(this.csvName)) {
-                    String monsterType = lineArray[1];
-                    int xSpawnLocation = Integer.parseInt(lineArray[2]);
-                    int ySpawnLocation = Integer.parseInt(lineArray[3]);
-
-                    this.callCorrectStuffFactoryMethod(monsterType, xSpawnLocation, ySpawnLocation, stuffFactory);
+    // Sets spawnPoints, a list of coordinates which are
+    private void determinePossibleSpawnPoints(int[][] csvValues) {
+        int border = 2;
+        this.spawnPoints = new ArrayList<int[]>();
+        for (int x = 0 + border; x <= (this.rows - 2); x++) {
+            for (int y = 0 + border; y <= (this.columns - 2); y++) {
+                if (csvValues[x][y] == 0) {
+                    this.spawnPoints.add(new int[]{x, y});
                 }
+            }
+        }
+    }
+
+    private void populateMonsterList(StuffFactory stuffFactory) {
+        Random rand = new Random();
+
+        try {
+            for (int i = 0; i < spawnCount; i++) {
+                int randomIndex = rand.nextInt(this.spawnPoints.size());
+                int [] spawnPoint = this.spawnPoints.get(randomIndex);
+                this.spawnPoints.remove(randomIndex);
+
+                int xSpawnLocation = spawnPoint[1] * tileWidth;
+                int ySpawnLocation = spawnPoint[0] * tileHeight;
+
+                randomIndex = rand.nextInt(this.monsterTypes.length);
+                String monsterType = this.monsterTypes[randomIndex];
+
+                this.callCorrectStuffFactoryMethod(monsterType, xSpawnLocation, ySpawnLocation, stuffFactory);
             }
         } catch (Exception e) {
             // Bad
