@@ -62,7 +62,7 @@ public class ScreenRecorder {
         targetFilePath = getFilePath();
         mediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+        mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.HEVC);
         mediaRecorder.setVideoEncodingBitRate(2000 * 1000);
         mediaRecorder.setVideoFrameRate(60);
         mediaRecorder.setMaxDuration(30000);
