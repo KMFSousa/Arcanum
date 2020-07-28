@@ -251,7 +251,7 @@ public class Character extends GameObject {
                     hurtBox.y = hitBox.getY() - hitBox.getHeight();
                     break;
                 case ROW_RIGHT_TO_LEFT:
-                    hurtBox.x = this.getX();
+                    hurtBox.x = this.hitBox.getX() - hurtBox.getWidth();
                     hurtBox.y = this.getY();
                     break;
                 case ROW_TOP_TO_BOTTOM:
