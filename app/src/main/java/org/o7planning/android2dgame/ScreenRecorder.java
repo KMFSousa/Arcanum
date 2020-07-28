@@ -3,11 +3,13 @@ package org.o7planning.android2dgame;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
 import android.media.MediaRecorder;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -31,6 +34,7 @@ public class ScreenRecorder {
     private int displayHeight;
     private int screenDensity;
     public boolean isRecording;
+    private String targetFilePath;
     private MediaProjection mediaProjection;
     private VirtualDisplay virtualDisplay;
     private MediaProjectionManager projectionManager;
@@ -55,16 +59,15 @@ public class ScreenRecorder {
         if (mediaRecorder == null) {
             mediaRecorder = new MediaRecorder();
         }
-        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
+        targetFilePath = getFilePath();
         mediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         mediaRecorder.setVideoEncodingBitRate(2000 * 1000);
         mediaRecorder.setVideoFrameRate(60);
         mediaRecorder.setMaxDuration(30000);
         mediaRecorder.setVideoSize(displayWidth, displayHeight);
-        mediaRecorder.setOutputFile(getFilePath());
+        mediaRecorder.setOutputFile(targetFilePath);
 
     }
 
@@ -95,6 +98,8 @@ public class ScreenRecorder {
             return;
         }
         virtualDisplay.release();
+        //mediaRecorder.release();
+        shareVideo();
         initRecorder();
         prepareRecorder();
     }
@@ -167,6 +172,14 @@ public class ScreenRecorder {
             stopRecording();
             Log.i("ScreenRecorder", "MediaProjection Stopped");
         }
+    }
+
+    private void shareVideo(){
+        Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+        Uri videoUri = Uri.parse(targetFilePath);
+        sharingIntent.setType(URLConnection.guessContentTypeFromName(targetFilePath));
+        sharingIntent.putExtra(Intent.EXTRA_STREAM, videoUri);
+        mainActivity.startActivity(Intent.createChooser(sharingIntent, "Share video using"));
     }
 
 
