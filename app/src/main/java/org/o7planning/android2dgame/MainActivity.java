@@ -57,12 +57,16 @@ public class MainActivity extends Activity {
                 for (Character character: gameSurface.characterList) {
                     PlayerAI playerAI = (PlayerAI) character.ai;
 
-                    double attackVectorX = Math.cos(radAngle) * 10 * strength;
-                    double attackVectorY = Math.sin(radAngle) * -10 * strength;
+                    Log.i("Blah", "Angle: " + angle + " Strength: " + strength);
 
-                    // Set character attack vector
-                    playerAI.setAttackVector((int) attackVectorX, (int) attackVectorY);
-                    playerAI.attack();
+                    if (strength >= 90) {
+                        double attackVectorX = Math.cos(radAngle) * 10;
+                        double attackVectorY = Math.sin(radAngle) * -10;
+
+                        // Set character attack vector
+                        playerAI.setAttackVector((int) attackVectorX, (int) attackVectorY);
+                        playerAI.attack();
+                    }
                 }
             }
         });
