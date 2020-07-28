@@ -2,16 +2,23 @@ package org.o7planning.android2dgame;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.hardware.display.VirtualDisplay;
+import android.media.projection.MediaProjection;
+import android.media.projection.MediaProjectionManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
@@ -83,13 +90,18 @@ public class MainActivity extends Activity {
     }
 
     private void initializeScreenRecorder(){
-        Button shareButton = findViewById(R.id.shareButton);
+        final ImageButton shareButton = findViewById(R.id.shareButton);
         screenRecorder = new ScreenRecorder(this);
-        screenRecorder.startRecording();
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                screenRecorder.stopRecording();
+                if(!screenRecorder.isRecording) {
+                    screenRecorder.startRecording();
+                    shareButton.setImageResource(R.drawable.share_icon_stop);
+                } else {
+                    shareButton.setImageResource(R.drawable.share_icon_start);
+                    screenRecorder.stopRecording();
+                }
             }
         });
     }
@@ -114,4 +126,14 @@ public class MainActivity extends Activity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        screenRecorder.onActivityResult(requestCode, resultCode, data);
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        screenRecorder.onDestroy();
+    }
 }
