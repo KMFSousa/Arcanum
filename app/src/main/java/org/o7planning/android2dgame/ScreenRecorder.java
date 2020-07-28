@@ -79,29 +79,35 @@ public class ScreenRecorder {
         }
     }
 
-    public void startRecording() {
+    public boolean startRecording() {
+        if (isRecording) return false;
         if (mediaProjection == null) {
             mainActivity.startActivityForResult(projectionManager.createScreenCaptureIntent(), PERMISSION_CODE);
-            return;
+            return true;
         }
+        File directory = new File(Environment.getExternalStorageDirectory() + File.separator + "Arcanum_Recordings");
+        clearRecordings(directory);
         virtualDisplay = createVirtualDisplay();
         mediaRecorder.start();
         isRecording = true;
+        return true;
     }
 
-    public void stopRecording(){
+    public boolean stopRecording(){
+        if(!isRecording) return false;
         mediaRecorder.stop();
         isRecording = false;
         mediaRecorder.reset();
         Log.v("ScreenRecorder", "Recording Stopped");
         if (virtualDisplay == null) {
-            return;
+            return true;
         }
         virtualDisplay.release();
         //mediaRecorder.release();
         shareVideo();
         initRecorder();
         prepareRecorder();
+        return true;
     }
 
     public String getFilePath() {
@@ -180,6 +186,16 @@ public class ScreenRecorder {
         sharingIntent.setType(URLConnection.guessContentTypeFromName(targetFilePath));
         sharingIntent.putExtra(Intent.EXTRA_STREAM, videoUri);
         mainActivity.startActivity(Intent.createChooser(sharingIntent, "Share video using"));
+    }
+
+
+    private void clearRecordings(File dir) {
+        if (dir.isDirectory())
+            for (File child : dir.listFiles())
+                clearRecordings(child);
+
+        dir.delete();
+
     }
 
 

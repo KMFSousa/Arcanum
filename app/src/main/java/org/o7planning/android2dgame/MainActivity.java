@@ -28,6 +28,7 @@ public class MainActivity extends Activity {
     public static Button healthBar;
     public final int RECORD_AUDIO = 0, WRITE_EXTERNAL_STORAGE = 1;
     private ScreenRecorder screenRecorder;
+    private GameSurface gameSurface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +43,7 @@ public class MainActivity extends Activity {
 
         this.setContentView(R.layout.activity_main);
         RelativeLayout myLayout = findViewById(R.id.main);
-        final GameSurface gameSurface = new GameSurface(this);
+        gameSurface = new GameSurface(this);
         myLayout.addView(gameSurface);
 
         JoystickView joystick = findViewById(R.id.joystickView);
@@ -96,11 +97,14 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if(!screenRecorder.isRecording) {
-                    screenRecorder.startRecording();
-                    shareButton.setImageResource(R.drawable.share_icon_stop);
+                    if (screenRecorder.startRecording()){
+                        shareButton.setImageResource(R.drawable.share_icon_stop);
+                    }
+
                 } else {
-                    shareButton.setImageResource(R.drawable.share_icon_start);
-                    screenRecorder.stopRecording();
+                    if (screenRecorder.stopRecording()){
+                        shareButton.setImageResource(R.drawable.share_icon_start);
+                    }
                 }
             }
         });
@@ -131,9 +135,11 @@ public class MainActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
         screenRecorder.onActivityResult(requestCode, resultCode, data);
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         screenRecorder.onDestroy();
     }
+
 }
