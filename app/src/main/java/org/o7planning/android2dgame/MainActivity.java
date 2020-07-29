@@ -43,20 +43,60 @@ public class MainActivity extends Activity {
                     double movingVectorY = Math.sin(radAngle) * -10 * strength;
                     //Log.d("Joystick", angle + ": "+movingVectorX+", "+movingVectorY);
                     character.setMovingVector((int)movingVectorX, (int)movingVectorY);
+
                 }
                 // do whatever you want
             }
         });
 
-        Button attackButton = findViewById(R.id.attackButton);
-        attackButton.setOnClickListener(new View.OnClickListener() {
+        JoystickView attackJoystick = findViewById(R.id.joystickView2);
+        attackJoystick.setOnMoveListener(new JoystickView.OnMoveListener() {
             @Override
-            public void onClick(View view) {
+            public void onMove(int angle, int strength) {
+                double radAngle = angle * Math.PI/180;
                 for (Character character: gameSurface.characterList) {
-                    character.attack();
+                    PlayerAI playerAI = (PlayerAI) character.ai;
+
+                    Log.i("Blah", "Angle: " + angle + " Strength: " + strength);
+
+                    if (strength >= 90) {
+                        double attackVectorX = Math.cos(radAngle) * 10;
+                        double attackVectorY = Math.sin(radAngle) * -10;
+
+                        // Set character attack vector
+                        playerAI.setAttackVector((int) attackVectorX, (int) attackVectorY);
+                        playerAI.attack();
+                    }
                 }
             }
         });
+
+        final Button toggleButton = findViewById(R.id.toggleButton);
+        toggleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                for (Character character: gameSurface.characterList) {
+                    PlayerAI playerAI = (PlayerAI) character.ai;
+                    if (playerAI.attackStyle == "Melee") {
+                        playerAI.attackStyle = "Ranged";
+                        toggleButton.setText("Melee");
+                    } else {
+                        playerAI.attackStyle = "Melee";
+                        toggleButton.setText("Ranged");
+                    }
+                }
+            }
+        });
+
+        //Button attackButton = findViewById(R.id.attackButton);
+        //attackButton.setOnClickListener(new View.OnClickListener() {
+        //    @Override
+        //    public void onClick(View view) {
+        //        for (Character character: gameSurface.characterList) {
+        //            character.ai.attack();
+        //        }
+        //    }
+        //});
 
         //TODO: Dont uncomment this, it breaks movement
 

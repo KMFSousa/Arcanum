@@ -44,12 +44,13 @@ public class Character extends GameObject {
 
     // Velocity of game character (pixel/millisecond)
     private float velocity;
-    private  boolean isAttacking;
+    public   boolean isAttacking;
     boolean attackAnimationInProgress = false;
 
     public int hitPoints;
     public int MAXHITPOINTS;
-    private int attackDamage;
+    public int attackDamage;
+    public int hitsPerSecond;
 
     private int movingVectorX = 0;
     private int movingVectorY = 0;
@@ -60,7 +61,7 @@ public class Character extends GameObject {
 
     private boolean isPlayer;
 
-    private CharacterAI ai;
+    public CharacterAI ai;
     public void setCharacterAI(CharacterAI ai) {   this.ai = ai; }
 
     //TODO: IMPLEMENT A ROLL MECHANIC (INCREASED SPEED, ANIMATION)
@@ -73,7 +74,7 @@ public class Character extends GameObject {
 
     // This method (called in GameSurface.java) will take the sprite sheet we provide it with and create arrays holding the bitmaps of each sprite
 
-    public Character(GameSurface gameSurface, Bitmap image, int x, int y, boolean isPlayer, int spriteSheetRows, int spriteSheetColumns, float velocity, int hitPoints, int attackDamage, int attackAnimationIndex) {
+    public Character(GameSurface gameSurface, Bitmap image, int x, int y, boolean isPlayer, int spriteSheetRows, int spriteSheetColumns, float velocity, int hitPoints, int attackDamage, int hitsPerSecond, int attackAnimationIndex) {
         super(image, spriteSheetRows, spriteSheetColumns, x, y); // Calls
 
         this.isPlayer = isPlayer;
@@ -82,12 +83,8 @@ public class Character extends GameObject {
         this.hitPoints = hitPoints;
         this.MAXHITPOINTS = hitPoints;
         this.attackDamage = attackDamage;
+        this.hitsPerSecond = hitsPerSecond;
         this.attackAnimationIndex = attackAnimationIndex;
-
-
-
-
-
 
         this.topToBottoms = new Bitmap[colCount]; // 3
         this.rightToLefts = new Bitmap[colCount]; // 3
@@ -147,9 +144,9 @@ public class Character extends GameObject {
         //update AI
 
         ai.onUpdate();
-        if(!this.isPlayer){
-            attack();
-        }
+//        if(!this.isPlayer){
+//            attack();
+//        }
 
         //update Weapon
 //        if(itemList.size() != 0){
@@ -283,19 +280,37 @@ public class Character extends GameObject {
 
         // movingVectorX and movingVectorY are +/- values that will determine what direction we are moving in
         // based on the values of these vectors, we can decide which row of sprites we are using
-        if ( movingVectorX != 0 || movingVectorY != 0 ) {
-            if (movingVectorX > 0) {
-                if (movingVectorY > 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
+        int vectorX = movingVectorX;
+        int vectorY = movingVectorY;
+
+        if (this.ai instanceof PlayerAI) {
+            PlayerAI playerAI = (PlayerAI) this.ai;
+            Pair<Integer, Integer> attackVectors = playerAI.getAttackVector();
+            int tempVectorX = attackVectors.first;
+            int tempVectorY = attackVectors.second;
+            if (tempVectorX != 0 || tempVectorY != 0) {
+                vectorX = tempVectorX;
+                vectorY = tempVectorY;
+            }
+        }
+
+        int vectorXAbsolute = Math.abs(vectorX);
+        int vectorYAbsolute = Math.abs(vectorY);
+
+        if ( vectorX != 0 || vectorY != 0 ) {
+            if (vectorX > 0) {
+                if (vectorY > 0 && vectorXAbsolute < vectorYAbsolute) {
+
                     this.rowUsing = ROW_TOP_TO_BOTTOM;
-                } else if (movingVectorY < 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
+                } else if (vectorY < 0 && vectorXAbsolute < vectorYAbsolute) {
                     this.rowUsing = ROW_BOTTOM_TO_TOP;
                 } else {
                     this.rowUsing = ROW_LEFT_TO_RIGHT;
                 }
             } else {
-                if (movingVectorY > 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
+                if (vectorY > 0 && vectorXAbsolute < vectorYAbsolute) {
                     this.rowUsing = ROW_TOP_TO_BOTTOM;
-                } else if (movingVectorY < 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
+                } else if (vectorY < 0 && vectorXAbsolute < vectorYAbsolute) {
                     this.rowUsing = ROW_BOTTOM_TO_TOP;
                 } else {
                     this.rowUsing = ROW_RIGHT_TO_LEFT;
@@ -320,8 +335,8 @@ public class Character extends GameObject {
         }
     }
 
-    public void reduceHitPointsBy(int attackDamage)  {
-        this.hitPoints -= attackDamage;
+    public void reduceHitPointsBy(int damageDealt)  {
+        this.hitPoints -= damageDealt;
         if(this.hitPoints < 0){
             this.hitPoints = 0;
         }
@@ -358,39 +373,39 @@ public class Character extends GameObject {
         //gameSurface.itemList.remove(other);
     }
 
-    public void attack() {
-
-      //  if(itemList.size() != 0){itemList.get(0).inCombat();}
-        if(ai.isPlayer()){
-            this.isAttacking = true;
-            this.attackAnimationInProgress = false;
-            Iterator<Character> iterator = gameSurface.dungeon.getCurrentRoom().monsterList.iterator();
-
-            while(iterator.hasNext()){
-                Character other = iterator.next();
-                if(this.hurtBox.x < other.hitBox.x + other.width &&
-                        this.hurtBox.x + this.hurtBox.width > other.x &&
-                        this.hurtBox.y < other.hitBox.y + other.height &&
-                        this.hurtBox.y + this.hurtBox.height > other.hitBox.y){
-                    other.reduceHitPointsBy(attackDamage);
-                    Log.d("Slime HP remaining", ": " + other.hitPoints);
-                }
-            }
-        }
-
-        if(!ai.isPlayer() && !gameSurface.characterList.isEmpty()){
-            Character other = gameSurface.characterList.get(0);
-            if(this.hurtBox.x < other.hitBox.x + other.hitBox.width &&
-                    this.hurtBox.x + this.hurtBox.width > other.hitBox.x &&
-                    this.hurtBox.y < other.hitBox.y + other.hitBox.height &&
-                    this.hurtBox.y + this.hurtBox.height > other.hitBox.y){
-                other.reduceHitPointsBy(attackDamage);
-                Log.d("Player HP remaining", ": " + other.hitPoints);
-
-                this.isAttacking = true;
-            }
-        }
-    }
+//    public void attack() {
+//
+//      //  if(itemList.size() != 0){itemList.get(0).inCombat();}
+//        if(ai.isPlayer()){
+//            this.isAttacking = true;
+//            this.attackAnimationInProgress = false;
+//            Iterator<Character> iterator = gameSurface.dungeon.getCurrentRoom().monsterList.iterator();
+//
+//            while(iterator.hasNext()){
+//                Character other = iterator.next();
+//                if(this.hurtBox.x < other.hitBox.x + other.width &&
+//                        this.hurtBox.x + this.hurtBox.width > other.x &&
+//                        this.hurtBox.y < other.hitBox.y + other.height &&
+//                        this.hurtBox.y + this.hurtBox.height > other.hitBox.y){
+//                    other.reduceHitPointsBy(attackDamage);
+//                    Log.d("Slime HP remaining", ": " + other.hitPoints);
+//                }
+//            }
+//        }
+//
+//        if(!ai.isPlayer() && !gameSurface.characterList.isEmpty()){
+//            Character other = gameSurface.characterList.get(0);
+//            if(this.hurtBox.x < other.hitBox.x + other.hitBox.width &&
+//                    this.hurtBox.x + this.hurtBox.width > other.hitBox.x &&
+//                    this.hurtBox.y < other.hitBox.y + other.hitBox.height &&
+//                    this.hurtBox.y + this.hurtBox.height > other.hitBox.y){
+//                other.reduceHitPointsBy(attackDamage);
+//                Log.d("Player HP remaining", ": " + other.hitPoints);
+//
+//                this.isAttacking = true;
+//            }
+//        }
+//    }
 
     public void checkIfDead() {
         if (this.hitPoints <= 0) {

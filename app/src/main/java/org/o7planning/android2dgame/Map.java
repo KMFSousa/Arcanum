@@ -41,14 +41,14 @@ public class Map {
         this.context = context;
         this.csvName = csvName;
 
-        //if(Build.FINGERPRINT.contains("generic")) { //Emulator
-        //    this.screenWidth = Resources.getSystem().getDisplayMetrics().heightPixels;
-        //    this.screenHeight = Resources.getSystem().getDisplayMetrics().widthPixels;
-        //}
-        //else { //Hardware Phone
+        if(Build.FINGERPRINT.contains("generic")) { //Emulator
+            this.screenWidth = Resources.getSystem().getDisplayMetrics().heightPixels;
+            this.screenHeight = Resources.getSystem().getDisplayMetrics().widthPixels;
+        }
+        else { //Hardware Phone
             this.screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
             this.screenHeight =  Resources.getSystem().getDisplayMetrics().heightPixels;
-        //}
+        }
 
         this.currentRoomBitmap = Bitmap.createScaledBitmap(startingImage, screenWidth, screenHeight, true);
         int bitmapWidth = currentRoomBitmap.getWidth();
@@ -206,6 +206,21 @@ public class Map {
         } else {
             return new Pair<Boolean, Boolean>(false, false);
         }
+    }
+
+    public boolean canMoveProjectile (int xDest, int yDest, int width, int height) {
+        int xDestWithWidth = xDest + Math.round(width);
+        int yDestWithHeight = yDest + Math.round(height);
+
+        if (xDestWithWidth > 0 && xDestWithWidth < this.screenWidth && yDestWithHeight > 0 && yDestWithHeight < this.screenHeight) {
+            int destRow = this.getRowFromY(yDestWithHeight);
+            int destCol = this.getColFromX(xDestWithWidth);
+
+            Tile destTile = this.tileArray[destRow][destCol];
+
+            return !destTile.isCollidable();
+        }
+        return false;
     }
 
     public Boolean isPointCollidable(int x, int y) {
