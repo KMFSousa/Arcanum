@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
@@ -27,7 +26,72 @@ public class MainActivity extends Activity {
         // Set No Title
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        this.setContentView(R.layout.activity_main);
+        mainMenu();
+
+    }
+    protected void mainMenu() {
+        this.setContentView(R.layout.main_menu);
+
+        final Button toggleButton = findViewById(R.id.startGameButton);
+        toggleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                startGame();
+            }
+        });
+    }
+//
+//    protected void pauseMenu() {
+//        this.setContentView(R.layout.pause_menu);
+//
+//        final Button resumeGameButton = findViewById(R.id.resumeGameButton);
+//        resumeGameButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick (View view) {
+//                return;
+//            }
+//        });
+//
+//        final Button mainMenuButton = findViewById(R.id.mainMenuButton);
+//        mainMenuButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick (View view) {
+//                mainMenu();
+//            }
+//        });
+//
+//        final Button startGameButton = findViewById(R.id.startGameButton);
+//        startGameButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick (View view) {
+//                mainMenu();
+//            }
+//        });
+//    }
+//
+//    protected void deathScreen() {
+//        this.setContentView(R.layout.pause_menu);
+//
+//        final Button restartGameButton = findViewById(R.id.restartGameButton);
+//        restartGameButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick (View view) {
+//                return;
+//            }
+//        });
+//
+//        final Button mainMenuButton = findViewById(R.id.mainMenuButton);
+//        mainMenuButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick (View view) {
+//                mainMenu();
+//            }
+//        });
+//    }
+
+    protected void startGame() {
+
+        this.setContentView(R.layout.game_hud);
         RelativeLayout myLayout = findViewById(R.id.main);
         final GameSurface gameSurface = new GameSurface(this);
         myLayout.addView(gameSurface);
@@ -71,23 +135,36 @@ public class MainActivity extends Activity {
             }
         });
 
-        final Button toggleButton = findViewById(R.id.toggleButton);
-        toggleButton.setOnClickListener(new View.OnClickListener() {
+        final Button attackToggleButton = findViewById(R.id.attackToggleButton);
+        attackToggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
                 for (Character character: gameSurface.characterList) {
                     PlayerAI playerAI = (PlayerAI) character.ai;
                     if (playerAI.attackStyle == "Melee") {
                         playerAI.attackStyle = "Ranged";
-                        toggleButton.setText("Melee");
+                        attackToggleButton.setText("Melee");
                     } else {
                         playerAI.attackStyle = "Melee";
-                        toggleButton.setText("Ranged");
+                        attackToggleButton.setText("Ranged");
                     }
                 }
             }
         });
 
+//        final Button pauseButton = findViewById(R.id.pauseButton);
+//        pauseButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick (View view) {
+//                // TODO: Pause the Game. Stop movement, stop drawing?
+//                pauseMenu();
+////                for (Character character : gameSurface.characterList) {
+////                    PlayerAI playerAI = (PlayerAI) character.ai;
+////                }
+//            }
+//        });
+
+        // TODO: Remove, this is old
         //Button attackButton = findViewById(R.id.attackButton);
         //attackButton.setOnClickListener(new View.OnClickListener() {
         //    @Override
@@ -97,11 +174,7 @@ public class MainActivity extends Activity {
         //        }
         //    }
         //});
-
-        //TODO: Dont uncomment this, it breaks movement
-
-//        Button healthBar = findViewById(R.id.healthBar);
-//        this.healthBar = healthBar;
+        
     }
 
 }
