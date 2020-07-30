@@ -41,14 +41,14 @@ public class Map {
         this.context = context;
         this.csvName = csvName;
 
-        if(Build.FINGERPRINT.contains("generic")) { //Emulator
-            this.screenWidth = Resources.getSystem().getDisplayMetrics().heightPixels;
-            this.screenHeight = Resources.getSystem().getDisplayMetrics().widthPixels;
-        }
-        else { //Hardware Phone
+        //if(Build.FINGERPRINT.contains("generic")) { //Emulator
+        //    this.screenWidth = Resources.getSystem().getDisplayMetrics().heightPixels;
+        //    this.screenHeight = Resources.getSystem().getDisplayMetrics().widthPixels;
+        //}
+        //else { //Hardware Phone
             this.screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
             this.screenHeight =  Resources.getSystem().getDisplayMetrics().heightPixels;
-        }
+        //}
 
         this.currentRoomBitmap = Bitmap.createScaledBitmap(startingImage, screenWidth, screenHeight, true);
         int bitmapWidth = currentRoomBitmap.getWidth();
@@ -93,10 +93,10 @@ public class Map {
     private void callCorrectStuffFactoryMethod(String name, int xSpawnLocation, int ySpawnLocation, StuffFactory stuffFactory) throws Exception {
         switch(name) {
             case "orc":
-                stuffFactory.newOrc(this.monsterList, xSpawnLocation, ySpawnLocation);
+                stuffFactory.newOrc(this.monsterList, xSpawnLocation, ySpawnLocation, this.context);
                 break;
             case "slime":
-                stuffFactory.newSlime(this.monsterList, xSpawnLocation, ySpawnLocation);
+                stuffFactory.newSlime(this.monsterList, xSpawnLocation, ySpawnLocation, this.context);
                 break;
             default:
                 throw new Exception("Error: No Monster Found for Given Type.");

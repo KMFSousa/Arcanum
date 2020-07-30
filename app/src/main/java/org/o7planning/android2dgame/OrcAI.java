@@ -1,7 +1,9 @@
 package org.o7planning.android2dgame;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrcAI implements CharacterAI {
@@ -13,20 +15,23 @@ public class OrcAI implements CharacterAI {
     private StuffFactory factory;
     private int positionX;
     private int positionY;
-
     private int distanceToPlayerX;
     private int distanceToPlayerY;
-
     private int updateCounter;
+    private ArrayList<Bitmap> currentAnimationBitmap = new ArrayList<Bitmap>();
+    private int colUsing = 0;
+    private boolean isAttacking = false;
+    private boolean attackAnimationInProgress = false;
 
     public OrcAI(Character character, GameSurface gameSurface) {
         this.gameSurface = gameSurface;
         this.factory = factory;
         this.player = gameSurface.characterList.get(0);
         this.character = character;
+        this.currentAnimationBitmap = this.character.animationMap.get("walkleft");
     }
 
-    public void onUpdate() {
+    public void onUpdate(int movingVectorX, int movingVectorY) {
         if(closeToPlayer(50)) {
             character.setMovingVector(0, 0);
             attack();
@@ -72,6 +77,9 @@ public class OrcAI implements CharacterAI {
                 this.wander();
             }
         }
+
+        this.animate(movingVectorX, movingVectorY);
+
         updateCounter++;
     }
 
@@ -84,7 +92,90 @@ public class OrcAI implements CharacterAI {
                     character.hurtBox.y < other.hitBox.y + other.hitBox.height &&
                     character.hurtBox.y + character.hurtBox.height > other.hitBox.y){
                 other.reduceHitPointsBy(character.attackDamage);
-                character.isAttacking = true;
+                this.isAttacking = true;
+            }
+        }
+    }
+
+    public Bitmap getCurrentBitmap() {
+        return this.currentAnimationBitmap.get(this.colUsing);
+    }
+
+    // TODO: Orc attack animation broken
+
+    public void animate(int movingVectorX, int movingVectorY) {
+        int vectorX = movingVectorX;
+        int vectorY = movingVectorY;
+        int vectorXAbsolute = Math.abs(vectorX);
+        int vectorYAbsolute = Math.abs(vectorY);
+
+        if ( vectorX != 0 || vectorY != 0 ) {
+            if (vectorX > 0) {
+                if (vectorY > 0 && vectorXAbsolute < vectorYAbsolute) {
+                    // Moving down and to the right
+                    if (!this.isAttacking) {
+                        this.currentAnimationBitmap = this.character.animationMap.get("walkright");
+                    } else {
+                        this.currentAnimationBitmap = this.character.animationMap.get("attack1right");
+                    }
+                } else if (vectorY < 0 && vectorXAbsolute < vectorYAbsolute) {
+                    // Moving up and to the right
+                    if (!this.isAttacking) {
+                        this.currentAnimationBitmap = this.character.animationMap.get("walkright");
+                    } else {
+                        this.currentAnimationBitmap = this.character.animationMap.get("attack1right");
+                    }
+                } else {
+                    // Moving right
+                    if (!this.isAttacking) {
+                        this.currentAnimationBitmap = this.character.animationMap.get("walkright");
+                    } else {
+                        this.currentAnimationBitmap = this.character.animationMap.get("attack1right");
+                    }
+                }
+            } else {
+                if (vectorY > 0 && vectorXAbsolute < vectorYAbsolute) {
+                    // Moving down and to the left
+                    if (!this.isAttacking) {
+                        this.currentAnimationBitmap = this.character.animationMap.get("walkleft");
+                    } else {
+                        this.currentAnimationBitmap = this.character.animationMap.get("attack1left");
+                    }
+                } else if (vectorY < 0 && vectorXAbsolute < vectorYAbsolute) {
+                    // Moving up and to the left
+                    if (!this.isAttacking) {
+                        this.currentAnimationBitmap = this.character.animationMap.get("walkleft");
+                    } else {
+                        this.currentAnimationBitmap = this.character.animationMap.get("attack1left");
+                    }
+                } else {
+                    // Moving left
+                    if (!this.isAttacking) {
+                        this.currentAnimationBitmap = this.character.animationMap.get("walkleft");
+                    } else {
+                        this.currentAnimationBitmap = this.character.animationMap.get("attack1left");
+                    }
+                }
+            }
+        }
+
+        double movingVectorLength = Math.sqrt(movingVectorX*movingVectorX + movingVectorY*movingVectorY);
+
+        if (movingVectorLength > 0 || this.isAttacking) {
+            this.colUsing++;
+
+            if (this.isAttacking) {
+                if(!attackAnimationInProgress) {
+                    attackAnimationInProgress = true;
+                }
+                if(this.colUsing == this.currentAnimationBitmap.size()) {
+                    isAttacking = false;
+                    attackAnimationInProgress = false;
+                }
+            }
+
+            if (this.colUsing >= this.currentAnimationBitmap.size()) {
+                this.colUsing = 0;
             }
         }
     }

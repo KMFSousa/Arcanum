@@ -66,6 +66,8 @@ public class MainActivity extends Activity {
                         // Set character attack vector
                         playerAI.setAttackVector((int) attackVectorX, (int) attackVectorY);
                         playerAI.attack();
+                    } else {
+                        playerAI.setAttackVector(0, 0);
                     }
                 }
             }

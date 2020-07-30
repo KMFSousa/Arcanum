@@ -1,5 +1,6 @@
 package org.o7planning.android2dgame;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -15,10 +16,10 @@ public class StuffFactory {
 
     //TODO: UPDATE CHARACTER AND ITEM CONSTRUCTORS WITH ATTRIBUTES
 
-    public Character newPlayer(List<Character> characterList, int x, int y) {
-        Bitmap characterBitmap1 = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.spritesheet);
-
-        Character player = new Character(gameSurface, characterBitmap1, x, y, true, 4, 4, 0.3f, 100, 10, 3, 3 );
+    public Character newPlayer(List<Character> characterList, int x, int y,  Context context) {
+        Bitmap characterBitmap = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.barbarian);
+        characterBitmap = Bitmap.createScaledBitmap(characterBitmap, 2048, 128, false);
+        Character player = new Character(gameSurface, characterBitmap, x, y, true, 1, 8, 0.3f, 100, 10, 3, 3, context, "player");
         characterList.add(player);
         PlayerAI playerAI = new PlayerAI(player, gameSurface, this);
         playerAI.character = player;
@@ -42,11 +43,12 @@ public class StuffFactory {
         return player;
     }
 
-    public Character newSlime(List<Character> characterList, int x, int y) {
+    public Character newSlime(List<Character> characterList, int x, int y, Context context) {
         Bitmap slimeBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.slimes1);
-        Character slime = new Character(gameSurface, slimeBitmap, x, y, false, 4, 5, 0.1f, 30, 1, 3, 4);
+        // TODO: Change sprite sheet rows & colums for slime
+        Character slime = new Character(gameSurface, slimeBitmap, x, y, false, 4, 5, 0.1f, 30, 1, 3, 4, context, "slime");
         characterList.add(slime);
-        SlimeAI slimeAI = new SlimeAI(slime, gameSurface, this);
+        SlimeAI slimeAI = new SlimeAI(slime, gameSurface, this, context);
         slimeAI.character = slime;
         slime.setCharacterAI(slimeAI);
 
@@ -68,10 +70,10 @@ public class StuffFactory {
         return slime;
     }
 
-    public Character newOrc(List<Character> characterList, int x, int y) {
+    public Character newOrc(List<Character> characterList, int x, int y, Context context) {
         Bitmap orcBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc);
-        orcBitmap = Bitmap.createScaledBitmap(orcBitmap, 1000, 500, false);
-        Character orc = new Character(gameSurface, orcBitmap, x, y, false, 4, 8, 0.1f, 30, 1, 3, 4);
+        orcBitmap = Bitmap.createScaledBitmap(orcBitmap, 1800, 128, false);
+        Character orc = new Character(gameSurface, orcBitmap, x, y, false, 1, 16, 0.1f, 30, 1, 3, 4, context, "orc");
         characterList.add(orc);
         OrcAI orcAI = new OrcAI(orc, gameSurface);
         orcAI.character = orc;
@@ -97,7 +99,7 @@ public class StuffFactory {
         return orc;
     }
 
-    public Projectile projectile(Bitmap projectileBitmap, int movingVectorX, int movingVectorY, boolean isPlayerOwned, int originX, int originY ){
+    public Projectile projectile(Bitmap projectileBitmap, int movingVectorX, int movingVectorY, boolean isPlayerOwned, int originX, int originY){
         Projectile projectile = new Projectile(isPlayerOwned, projectileBitmap, 1, 1, originX, originY, movingVectorX, movingVectorY, gameSurface, 0.1f, 10);
         gameSurface.projectileList.add(projectile);
 

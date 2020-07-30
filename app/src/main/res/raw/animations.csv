@@ -1,0 +1,3 @@
+name,idle,walkleft,walkright,attack1left,attack1right,attack2left,attack2right,enrageattack1left,enrageattack1right,enrageattack2left,enrageattack2right
+orc,,4,8,12,16,,,,,,
+player,,3,6,7,8,,,,,,
