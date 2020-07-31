@@ -4,11 +4,17 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 public class StuffFactory {
     private GameSurface gameSurface;
+    public Map<String, ArrayList<Bitmap>> playerAnimationMap = null;
+    public Map<String, ArrayList<Bitmap>> orcAnimationMap = null;
+    public Map<String, ArrayList<Bitmap>> slimeAnimationMap = null;
+    public Map<String, ArrayList<Bitmap>> bossAnimationMap = null;
 
     public StuffFactory(GameSurface gameSurface) {
         this.gameSurface = gameSurface;

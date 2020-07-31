@@ -22,6 +22,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
     private GameThread gameThread;
     public Dungeon dungeon;
+    public StuffFactory stuffFactory;
     private Context context;
     public List<Character> characterList = new ArrayList<Character>();
     public List<Explosion> explosionList = new ArrayList<Explosion>();
@@ -120,6 +121,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceCreated(SurfaceHolder holder) {
 
         StuffFactory stuffFactory = new StuffFactory(this);
+        this.stuffFactory = stuffFactory;
 
         this.dungeon = new Dungeon(this);
 

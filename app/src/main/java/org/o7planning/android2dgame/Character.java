@@ -90,27 +90,73 @@ public class Character extends GameObject {
 
     private void buildAnimationMap(Context context, String mobType) {
         try {
-            InputStream inputStream = context.getResources().openRawResource(R.raw.animations);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            boolean done = false;
+            switch(mobType) {
+                case "player":
+                    if (this.gameSurface.stuffFactory.playerAnimationMap != null) {
+                        this.animationMap = this.gameSurface.stuffFactory.playerAnimationMap;
+                        done = true;
+                    }
+                    break;
+                case "boss":
+                    if (this.gameSurface.stuffFactory.bossAnimationMap != null) {
+                        this.animationMap = this.gameSurface.stuffFactory.bossAnimationMap;
+                        done = true;
+                    }
+                    break;
+                case "orc":
+                    if (this.gameSurface.stuffFactory.orcAnimationMap != null) {
+                        this.animationMap = this.gameSurface.stuffFactory.orcAnimationMap;
+                        done = true;
+                    }
+                    break;
+                case "slime":
+                    if (this.gameSurface.stuffFactory.slimeAnimationMap != null) {
+                        this.animationMap = this.gameSurface.stuffFactory.slimeAnimationMap;
+                        done = true;
+                    }
+                    break;
+            }
 
-            String firstLine = reader.readLine();
-            String[] animationKeys = firstLine.split(",");
+            if (!done) {
+                InputStream inputStream = context.getResources().openRawResource(R.raw.animations);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
-            String line;
-            int lastFilledIndex = 0;
-            while ((line = reader.readLine()) != null) {
-                // TODO: This is where we will parse the CSV, starting with the first line where we decide how to insert into the map
+                String firstLine = reader.readLine();
+                String[] animationKeys = firstLine.split(",");
 
-                String[] lineArray = line.split(",",-1);
-                String characterName = lineArray[0];
+                String line;
+                int lastFilledIndex = 0;
+                while ((line = reader.readLine()) != null) {
+                    // TODO: This is where we will parse the CSV, starting with the first line where we decide how to insert into the map
 
-                if (characterName.equals(mobType)) {
-                    for (int i = 1; i < lineArray.length; i++) {
-                        if (!lineArray[i].equals("") && !lineArray[i].equals(null)) {
-                            ArrayList<Bitmap> bitmaps = populateBitmapArray(lastFilledIndex, Integer.parseInt(lineArray[i]));
+                    String[] lineArray = line.split(",",-1);
+                    String characterName = lineArray[0];
 
-                            this.animationMap.put(animationKeys[i], bitmaps);
-                            lastFilledIndex = Integer.parseInt(lineArray[i]);
+                    if (characterName.equals(mobType)) {
+
+                        for (int i = 1; i < lineArray.length; i++) {
+                            if (!lineArray[i].equals("") && !lineArray[i].equals(null)) {
+                                ArrayList<Bitmap> bitmaps = populateBitmapArray(lastFilledIndex, Integer.parseInt(lineArray[i]));
+
+                                this.animationMap.put(animationKeys[i], bitmaps);
+                                lastFilledIndex = Integer.parseInt(lineArray[i]);
+                            }
+                        }
+
+                        switch(mobType) {
+                            case "player":
+                                this.gameSurface.stuffFactory.playerAnimationMap = this.animationMap;
+                                break;
+                            case "boss":
+                                this.gameSurface.stuffFactory.bossAnimationMap = this.animationMap;
+                                break;
+                            case "orc":
+                                this.gameSurface.stuffFactory.orcAnimationMap = this.animationMap;
+                                break;
+                            case "slime":
+                                this.gameSurface.stuffFactory.slimeAnimationMap = this.animationMap;
+                                break;
                         }
                     }
                 }
