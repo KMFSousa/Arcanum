@@ -263,21 +263,6 @@ public class Map {
         }
     }
 
-    public boolean canMoveProjectile (int xDest, int yDest, int width, int height) {
-        int xDestWithWidth = xDest + Math.round(width);
-        int yDestWithHeight = yDest + Math.round(height);
-
-        if (xDestWithWidth > 0 && xDestWithWidth < this.screenWidth && yDestWithHeight > 0 && yDestWithHeight < this.screenHeight) {
-            int destRow = this.getRowFromY(yDestWithHeight);
-            int destCol = this.getColFromX(xDestWithWidth);
-
-            Tile destTile = this.tileArray[destRow][destCol];
-
-            return !destTile.isCollidable();
-        }
-        return false;
-    }
-
     public Boolean isPointCollidable(int x, int y) {
         int col = this.getColFromX(x);
         int row = this.getRowFromY(y);
