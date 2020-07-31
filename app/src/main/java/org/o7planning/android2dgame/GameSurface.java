@@ -184,4 +184,12 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         return gameThread.getRunning();
     }
 
+    public long getLastPauseTime(){
+        return gameThread.getLastPauseTime();
+    }
+
+    public void setLastPauseTime(long newPauseTime) {
+        gameThread.setLastPauseTime(newPauseTime);
+    }
+
 }

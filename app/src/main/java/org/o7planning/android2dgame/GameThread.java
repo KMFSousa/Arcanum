@@ -29,6 +29,7 @@ public class GameThread extends Thread {
     private boolean running;
     private GameSurface gameSurface;
     private SurfaceHolder surfaceHolder;
+    private long lastPauseTime;
     private Object pauseLock = new Object();
 
     public GameThread(GameSurface gameSurface, SurfaceHolder surfaceHolder)  {
@@ -100,10 +101,22 @@ public class GameThread extends Thread {
             if(running){
                 pauseLock.notifyAll();
             }
+            else {
+                lastPauseTime = System.nanoTime();
+            }
         }
     }
 
     public boolean getRunning(){
         return running;
+    }
+
+
+    public long getLastPauseTime(){
+        return lastPauseTime;
+    }
+
+    public void setLastPauseTime(long newPauseTime) {
+        lastPauseTime = newPauseTime;
     }
 }
