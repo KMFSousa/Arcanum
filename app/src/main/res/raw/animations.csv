@@ -1,3 +1,4 @@
-name,idle,walkleft,walkright,attack1left,attack1right,attack2left,attack2right,enrageattack1left,enrageattack1right,enrageattack2left,enrageattack2right
-orc,,4,8,12,16,,,,,,
-player,,3,6,7,8,,,,,,
+name,idleleft,idleright,walkleft,walkright,attack1left,attack1right,attack2left,attack2right,enrageattack1left,enrageattack1right,enrageattack2left,enrageattack2right
+orc,,,4,8,12,16,,,,,,
+player,2,,5,8,9,10,11,,,,
+boss,4,8,,,10,12,,,,,,

@@ -98,6 +98,8 @@ public class Map {
             case "slime":
                 stuffFactory.newSlime(this.monsterList, xSpawnLocation, ySpawnLocation, this.context);
                 break;
+            case "boss":
+                stuffFactory.newBoss(this.monsterList, xSpawnLocation, ySpawnLocation, this.context);
             default:
                 throw new Exception("Error: No Monster Found for Given Type.");
         }

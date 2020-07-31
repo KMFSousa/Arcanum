@@ -39,7 +39,11 @@ public class Projectile extends GameObject {
         //TODO: call move()
         move();
         //TODO: check for collision (either with PC or NPC), pass in respective list from gamesurface
-        checkCharacterCollision(gameSurface.dungeon.getCurrentRoom().monsterList);
+        if (this.isPlayerOwned) {
+            checkCharacterCollision(gameSurface.dungeon.getCurrentRoom().monsterList);
+        } else {
+            checkCharacterCollision(gameSurface.characterList);
+        }
         //TODO:check for collision with environment
         checkEnvironmentCollision();
     }
@@ -91,6 +95,7 @@ public class Projectile extends GameObject {
                         this.hurtBox.y < other.hitBox.y + other.height &&
                         this.hurtBox.y + this.hurtBox.height > other.hitBox.y) {
                     other.reduceHitPointsBy(this.attackDamage);
+                    gameSurface.projectileRemovalList.add(this);
                 }
             }
         }

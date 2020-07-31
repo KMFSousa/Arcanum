@@ -12,7 +12,6 @@ public class OrcAI implements CharacterAI {
     private List<Character> playerList;
     private Character player;
     public Character character;
-    private StuffFactory factory;
     private int positionX;
     private int positionY;
     private int distanceToPlayerX;
@@ -25,7 +24,6 @@ public class OrcAI implements CharacterAI {
 
     public OrcAI(Character character, GameSurface gameSurface) {
         this.gameSurface = gameSurface;
-        this.factory = factory;
         this.player = gameSurface.characterList.get(0);
         this.character = character;
         this.currentAnimationBitmap = this.character.animationMap.get("walkleft");
@@ -100,8 +98,6 @@ public class OrcAI implements CharacterAI {
     public Bitmap getCurrentBitmap() {
         return this.currentAnimationBitmap.get(this.colUsing);
     }
-
-    // TODO: Orc attack animation broken
 
     public void animate(int movingVectorX, int movingVectorY) {
         int vectorX = movingVectorX;

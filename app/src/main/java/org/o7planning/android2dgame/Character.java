@@ -31,12 +31,6 @@ public class Character extends GameObject {
 
     private final List<Item> itemList = new ArrayList<Item>();
 
-    // Row index of Image are being used.
-    private String keyUsing = "walkleft";
-
-    // `colUsing` will tell us which stage of the animation we are on
-    private int colUsing;
-
     private int attackAnimationIndex;
 
     public Map<String, ArrayList<Bitmap>> animationMap;
@@ -289,8 +283,8 @@ public class Character extends GameObject {
         canvas.drawBitmap(bitmap, x, y, null);
         // Last draw time.
         this.lastDrawNanoTime= System.nanoTime();
-        hitBox.draw(canvas);
-        hurtBox.draw(canvas);
+        //hitBox.draw(canvas);
+        //hurtBox.draw(canvas);
 
         // healthBar Logic = Always draw for player, draw if taken damage, and don't draw if dead //TODO the last part shouldn't be necessary but for the demo it looks nicer
         if((this.isPlayer || this.hitPoints < this.MAXHITPOINTS) && this.hitPoints != 0){

@@ -23,7 +23,7 @@ public class PlayerAI implements CharacterAI {
     private int colUsing = 0;
     private boolean isAttacking = false;
     private boolean attackAnimationInProgress = false;
-
+    private int frameCounter = 0;
 
     public PlayerAI(Character character, GameSurface gameSurface, StuffFactory factory) {
         this.character = character;
@@ -70,9 +70,11 @@ public class PlayerAI implements CharacterAI {
 
     private void rangedAttack() {
         // Create projectile in correct direction
+        this.isAttacking = true;
+        this.attackAnimationInProgress = false;
         if(attackVectorX != 0 || attackVectorY != 0) {
             Bitmap projectileBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.fireball2);
-            Projectile projectile = factory.projectile(projectileBitmap, attackVectorX, attackVectorY, true, character.getX() + Math.round(character.width/2) - Math.round(projectileBitmap.getWidth()/2), character.getY() + Math.round(character.height/2) - Math.round(projectileBitmap.getHeight()/2));
+            Projectile projectile = factory.projectile(projectileBitmap, attackVectorX, attackVectorY, true, character.getX() + Math.round(character.width/2) - Math.round(projectileBitmap.getWidth()/2), character.getY() + Math.round(character.height/2) - Math.round(projectileBitmap.getHeight()/2), 0.1f);
         }
     }
 
@@ -122,22 +124,29 @@ public class PlayerAI implements CharacterAI {
                     // Moving down and to the right
                     if (!this.isAttacking) {
                         this.currentAnimationBitmap = this.character.animationMap.get("walkright");
-                    } else {
+                    } else if (this.attackStyle.equals("Melee")){
                         this.currentAnimationBitmap = this.character.animationMap.get("attack1right");
+                    } else {
+                        // NOTE: Only attack2left b/c ranged attack animation faces the screen
+                        this.currentAnimationBitmap = this.character.animationMap.get("attack2left");
                     }
                 } else if (vectorY < 0 && vectorXAbsolute < vectorYAbsolute) {
                     // Moving up and to the right
                     if (!this.isAttacking) {
                         this.currentAnimationBitmap = this.character.animationMap.get("walkright");
-                    } else {
+                    } else if (this.attackStyle.equals("Melee")){
                         this.currentAnimationBitmap = this.character.animationMap.get("attack1right");
+                    } else {
+                        this.currentAnimationBitmap = this.character.animationMap.get("attack2left");
                     }
                 } else {
                     // Moving right
                     if (!this.isAttacking) {
                         this.currentAnimationBitmap = this.character.animationMap.get("walkright");
-                    } else {
+                    } else if (this.attackStyle.equals("Melee")){
                         this.currentAnimationBitmap = this.character.animationMap.get("attack1right");
+                    } else {
+                        this.currentAnimationBitmap = this.character.animationMap.get("attack2left");
                     }
                 }
             } else {
@@ -145,36 +154,40 @@ public class PlayerAI implements CharacterAI {
                     // Moving down and to the left
                     if (!this.isAttacking) {
                         this.currentAnimationBitmap = this.character.animationMap.get("walkleft");
-                    } else {
+                    } else if (this.attackStyle.equals("Melee")){
                         this.currentAnimationBitmap = this.character.animationMap.get("attack1left");
+                    } else {
+                        this.currentAnimationBitmap = this.character.animationMap.get("attack2left");
                     }
                 } else if (vectorY < 0 && vectorXAbsolute < vectorYAbsolute) {
                     // Moving up and to the left
                     if (!this.isAttacking) {
                         this.currentAnimationBitmap = this.character.animationMap.get("walkleft");
-                    } else {
+                    } else if (this.attackStyle.equals("Melee")){
                         this.currentAnimationBitmap = this.character.animationMap.get("attack1left");
+                    } else {
+                        this.currentAnimationBitmap = this.character.animationMap.get("attack2left");
                     }
                 } else {
                     // Moving left
                     if (!this.isAttacking) {
                         this.currentAnimationBitmap = this.character.animationMap.get("walkleft");
-                    } else {
+                    } else if (this.attackStyle.equals("Melee")){
                         this.currentAnimationBitmap = this.character.animationMap.get("attack1left");
+                    } else {
+                        this.currentAnimationBitmap = this.character.animationMap.get("attack2left");
                     }
                 }
             }
         } else {
-            // TODO: Need idle animation
-            // This should be fixed in the orc AI and slime AI (?) as well
-            this.currentAnimationBitmap = this.character.animationMap.get("walkleft");
+            // NOTE: Only idleleft b/c idle animation faces the screen
+            this.currentAnimationBitmap = this.character.animationMap.get("idleleft");
         }
 
         double movingVectorLength = Math.sqrt(movingVectorX*movingVectorX + movingVectorY*movingVectorY);
 
-        if (movingVectorLength > 0 || this.isAttacking) {
+        if (movingVectorLength > 0 || isAttacking) {
             this.colUsing++;
-
             if (this.isAttacking) {
                 if(!attackAnimationInProgress) {
                     attackAnimationInProgress = true;
@@ -185,9 +198,15 @@ public class PlayerAI implements CharacterAI {
                 }
             }
 
-            if (this.colUsing >= this.currentAnimationBitmap.size()) {
-                this.colUsing = 0;
+        } else {
+            this.frameCounter++;
+            if (frameCounter % 5 == 0) {
+                this.frameCounter = 0;
+                this.colUsing++;
             }
+        }
+        if (this.colUsing >= this.currentAnimationBitmap.size()) {
+            this.colUsing = 0;
         }
     }
 
