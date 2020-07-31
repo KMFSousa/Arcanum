@@ -48,14 +48,14 @@ public class Map {
         this.context = context;
         this.csvName = csvName;
 
-        if(Build.FINGERPRINT.contains("generic")) { //Emulator
-            this.screenWidth = Resources.getSystem().getDisplayMetrics().heightPixels;
-            this.screenHeight = Resources.getSystem().getDisplayMetrics().widthPixels;
-        }
-        else { //Hardware Phone
+//        if(Build.FINGERPRINT.contains("generic")) { //Emulator
+//            this.screenWidth = Resources.getSystem().getDisplayMetrics().heightPixels;
+//            this.screenHeight = Resources.getSystem().getDisplayMetrics().widthPixels;
+//        }
+//        else { //Hardware Phone
             this.screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
             this.screenHeight =  Resources.getSystem().getDisplayMetrics().heightPixels;
-        }
+//        }
 
         this.currentRoomBitmap = Bitmap.createScaledBitmap(startingImage, screenWidth, screenHeight, true);
         int bitmapWidth = currentRoomBitmap.getWidth();
@@ -80,6 +80,8 @@ public class Map {
         this.populateMonsterList(stuffFactory);
     }
 
+    // Sets the monster spawn number and types (this can be changed according to what we
+    // feel is needed or appropriate)
     private void setMonsterSpawnAndTypes(int difficulty, String mapType) {
         if (mapType == "SPAWN") {
             this.spawnCount = 0;
