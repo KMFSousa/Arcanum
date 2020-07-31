@@ -18,7 +18,7 @@ public class StuffFactory {
     public Character newPlayer(List<Character> characterList, int x, int y, int difficulty) {
         Bitmap characterBitmap1 = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.spritesheet);
 
-        Character player = new Character(gameSurface, characterBitmap1, x, y, true, 4, 4, 0.3f, 120 - (difficulty * 20), 11 - difficulty, 3, 4);
+        Character player = new Character(gameSurface, characterBitmap1, x, y, true, 4, 4, 0.3f, 120 - (difficulty * 20), 11 - difficulty, 3, 3);
         characterList.add(player);
         PlayerAI playerAI = new PlayerAI(player, gameSurface, this);
         playerAI.character = player;
