@@ -183,8 +183,10 @@ public class ScreenRecorder {
     private void shareVideo(){
         Intent sharingIntent = new Intent(Intent.ACTION_SEND);
         Uri videoUri = Uri.parse(targetFilePath);
-        sharingIntent.setType(URLConnection.guessContentTypeFromName(targetFilePath));
+        sharingIntent.setType("video/mp4");
+        sharingIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         sharingIntent.putExtra(Intent.EXTRA_STREAM, videoUri);
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Sent from Arcanum!");
         mainActivity.startActivity(Intent.createChooser(sharingIntent, "Share video using"));
     }
 

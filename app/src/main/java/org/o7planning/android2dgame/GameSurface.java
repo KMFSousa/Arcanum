@@ -24,6 +24,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     private GameThread gameThread;
     public Dungeon dungeon;
     private Context context;
+    private boolean gameStarted = false;
     public List<Character> characterList = new ArrayList<Character>();
     public List<Explosion> explosionList = new ArrayList<Explosion>();
     public List<Character> removalList = new ArrayList<Character>();
@@ -38,6 +39,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
         // Set callback.
         this.getHolder().addCallback(this);
+        initDungeon();
     }
 
     // MASTER UPDATE CONTROL
@@ -102,13 +104,9 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         removalList.add(other);
     }
 
-    // Implements method of SurfaceHolder.Callback
 
-    @Override
-    // The surfaceCreated method is called immediately after the surface is first created (in MainActivity)
-    // The gameThread will be what calls the update method on the character
-    public void surfaceCreated(SurfaceHolder holder) {
 
+    public void initDungeon(){
         StuffFactory stuffFactory = new StuffFactory(this);
 
         this.dungeon = new Dungeon(this);
@@ -144,13 +142,26 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         this.dungeon.populateMapArray(mapArr);
 
         this.dungeon.getCurrentRoom().monsterList = new ArrayList<Character>(mapArr[2][0].monsterList);
+    }
+    // Implements method of SurfaceHolder.Callback
+
+    @Override
+    // The surfaceCreated method is called immediately after the surface is first created (in MainActivity)
+    // The gameThread will be what calls the update method on the character
+    public void surfaceCreated(SurfaceHolder holder) {
 
         // Create a thread that will handle the running of the game (character movements and such) that can be easily paused without having to add excess logic to the main thread
-        this.gameThread = new GameThread(this, holder);
-        // Call the setRunning method to set the `running` variable of the game thread to true: this is what will control the pausing of the thread
-        this.gameThread.setRunning(true);
-        // Call the already implemented `start()` method of the `Thread` superclass which will call the overrided `run()` method of our `GameThread` subclass
-        this.gameThread.start();
+        if(gameThread == null) {
+            gameThread = new GameThread(this, holder);
+        }
+
+        if (!gameStarted) {
+            gameThread.start();
+            gameStarted = true;
+        }
+        gameThread.setRunning(true);
+
+
     }
 
     // Implements method of SurfaceHolder.Callback
@@ -162,18 +173,15 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     // Implements method of SurfaceHolder.Callback
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        boolean retry = true;
-        while (retry) {
-            try {
-                this.gameThread.setRunning(false);
+        gameThread.setRunning(false);
+    }
 
-                // Parent thread must wait until the end of GameThread.
-                this.gameThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            retry = true;
-        }
+    public void setRunning(boolean running){
+        gameThread.setRunning(running);
+    }
+
+    public boolean isRunning(){
+        return gameThread.getRunning();
     }
 
 }
