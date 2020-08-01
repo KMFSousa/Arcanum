@@ -18,6 +18,7 @@ public class MainActivity extends Activity {
 
     private RelativeLayout[] layouts = new RelativeLayout[3];
     private GameSurface gameSurface;
+    public boolean characterAlive = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,29 +110,37 @@ public class MainActivity extends Activity {
             }
         });
     }
-//
-//    protected void deathScreen() {
-//        this.setContentView(R.layout.pause_menu);
-//
-//        final Button restartGameButton = findViewById(R.id.restartGameButton);
-//        restartGameButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick (View view) {
-//                return;
-//            }
-//        });
-//
-//        final Button mainMenuButton = findViewById(R.id.mainMenuButton);
-//        mainMenuButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick (View view) {
-//                mainMenu();
-//            }
-//        });
-//    }
+
+
+    protected void deathScreen() {
+
+
+
+        final View child = getLayoutInflater().inflate(R.layout.death_menu, null);
+        ViewGroup parent = findViewById(R.id.game_hud);
+        parent.addView(child);
+        //TODO: Set the game_hud to GONE
+
+        final Button restartGameButton = findViewById(R.id.restartGameButton);
+        restartGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                return; //TODO: Placeholder for now
+            }
+        });
+
+        final Button mainMenuButton = findViewById(R.id.mainMenuButton);
+        mainMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                mainMenu();
+            }
+        });
+    }
 
     protected void startGame() {
         this.setContentView(R.layout.game_hud);
+        // TODO: Possibly need to set to visable again
 
         gameSurface = new GameSurface(this);
         final RelativeLayout myLayout = findViewById(R.id.game_hud);
@@ -204,16 +213,6 @@ public class MainActivity extends Activity {
             }
         });
 
-        // TODO: Remove, this is old
-        //Button attackButton = findViewById(R.id.attackButton);
-        //attackButton.setOnClickListener(new View.OnClickListener() {
-        //    @Override
-        //    public void onClick(View view) {
-        //        for (Character character: gameSurface.characterList) {
-        //            character.ai.attack();
-        //        }
-        //    }
-        //});
         
     }
 
