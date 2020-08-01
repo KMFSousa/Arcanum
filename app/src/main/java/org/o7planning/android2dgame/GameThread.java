@@ -97,7 +97,7 @@ public class GameThread extends Thread {
 
     public void setRunning(boolean running)  {
         synchronized (pauseLock) {
-            this.running =running;
+            this.running = running;
             if(running){
                 pauseLock.notifyAll();
             }

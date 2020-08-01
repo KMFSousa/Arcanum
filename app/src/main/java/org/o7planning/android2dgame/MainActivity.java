@@ -40,6 +40,7 @@ public class MainActivity extends Activity {
 
     }
     protected void mainMenu() {
+        gameSurface = null;
         this.setContentView(R.layout.main_menu);
 
         final Button toggleButton = findViewById(R.id.startGameButton);
@@ -124,7 +125,13 @@ public class MainActivity extends Activity {
         });
     }
 
+    protected void victoryScreen(){
+        //TODO: This.
+    }
+
     protected void startGame() {
+        gameSurface = null;
+        //TODO: Add View that says "Loading....."
         this.setContentView(R.layout.game_hud);
         // TODO: Possibly need to set to visable again
 

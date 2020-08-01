@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:scaleType="fitXY"
         android:background="#40000000"/>
-
+<!-- TODO: Add an outline -->
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"

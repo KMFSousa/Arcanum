@@ -40,7 +40,7 @@
         custom:JV_buttonColor="#8C8C8C"
         custom:JV_buttonSizeRatio="30%"
         custom:JV_fixedCenter="false" />
-
+    <!--TODO: Give this thing a sprite-->
     <Button
         android:id="@+id/attackToggleButton"
         android:layout_width="wrap_content"
@@ -64,9 +64,12 @@
         android:layout_alignParentRight="true"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
+        android:backgroundTint="#7CFFFFFF"
         android:text="| |"
          />
 
+
+    <!-- TODO: Align with other button -->
     <ImageButton
         android:id="@+id/shareButton"
         android:layout_width="50dp"
