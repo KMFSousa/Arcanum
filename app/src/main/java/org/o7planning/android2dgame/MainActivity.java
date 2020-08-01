@@ -109,16 +109,11 @@ public class MainActivity extends Activity {
     }
     private boolean requestNecessaryPermissions() {
         //returns true if all permissions are already granted
-        boolean alreadyGranted = true;
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, RECORD_AUDIO);
-            alreadyGranted = false;
-        }
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE);
-            alreadyGranted = false;
+            return false;
         }
-        return alreadyGranted;
+        return true;
     }
 
     private void initializeScreenRecorder(){
@@ -144,23 +139,15 @@ public class MainActivity extends Activity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.d("Permissions", requestCode+"");
         switch (requestCode) {
             case WRITE_EXTERNAL_STORAGE:
-                // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     initializeScreenRecorder();
-                }  else {
-                    // Explain to the user that the feature is unavailable because
-                    // the features requires a permission that the user has denied.
-                    // At the same time, respect the user's decision. Don't link to
-                    // system settings in an effort to convince the user to change
-                    // their decision.
+                } else {
+
                 }
-                return;
         }
     }
-
 
         //Button attackButton = findViewById(R.id.attackButton);
         //attackButton.setOnClickListener(new View.OnClickListener() {
