@@ -139,6 +139,7 @@ public class StuffFactory {
         gameSurface.projectileList.add(projectile);
 
         Bitmap projectileHurtbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.characterhitbox);
+        projectileHurtbox = Bitmap.createScaledBitmap(projectileHurtbox, 36, 36, false);
         HitBox hurtBox3 = new HitBox(gameSurface, projectileHurtbox, originX, originY, projectile);
         hurtBox3.object = projectile;
         projectile.setObjectHurtbox(hurtBox3);

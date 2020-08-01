@@ -15,10 +15,6 @@ public class BossAI implements CharacterAI {
     private Character player;
     public Character character;
     private StuffFactory factory;
-    private int positionX;
-    private int positionY;
-    private int distanceToPlayerX;
-    private int distanceToPlayerY;
     private int updateCounter;
     private ArrayList<Bitmap> currentAnimationBitmap = new ArrayList<Bitmap>();
     private int colUsing = 0;
@@ -69,8 +65,8 @@ public class BossAI implements CharacterAI {
         this.factory.newOrc(this.gameSurface.dungeon.getCurrentRoom().monsterList, 500, 300, this.context);
         this.factory.newOrc(this.gameSurface.dungeon.getCurrentRoom().monsterList, 1500, 300, this.context);
         if (this.enraged) {
-            this.factory.newOrc(this.gameSurface.dungeon.getCurrentRoom().monsterList, 500, 350, this.context);
-            this.factory.newOrc(this.gameSurface.dungeon.getCurrentRoom().monsterList, 1500, 350, this.context);
+            this.factory.newOrc(this.gameSurface.dungeon.getCurrentRoom().monsterList, 500, 1100, this.context);
+            this.factory.newOrc(this.gameSurface.dungeon.getCurrentRoom().monsterList, 1500, 1100, this.context);
         }
     }
 
@@ -140,22 +136,41 @@ public class BossAI implements CharacterAI {
     }
 
     private void railgunAttack() {
-        Bitmap projectileBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.fireball2);
-        this.positionX = this.character.getX() + this.character.width/2;
-        this.positionY = this.character.getY() + this.character.height/2;
-        this.distanceToPlayerX = this.player.getX() + this.player.width/2 - this.positionX;
-        this.distanceToPlayerY = this.player.getY() + this.player.height/2 - this.positionY;
-        Projectile projectile = factory.projectile(projectileBitmap, this.distanceToPlayerX, this.distanceToPlayerY, false, character.getX() + Math.round(character.width/2) - Math.round(projectileBitmap.getWidth()/2), character.getY() + Math.round(character.height/2) - Math.round(projectileBitmap.getHeight()/2), 0.2f);
+        Bitmap projectileBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.fireball);
+        int positionX = this.character.getX() + this.character.width/2;
+        int positionY = this.character.getY() + this.character.height/2;
+        int distanceToPlayerX = this.player.getX() + this.player.width/2 - positionX;
+        int distanceToPlayerY = this.player.getY() + this.player.height/2 - positionY;
+        if (!enraged) {
+            factory.projectile(projectileBitmap, distanceToPlayerX, distanceToPlayerY, false, character.getX() + Math.round(character.width/2) - Math.round(projectileBitmap.getWidth()/2), character.getY() + Math.round(character.height/2) - Math.round(projectileBitmap.getHeight()/2), 0.4f);
+        } else {
+            factory.projectile(projectileBitmap, distanceToPlayerX, distanceToPlayerY, false, character.getX() + Math.round(character.width/2) - Math.round(projectileBitmap.getWidth()/2), character.getY() + Math.round(character.height/2) - Math.round(projectileBitmap.getHeight()/2), 0.6f);
+        }
     }
 
     private void spreadAttack() {
         // TODO: Make this an actual spread attack!
-        Bitmap projectileBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.fireball2);
-        this.positionX = this.character.getX() + this.character.width/2;
-        this.positionY = this.character.getY() + this.character.height/2;
-        this.distanceToPlayerX = this.player.getX() + this.player.width/2 - this.positionX;
-        this.distanceToPlayerY = this.player.getY() + this.player.height/2 - this.positionY;
-        Projectile projectile = factory.projectile(projectileBitmap, this.distanceToPlayerX, this.distanceToPlayerY, false, character.getX() + Math.round(character.width/2) - Math.round(projectileBitmap.getWidth()/2), character.getY() + Math.round(character.height/2) - Math.round(projectileBitmap.getHeight()/2), 0.2f);
+        int[] pointXArray = {911, 913, 911, 913, 913, 911};
+        int[] pointYArray = {563, 563, 561, 561, 562, 562};
+        Bitmap projectileBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.fireball);
+        int positionX = this.character.getX() + this.character.width/2;
+        int positionY = this.character.getY() + this.character.height/2;
+
+        int pointX;
+        int pointY;
+        int distanceToPointX;
+        int distanceToPointY;
+        for (int i = 0; i < pointXArray.length; i++) {
+            pointX = pointXArray[i];
+            pointY = pointYArray[i];
+            distanceToPointX = pointX - positionX;
+            distanceToPointY = pointY - positionY;
+            if (!enraged) {
+                factory.projectile(projectileBitmap, distanceToPointX, distanceToPointY, false, character.getX() + Math.round(character.width/2) - Math.round(projectileBitmap.getWidth()/2), character.getY() + Math.round(character.height/2) - Math.round(projectileBitmap.getHeight()/2), 0.2f);
+            } else {
+                factory.projectile(projectileBitmap, distanceToPointX, distanceToPointY, false, character.getX() + Math.round(character.width/2) - Math.round(projectileBitmap.getWidth()/2), character.getY() + Math.round(character.height/2) - Math.round(projectileBitmap.getHeight()/2), 0.4f);
+            }
+        }
     }
 
     public Bitmap getCurrentBitmap() {

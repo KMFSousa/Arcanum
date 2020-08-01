@@ -37,19 +37,15 @@ public class Dungeon {
 
     public void transitionVertical(int direction){ //Direction should be +1 for upwards room change, -1 for downwards
         if(this.roomY + direction >= 0  && this.roomY + direction < this.rooms[0].length) {
-            //this.getCurrentRoom().monsterList = new ArrayList<Character>(this.currentMonsterList);
             this.roomY += direction;
-            //this.currentMonsterList = new ArrayList<Character>(this.getCurrentRoom().monsterList);
-            Log.d("Dungeon","Vertical Transition: " + direction);
+            this.gameSurface.projectileList = new ArrayList<Projectile>();
         }
     }
 
     public void transitionHorizontal(int direction){ //Direction should be +1 for right room change, -1 for left
         if(this.roomX + direction >= 0  && this.roomX + direction < this.rooms[0].length) {
-            //this.getCurrentRoom().monsterList = new ArrayList<Character>(this.currentMonsterList);
             this.roomX += direction;
-            //this.currentMonsterList = new ArrayList<Character>(this.getCurrentRoom().monsterList);
-            Log.d("Dungeon","Horizontal Transition: " + direction);
+            this.gameSurface.projectileList = new ArrayList<Projectile>();
         }
     }
 

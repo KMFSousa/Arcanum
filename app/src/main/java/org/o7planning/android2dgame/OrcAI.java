@@ -74,6 +74,9 @@ public class OrcAI implements CharacterAI {
                 this.updateCounter = 0;
                 this.wander();
             }
+        } else if (updateCounter % 20 == 0) {
+            this.updateCounter = 0;
+            this.wander();
         }
 
         this.animate(movingVectorX, movingVectorY);

@@ -45,8 +45,11 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     // MASTER UPDATE CONTROL
     // CALL ALL UPDATE METHODS FOR OBJECTS HERE
     public void update() {
-        for (Character monster : this.dungeon.getCurrentRoom().monsterList) {
-            monster.update(this.dungeon.getCurrentRoom());
+
+        synchronized (this.dungeon.getCurrentRoom().monsterList) {
+            for (Character monster : this.dungeon.getCurrentRoom().monsterList) {
+                monster.update(this.dungeon.getCurrentRoom());
+            }
         }
 
         for (Explosion explosion : this.explosionList) {

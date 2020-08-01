@@ -229,7 +229,11 @@ public class Map {
         int col = this.getColFromX(x);
         int row = this.getRowFromY(y);
 
-        return this.tileArray[row][col].isCollidable();
+        try {
+            return this.tileArray[row][col].isCollidable();
+        } catch (Exception e) {
+            return true;
+        }
     }
 
 
