@@ -62,11 +62,11 @@ public class BossAI implements CharacterAI {
     }
 
     private void spawnEnemies() {
-        this.factory.newOrc(this.gameSurface.dungeon.getCurrentRoom().monsterList, 500, 300, this.context);
-        this.factory.newOrc(this.gameSurface.dungeon.getCurrentRoom().monsterList, 1500, 300, this.context);
+        this.factory.newOrc(this.gameSurface.dungeon.getCurrentRoom().monsterList, 500, 300, this.context, true);
+        this.factory.newOrc(this.gameSurface.dungeon.getCurrentRoom().monsterList, 1200, 300, this.context, true);
         if (this.enraged) {
-            this.factory.newOrc(this.gameSurface.dungeon.getCurrentRoom().monsterList, 500, 1100, this.context);
-            this.factory.newOrc(this.gameSurface.dungeon.getCurrentRoom().monsterList, 1500, 1100, this.context);
+            this.factory.newOrc(this.gameSurface.dungeon.getCurrentRoom().monsterList, 500, 800, this.context, true);
+            this.factory.newOrc(this.gameSurface.dungeon.getCurrentRoom().monsterList, 1200, 800, this.context, true);
         }
     }
 
@@ -86,11 +86,11 @@ public class BossAI implements CharacterAI {
                     this.currentAnimationBitmap = this.character.animationMap.get("attack1right");
                 }
                 if (this.enraged) {
-                    // TODO: Launch one fireball every frame when enraged
+                    // Launch one fireball every frame when enraged
                     this.railgunAttack();
                 } else {
                     if (this.attackCounter % 2 == 0) {
-                        // TODO: Launch one fireball every two frames
+                        // Launch one fireball every two frames
                         this.railgunAttack();
                     }
                 }
@@ -103,12 +103,12 @@ public class BossAI implements CharacterAI {
                 }
                 if (this.enraged) {
                     if (this.attackCounter % 2 == 0) {
-                        // TODO: Launch one barrage of projectiles every two frames when enraged
+                        // Launch one barrage of projectiles every two frames when enraged
                         this.spreadAttack();
                     }
                 } else {
                     if (this.attackCounter % 4 == 0) {
-                        // TODO: Launch one barrage of projectiles every four frames
+                        // Launch one barrage of projectiles every four frames
                         this.spreadAttack();
                     }
                 }
@@ -149,13 +149,11 @@ public class BossAI implements CharacterAI {
     }
 
     private void spreadAttack() {
-        // TODO: Make this an actual spread attack!
         int[] pointXArray = {911, 913, 911, 913, 913, 911};
         int[] pointYArray = {563, 563, 561, 561, 562, 562};
         Bitmap projectileBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.fireball);
         int positionX = this.character.getX() + this.character.width/2;
         int positionY = this.character.getY() + this.character.height/2;
-
         int pointX;
         int pointY;
         int distanceToPointX;

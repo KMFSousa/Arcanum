@@ -38,7 +38,9 @@ public class Dungeon {
     public void transitionVertical(int direction){ //Direction should be +1 for upwards room change, -1 for downwards
         if(this.roomY + direction >= 0  && this.roomY + direction < this.rooms[0].length) {
             this.roomY += direction;
+            // Wipe out any currently existing projectiles or characters that were going to be added
             this.gameSurface.projectileList = new ArrayList<Projectile>();
+            this.gameSurface.charactersToAddList = new ArrayList<Character>();
         }
     }
 
@@ -46,6 +48,7 @@ public class Dungeon {
         if(this.roomX + direction >= 0  && this.roomX + direction < this.rooms[0].length) {
             this.roomX += direction;
             this.gameSurface.projectileList = new ArrayList<Projectile>();
+            this.gameSurface.charactersToAddList = new ArrayList<Character>();
         }
     }
 

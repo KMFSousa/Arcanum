@@ -118,7 +118,7 @@ public class SlimeAI implements CharacterAI {
         int x = character.x;
         int y = character.y;
 
-        Character child = factory.newSlime(this.gameSurface.dungeon.getCurrentRoom().monsterList, x, y, this.context);
+        Character child = factory.newSlime(this.gameSurface.dungeon.getCurrentRoom().monsterList, x, y, this.context, true);
         child.x = x;
         child.y = y;
         child.hitBox.x = x;

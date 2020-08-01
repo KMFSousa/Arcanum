@@ -25,9 +25,11 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     public StuffFactory stuffFactory;
     private Context context;
     public List<Character> characterList = new ArrayList<Character>();
+    public List<Character> charactersToAddList = new ArrayList<Character>();
     public List<Explosion> explosionList = new ArrayList<Explosion>();
     public List<Character> removalList = new ArrayList<Character>();
     public List<Projectile> projectileList = new ArrayList<Projectile>();
+    public List<Projectile> projectilesToAddList = new ArrayList<Projectile>();
     public List<Projectile> projectileRemovalList = new ArrayList<Projectile>();
     public List<Item> itemList = new ArrayList<Item>();
     public GameSurface(Context context)  {
@@ -46,11 +48,16 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     // CALL ALL UPDATE METHODS FOR OBJECTS HERE
     public void update() {
 
-        synchronized (this.dungeon.getCurrentRoom().monsterList) {
-            for (Character monster : this.dungeon.getCurrentRoom().monsterList) {
-                monster.update(this.dungeon.getCurrentRoom());
-            }
+        for (Character monster : this.dungeon.getCurrentRoom().monsterList) {
+            monster.update(this.dungeon.getCurrentRoom());
         }
+
+        // If we have characters (monsters) that were created mid-update, add them to the main character list now
+        for (Character character : this.charactersToAddList) {
+            this.dungeon.getCurrentRoom().monsterList.add(character);
+        }
+        // Empty the list after
+        this.charactersToAddList = new ArrayList<Character>();
 
         for (Explosion explosion : this.explosionList) {
             explosion.update();
@@ -76,6 +83,13 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         for(Projectile projectile : projectileList) {
             projectile.update();
         }
+
+        // If we have characters (monsters) that were created mid-update, add them to the main character list now
+        for (Projectile projectile : this.projectilesToAddList) {
+            this.projectileList.add(projectile);
+        }
+        // Empty the list after
+        this.projectilesToAddList = new ArrayList<Projectile>();
 
         characterList.removeAll(removalList);
         projectileList.removeAll(projectileRemovalList);

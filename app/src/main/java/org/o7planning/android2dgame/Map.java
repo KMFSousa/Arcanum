@@ -93,10 +93,10 @@ public class Map {
     private void callCorrectStuffFactoryMethod(String name, int xSpawnLocation, int ySpawnLocation, StuffFactory stuffFactory) throws Exception {
         switch(name) {
             case "orc":
-                stuffFactory.newOrc(this.monsterList, xSpawnLocation, ySpawnLocation, this.context);
+                stuffFactory.newOrc(this.monsterList, xSpawnLocation, ySpawnLocation, this.context, false);
                 break;
             case "slime":
-                stuffFactory.newSlime(this.monsterList, xSpawnLocation, ySpawnLocation, this.context);
+                stuffFactory.newSlime(this.monsterList, xSpawnLocation, ySpawnLocation, this.context, false);
                 break;
             case "boss":
                 stuffFactory.newBoss(this.monsterList, xSpawnLocation, ySpawnLocation, this.context);
@@ -218,9 +218,12 @@ public class Map {
             int destRow = this.getRowFromY(yDestWithHeight);
             int destCol = this.getColFromX(xDestWithWidth);
 
-            Tile destTile = this.tileArray[destRow][destCol];
+            try {
+                return !this.tileArray[destRow][destCol].isCollidable();
+            } catch (Exception e){
+                return false;
+            }
 
-            return !destTile.isCollidable();
         }
         return false;
     }

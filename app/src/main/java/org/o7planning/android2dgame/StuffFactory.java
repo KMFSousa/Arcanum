@@ -49,11 +49,15 @@ public class StuffFactory {
         return player;
     }
 
-    public Character newSlime(List<Character> characterList, int x, int y, Context context) {
+    public Character newSlime(List<Character> characterList, int x, int y, Context context, Boolean addedMidGame) {
         Bitmap slimeBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.slimes1);
         // TODO: Change sprite sheet rows & colums for slime
         Character slime = new Character(gameSurface, slimeBitmap, x, y, false, 4, 5, 0.1f, 30, 1, 3, 4, context, "slime");
-        characterList.add(slime);
+        if (addedMidGame) {
+            this.gameSurface.charactersToAddList.add(slime);
+        } else {
+            characterList.add(slime);
+        }
         SlimeAI slimeAI = new SlimeAI(slime, gameSurface, this, context);
         slimeAI.character = slime;
         slime.setCharacterAI(slimeAI);
@@ -76,11 +80,15 @@ public class StuffFactory {
         return slime;
     }
 
-    public Character newOrc(List<Character> characterList, int x, int y, Context context) {
+    public Character newOrc(List<Character> characterList, int x, int y, Context context, Boolean addedMidGame) {
         Bitmap orcBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc);
         orcBitmap = Bitmap.createScaledBitmap(orcBitmap, 1800, 128, false);
         Character orc = new Character(gameSurface, orcBitmap, x, y, false, 1, 16, 0.1f, 30, 1, 3, 4, context, "orc");
-        characterList.add(orc);
+        if (addedMidGame) {
+            this.gameSurface.charactersToAddList.add(orc);
+        } else {
+            characterList.add(orc);
+        }
         OrcAI orcAI = new OrcAI(orc, gameSurface);
         orcAI.character = orc;
         orc.setCharacterAI(orcAI);
@@ -136,7 +144,7 @@ public class StuffFactory {
 
     public Projectile projectile(Bitmap projectileBitmap, int movingVectorX, int movingVectorY, boolean isPlayerOwned, int originX, int originY, float velocity){
         Projectile projectile = new Projectile(isPlayerOwned, projectileBitmap, 1, 1, originX, originY, movingVectorX, movingVectorY, gameSurface, velocity, 10);
-        gameSurface.projectileList.add(projectile);
+        gameSurface.projectilesToAddList.add(projectile);
 
         Bitmap projectileHurtbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.characterhitbox);
         projectileHurtbox = Bitmap.createScaledBitmap(projectileHurtbox, 36, 36, false);
