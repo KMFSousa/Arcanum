@@ -1,35 +1,37 @@
 package org.o7planning.android2dgame;
 
+import android.util.Log;
+
 import java.util.List;
 
-public class OrcAI extends CharacterAI {
+public class OrcAI implements CharacterAI {
 
     private GameSurface gameSurface;
     private List<Character> playerList;
-    private final Character player;
+    private Character player;
+    public Character character;
     private StuffFactory factory;
     private int positionX;
     private int positionY;
-    private int mobID;
 
     private int distanceToPlayerX;
     private int distanceToPlayerY;
 
     private int updateCounter;
 
-    public OrcAI(Character character, Dungeon dungeon, GameSurface gameSurface) {
-        super(character, dungeon);
+    public OrcAI(Character character, GameSurface gameSurface) {
         this.gameSurface = gameSurface;
         this.factory = factory;
         this.player = gameSurface.characterList.get(0);
-        this.mobID = 1;
+        this.character = character;
     }
 
     public void onUpdate() {
+        if(closeToPlayer(50)) {
+            character.setMovingVector(0, 0);
+            attack();
+        } else if (closeToPlayer(1200)) {
 
-        if (closeToPlayer()) {
-
-        }
             // TODO: Base pathing in accordance to line of sight
             // Draw a vector from monster to player
             // Sample along the vector and calculate if there is a tile that is collidable at each sample.
@@ -45,7 +47,7 @@ public class OrcAI extends CharacterAI {
 
             int distanceToPlayer = GameObject.getDistanceBetweenObjects(this.character, player);
 
-            int tileWidth = this.dungeon.getCurrentRoom().tileWidth;
+            int tileWidth = this.gameSurface.dungeon.getCurrentRoom().tileWidth;
 
             int numTileChecks = (int) Math.ceil(distanceToPlayer/(tileWidth/4));
 
@@ -58,32 +60,59 @@ public class OrcAI extends CharacterAI {
                 xValToCheck = this.positionX + i*((distanceToPlayerX)/numTileChecks);
                 yValToCheck = this.positionY + i*((distanceToPlayerY)/numTileChecks);
 
-                if (this.dungeon.getCurrentRoom().isPointCollidable(xValToCheck, yValToCheck)) {
+                if (this.gameSurface.dungeon.getCurrentRoom().isPointCollidable(xValToCheck, yValToCheck)) {
                     lineOfSight = false;
                 }
             }
 
             if (lineOfSight) {
                 character.setMovingVector(distanceToPlayerX, distanceToPlayerY);
-            } else if (updateCounter % 5 == 0) {
+            } else if (updateCounter % 20 == 0) {
                 this.updateCounter = 0;
                 this.wander();
             }
-
+        }
         updateCounter++;
-
-
     }
 
-    public boolean closeToPlayer() {
+
+    public void attack() {
+        if(!gameSurface.characterList.isEmpty()){
+            Character other = gameSurface.characterList.get(0);
+            if(character.hurtBox.x < other.hitBox.x + other.hitBox.width &&
+                    character.hurtBox.x + character.hurtBox.width > other.hitBox.x &&
+                    character.hurtBox.y < other.hitBox.y + other.hitBox.height &&
+                    character.hurtBox.y + character.hurtBox.height > other.hitBox.y){
+                other.reduceHitPointsBy(character.attackDamage);
+                character.isAttacking = true;
+            }
+        }
+    }
+
+
+    public boolean hasWeapon() {
+        return true;
+    }
+
+
+    public boolean isPlayer() {
+        return false;
+    }
+
+    public boolean closeToPlayer(int requiredDistance) {
         int distanceToPlayer = GameObject.getDistanceBetweenObjects(this.character, player);
 
-
-        if (distanceToPlayer <= 1200) { // TODO: Change back to 560
+        if (distanceToPlayer <= requiredDistance) {
             return true;
         }
 
         return false;
+    }
+
+    public void wander() {
+        int x = (int)(Math.random() * 200 - 100);
+        int y = (int)(Math.random() * 200 - 100);
+        character.setMovingVector(x, y);
     }
 
 }

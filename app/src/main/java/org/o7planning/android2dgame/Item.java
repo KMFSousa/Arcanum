@@ -19,9 +19,9 @@ public class Item extends GameObject {
     private String name;
     public String name() { return name; }
 
- //TODO: FURTHER FLESH OUT THE ITEM CLASS. ALLOW PLAYERS TO PICKUP ITEMS AND PUT THEM IN AN INVENTORY (ALSO IMPLEMENT AN INVENTORY)
- //TODO: IMPLEMENT ITEM STATS
-    
+    //TODO: FURTHER FLESH OUT THE ITEM CLASS. ALLOW PLAYERS TO PICKUP ITEMS AND PUT THEM IN AN INVENTORY (ALSO IMPLEMENT AN INVENTORY)
+    //TODO: IMPLEMENT ITEM STATS
+
     public Item(GameSurface gameSurface, Bitmap image, String name, int x, int y, int spriteSheetRows, int spriteSheetColumns, int attackDMG) {
         super(image, spriteSheetRows, spriteSheetColumns, x, y);
 
@@ -63,7 +63,7 @@ public class Item extends GameObject {
 
     //TODO: COLLISION DETECTION CAN BE MOVED WITHIN THE HITBOX CLASS AS A SEPARATE METHOD
     public void inCombat() {
-        Iterator<Character> iterator = gameSurface.monsterList.iterator();
+        Iterator<Character> iterator = gameSurface.dungeon.getCurrentRoom().monsterList.iterator();
         combatAnimationFinished = false;
         while(iterator.hasNext()){
             Character other = iterator.next();
@@ -78,8 +78,8 @@ public class Item extends GameObject {
     }
 
     public void attack(Character other) {
-            //gameSurface.removeCharacter(other);
-            other.hitPoints =- 10;
+        //gameSurface.removeCharacter(other);
+        other.hitPoints =- 10;
     }
 }
 

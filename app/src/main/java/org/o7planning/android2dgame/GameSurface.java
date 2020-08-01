@@ -4,12 +4,15 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -20,14 +23,12 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     private GameThread gameThread;
     public Dungeon dungeon;
     private Context context;
-    public final List<Character> characterList = new ArrayList<Character>();
-    public final List<Explosion> explosionList = new ArrayList<Explosion>();
-    public final List<Character> monsterList = new ArrayList<Character>();
-    public final List<Character> removalList = new ArrayList<Character>();
-    public final List<Integer> upgradeList = new ArrayList<Integer>();
-    public final List<Item> itemList = new ArrayList<Item>();
-    public LootTables lootTables;
-    public Character player;
+    public List<Character> characterList = new ArrayList<Character>();
+    public List<Explosion> explosionList = new ArrayList<Explosion>();
+    public List<Character> removalList = new ArrayList<Character>();
+    public List<Projectile> projectileList = new ArrayList<Projectile>();
+    public List<Projectile> projectileRemovalList = new ArrayList<Projectile>();
+    public List<Item> itemList = new ArrayList<Item>();
     public GameSurface(Context context)  {
         super(context);
 
@@ -38,22 +39,13 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
         // Set callback.
         this.getHolder().addCallback(this);
-        this.lootTables = new LootTables(this.context);
     }
 
     // MASTER UPDATE CONTROL
     // CALL ALL UPDATE METHODS FOR OBJECTS HERE
     public void update() {
-        Map currentMap = dungeon.getCurrentRoom();
-        for (Character character : characterList) {
-            if(!characterList.isEmpty()){
-                character.update(currentMap);
-
-            }
-        }
-
-        for (Character monster : monsterList) {
-            monster.update(currentMap);
+        for (Character monster : this.dungeon.getCurrentRoom().monsterList) {
+            monster.update(this.dungeon.getCurrentRoom());
         }
 
         for (Explosion explosion : this.explosionList) {
@@ -68,12 +60,21 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
                 iterator.remove();
             }
         }
-        if(!upgradeList.isEmpty()) {
-            lootTables.applyItems(upgradeList, this.player);
-            upgradeList.clear();
+
+        this.dungeon.getCurrentRoom().monsterList.removeAll(removalList);
+
+        for (Character character : characterList) {
+            if(!characterList.isEmpty()){
+                character.update(this.dungeon.getCurrentRoom());
+            }
         }
-        monsterList.removeAll(removalList);
+
+        for(Projectile projectile : projectileList) {
+            projectile.update();
+        }
+
         characterList.removeAll(removalList);
+        projectileList.removeAll(projectileRemovalList);
     }
 
     @Override
@@ -89,8 +90,12 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
             character.draw(canvas);
         }
 
-        for (Character monster : monsterList) {
+        for (Character monster : this.dungeon.getCurrentRoom().monsterList) {
             monster.draw(canvas);
+        }
+
+        for(Projectile projectile : projectileList) {
+            projectile.draw(canvas);
         }
 
         for (Item item : itemList) {
@@ -103,15 +108,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     }
 
 
-    private void createCreatures(StuffFactory stuffFactory, Dungeon dungeon) {
-        Character player = stuffFactory.newPlayer(dungeon);
-        this.player = player;
-        Character monster = stuffFactory.newMonster(dungeon);
-        Character orc = stuffFactory.newOrc(dungeon);
-        //Item sword = stuffFactory.newSword();
-
-    }
-
     public void removeCharacter(Character other) {
         removalList.add(other);
     }
@@ -123,35 +119,43 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     // The gameThread will be what calls the update method on the character
     public void surfaceCreated(SurfaceHolder holder) {
 
+        StuffFactory stuffFactory = new StuffFactory(this);
+
+        int difficulty = 1; // Default Value? Can be changed (Values 1 - 3)
+
+        this.dungeon = new Dungeon(this);
+
+        Character player = stuffFactory.newPlayer(this.characterList, 850, 500, difficulty);
+
         Map[][] mapArr = new Map[3][3];
+
         Bitmap mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.blue_room);
-        Map map = new Map(this, mapImage, R.raw.blue_room, context);
+        Map map = new Map(this, mapImage, "blue_room", stuffFactory, context, difficulty);
         mapArr[0][0] = map;
 
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.red_room);
-        map = new Map(this, mapImage, R.raw.red_room, context);
+        map = new Map(this, mapImage, "red_room", stuffFactory, context, difficulty);
         mapArr[1][0] = map;
 
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.box_room);
-        map = new Map(this, mapImage, R.raw.box_room, context);
+        map = new Map(this, mapImage, "box_room", stuffFactory, context, difficulty);
         mapArr[0][1] = map;
 
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.green_room);
-        map = new Map(this, mapImage, R.raw.green_room, context);
+        map = new Map(this, mapImage, "green_room", stuffFactory, context, difficulty);
         mapArr[2][0] = map;
 
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.sewers);
-        map = new Map(this, mapImage, R.raw.sewers, context);
+        map = new Map(this, mapImage, "sewers", stuffFactory, context, difficulty);
         mapArr[1][1] = map;
 
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.boss_room);
-        map = new Map(this, mapImage, R.raw.boss_room, context);
+        map = new Map(this, mapImage, "boss_room", stuffFactory, context, difficulty);
         mapArr[1][2] = map;
 
-        this.dungeon = new Dungeon(this, mapArr);
+        this.dungeon.populateMapArray(mapArr);
 
-        StuffFactory stuffFactory = new StuffFactory(this, context);
-        createCreatures(stuffFactory, dungeon);
+        this.dungeon.getCurrentRoom().monsterList = new ArrayList<Character>(mapArr[2][0].monsterList);
 
         // Create a thread that will handle the running of the game (character movements and such) that can be easily paused without having to add excess logic to the main thread
         this.gameThread = new GameThread(this, holder);

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
@@ -14,20 +15,44 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="200dp"
         android:layout_marginRight="120dp"
-        custom:JV_buttonColor="#80FF6E40"
+        custom:JV_buttonColor="#8C8C8C"
         custom:JV_buttonSizeRatio="30%"
-        custom:JV_borderColor="#00796B"
-        custom:JV_backgroundColor="#4D009688"
+        custom:JV_borderColor="#808C8C8C"
+        custom:JV_backgroundColor="#328C8C8C"
         custom:JV_borderWidth="4dp"
         custom:JV_fixedCenter="false"
         android:elevation="1dp"/>
 
+    <io.github.controlwear.virtual.joystick.android.JoystickView
+        android:id="@+id/joystickView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="200dp"
+        android:layout_marginLeft="120dp"
+        android:elevation="1dp"
+        custom:JV_backgroundColor="#338C8C8C"
+        custom:JV_borderColor="#808C8C8C"
+        custom:JV_borderWidth="4dp"
+        custom:JV_buttonColor="#8C8C8C"
+        custom:JV_buttonSizeRatio="30%"
+        custom:JV_fixedCenter="false" />
+
     <Button
-        android:id="@+id/attackButton"
-        android:layout_width="115dp"
-        android:layout_height="72dp"
-        android:layout_marginTop="300dp"
-        android:layout_marginLeft="550dp"
-        android:text="Attack" />
+        android:id="@+id/toggleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="404dp"
+        android:layout_marginLeft="404dp"
+        android:layout_marginTop="338dp"
+        android:text="Ranged">
+
+    </Button>
 
 </RelativeLayout>
