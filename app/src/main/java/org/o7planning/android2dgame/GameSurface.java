@@ -28,6 +28,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     public List<Character> characterList = new ArrayList<Character>();
     public List<Explosion> explosionList = new ArrayList<Explosion>();
     public List<Character> removalList = new ArrayList<Character>();
+    public List<Projectile> projectileList = new ArrayList<Projectile>();
+    public List<Projectile> projectileRemovalList = new ArrayList<Projectile>();
     public List<Item> itemList = new ArrayList<Item>();
     public GameSurface(Context context)  {
         super(context);
@@ -70,7 +72,12 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
             }
         }
 
+        for(Projectile projectile : projectileList) {
+            projectile.update();
+        }
+
         characterList.removeAll(removalList);
+        projectileList.removeAll(projectileRemovalList);
     }
 
     @Override
@@ -88,6 +95,10 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
         for (Character monster : this.dungeon.getCurrentRoom().monsterList) {
             monster.draw(canvas);
+        }
+
+        for(Projectile projectile : projectileList) {
+            projectile.draw(canvas);
         }
 
         for (Item item : itemList) {

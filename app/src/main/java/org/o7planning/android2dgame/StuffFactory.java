@@ -18,9 +18,9 @@ public class StuffFactory {
     public Character newPlayer(List<Character> characterList, int x, int y) {
         Bitmap characterBitmap1 = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.spritesheet);
 
-        Character player = new Character(gameSurface, characterBitmap1, x, y, true, 4, 4, 0.3f, 100, 10, 3 );
+        Character player = new Character(gameSurface, characterBitmap1, x, y, true, 4, 4, 0.3f, 100, 10, 3, 3 );
         characterList.add(player);
-        PlayerAI playerAI = new PlayerAI(player);
+        PlayerAI playerAI = new PlayerAI(player, gameSurface, this);
         playerAI.character = player;
         player.setCharacterAI(playerAI);
 
@@ -44,7 +44,7 @@ public class StuffFactory {
 
     public Character newSlime(List<Character> characterList, int x, int y) {
         Bitmap slimeBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.slimes1);
-        Character slime = new Character(gameSurface, slimeBitmap, x, y, false, 4, 5, 0.1f, 30, 1, 4);
+        Character slime = new Character(gameSurface, slimeBitmap, x, y, false, 4, 5, 0.1f, 30, 1, 3, 4);
         characterList.add(slime);
         SlimeAI slimeAI = new SlimeAI(slime, gameSurface, this);
         slimeAI.character = slime;
@@ -71,21 +71,20 @@ public class StuffFactory {
     public Character newOrc(List<Character> characterList, int x, int y) {
         Bitmap orcBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc);
         orcBitmap = Bitmap.createScaledBitmap(orcBitmap, 1000, 500, false);
-        Character orc = new Character(gameSurface, orcBitmap, x, y, false, 4, 8, 0.1f, 30, 1, 4);
+        Character orc = new Character(gameSurface, orcBitmap, x, y, false, 4, 8, 0.1f, 30, 1, 3, 4);
         characterList.add(orc);
         OrcAI orcAI = new OrcAI(orc, gameSurface);
         orcAI.character = orc;
         orc.setCharacterAI(orcAI);
 
         Bitmap orcHitbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc_body_hitbox);
-        orcHitbox = Bitmap.createScaledBitmap(orcHitbox, 80, 80, false);
+        orcHitbox = Bitmap.createScaledBitmap(orcHitbox, 90, 90, false);
         HitBox hitBox2 = new HitBox(gameSurface, orcHitbox, x, y, orc);
         hitBox2.object = orc;
         orc.setObjectHitbox(hitBox2);
 
-//        Bitmap orcHurtbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc_spear_extended_hurtbox);
-        Bitmap orcHurtbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc_body_hitbox);
-        orcHurtbox = Bitmap.createScaledBitmap(orcHurtbox, 80, 80, false);
+        Bitmap orcHurtbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc_spear_extended_hurtbox);
+        orcHurtbox = Bitmap.createScaledBitmap(orcHurtbox, 90, 90, false);
         HitBox hurtBox1 = new HitBox(gameSurface, orcHurtbox, x, y, orc);
         hurtBox1.object = orc;
         orc.setObjectHurtbox(hurtBox1);
@@ -96,6 +95,17 @@ public class StuffFactory {
         orc.setHealthBar(healthBar);
 
         return orc;
+    }
+
+    public Projectile projectile(Bitmap projectileBitmap, int movingVectorX, int movingVectorY, boolean isPlayerOwned, int originX, int originY ){
+        Projectile projectile = new Projectile(isPlayerOwned, projectileBitmap, 1, 1, originX, originY, movingVectorX, movingVectorY, gameSurface, 0.1f, 10);
+        gameSurface.projectileList.add(projectile);
+
+        Bitmap projectileHurtbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.characterhitbox);
+        HitBox hurtBox3 = new HitBox(gameSurface, projectileHurtbox, originX, originY, projectile);
+        hurtBox3.object = projectile;
+        projectile.setObjectHurtbox(hurtBox3);
+        return projectile;
     }
 //    public Item newSword() {
 //        Bitmap swordBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.sword_attack_animation);
