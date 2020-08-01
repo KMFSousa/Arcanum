@@ -29,6 +29,8 @@ public class GameThread extends Thread {
     private boolean running;
     private GameSurface gameSurface;
     private SurfaceHolder surfaceHolder;
+    private long lastPauseTime;
+    private Object pauseLock = new Object();
 
     public GameThread(GameSurface gameSurface, SurfaceHolder surfaceHolder)  {
         this.gameSurface= gameSurface;
@@ -81,10 +83,40 @@ public class GameThread extends Thread {
             }
             startTime = System.nanoTime();
             System.out.print(".");
+
+            synchronized (pauseLock) {
+                while (!running) {
+                    try {
+                        pauseLock.wait();
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
         }
     }
 
     public void setRunning(boolean running)  {
-        this.running = running;
+        synchronized (pauseLock) {
+            this.running =running;
+            if(running){
+                pauseLock.notifyAll();
+            }
+            else {
+                lastPauseTime = System.nanoTime();
+            }
+        }
+    }
+
+    public boolean getRunning(){
+        return running;
+    }
+
+
+    public long getLastPauseTime(){
+        return lastPauseTime;
+    }
+
+    public void setLastPauseTime(long newPauseTime) {
+        lastPauseTime = newPauseTime;
     }
 }

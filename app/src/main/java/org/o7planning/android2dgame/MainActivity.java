@@ -1,34 +1,33 @@
 package org.o7planning.android2dgame;
 
+import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
 
 public class MainActivity extends Activity {
 
-    private RelativeLayout[] layouts = new RelativeLayout[3];
     private GameSurface gameSurface;
-    public boolean characterAlive = true;
+    public final int RECORD_AUDIO = 0, WRITE_EXTERNAL_STORAGE = 1;
+    private ScreenRecorder screenRecorder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        RelativeLayout[] layouts = new RelativeLayout[3];
-
-//        this.layouts[0] = findViewById(R.id.main_menu);;
-//        this.layouts[1] = findViewById(R.id.pause_menu);;
-//        this.layouts[2] = findViewById(R.id.game_hud);;
 
         // Set fullscreen
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -186,7 +185,7 @@ public class MainActivity extends Activity {
         final Button attackToggleButton = findViewById(R.id.attackToggleButton);
         attackToggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 for (Character character: gameSurface.characterList) {
                     PlayerAI playerAI = (PlayerAI) character.ai;
                     if (playerAI.attackStyle == "Melee") {
@@ -199,6 +198,7 @@ public class MainActivity extends Activity {
                 }
             }
         });
+
 
         final Button pauseButton = findViewById(R.id.pauseButton);
         pauseButton.setOnClickListener(new View.OnClickListener() {
@@ -213,7 +213,77 @@ public class MainActivity extends Activity {
             }
         });
 
-        
+        if (requestNecessaryPermissions()) {
+            initializeScreenRecorder();
+        }
+
+    }
+
+    private boolean requestNecessaryPermissions() {
+        //returns true if all permissions are already granted
+        boolean alreadyGranted = true;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, RECORD_AUDIO);
+            alreadyGranted = false;
+        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE);
+            alreadyGranted = false;
+        }
+        return alreadyGranted;
+    }
+
+    private void initializeScreenRecorder(){
+        final ImageButton shareButton = findViewById(R.id.shareButton);
+        screenRecorder = new ScreenRecorder(this);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!screenRecorder.isRecording) {
+                    if (screenRecorder.startRecording()){
+                        shareButton.setImageResource(R.drawable.share_icon_stop);
+                    }
+
+                } else {
+                    if (screenRecorder.stopRecording()){
+                        shareButton.setImageResource(R.drawable.share_icon_start);
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.d("Permissions", requestCode+"");
+        switch (requestCode) {
+            case WRITE_EXTERNAL_STORAGE:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    initializeScreenRecorder();
+                }  else {
+                    // Explain to the user that the feature is unavailable because
+                    // the features requires a permission that the user has denied.
+                    // At the same time, respect the user's decision. Don't link to
+                    // system settings in an effort to convince the user to change
+                    // their decision.
+                }
+                return;
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        screenRecorder.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        screenRecorder.onDestroy();
     }
 
 }
