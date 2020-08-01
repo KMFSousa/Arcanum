@@ -52,18 +52,9 @@ public class MainActivity extends Activity {
     }
 
     protected void pauseMenu(final RelativeLayout myLayout) {
+        gameSurface.setRunning(false);
 
-//        LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        View v = vi.inflate(R.layout.pause_menu , null);
-//
-//        ViewGroup container = (ViewGroup) myLayout;
-//        container.addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-//        this.setContentView(container);
         final View child = getLayoutInflater().inflate(R.layout.pause_menu, null);
-
-//        View game_hud = myLayout.findViewById(R.id.game_hud);
-//        ((ViewGroup) game_hud.getParent()).removeView(game_hud);
 
         //TODO: Break this out into a function
         final View js = myLayout.findViewById(R.id.joystickView);
@@ -77,8 +68,6 @@ public class MainActivity extends Activity {
         myLayout.addView(child);
 
         //TODO: Back stack?
-        //layouts[2].setVisibility(View.VISIBLE);
-        //this.setContentView(R.layout.pause_menu);
 
         final Button resumeGameButton = findViewById(R.id.resumeGameButton);
         resumeGameButton.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +79,7 @@ public class MainActivity extends Activity {
                 pb.setVisibility(View.VISIBLE);
                 tw.setVisibility(View.VISIBLE);
                 myLayout.removeView(child);
+                gameSurface.setRunning(true);
             }
         }); // TODO: There's no way this works
 
@@ -112,9 +102,6 @@ public class MainActivity extends Activity {
 
 
     protected void deathScreen() {
-
-
-
         final View child = getLayoutInflater().inflate(R.layout.death_menu, null);
         ViewGroup parent = findViewById(R.id.game_hud);
         parent.addView(child);
@@ -205,11 +192,8 @@ public class MainActivity extends Activity {
             @Override
             public void onClick (View view) {
                 // TODO: Pause the Game. Stop movement, stop drawing?
-                //layouts[1].setVisibility(View.GONE);
+
                 pauseMenu(myLayout);
-//                for (Character character : gameSurface.characterList) {
-//                    PlayerAI playerAI = (PlayerAI) character.ai;
-//                }
             }
         });
 
