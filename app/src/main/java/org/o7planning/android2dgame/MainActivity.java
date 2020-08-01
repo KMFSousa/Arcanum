@@ -57,7 +57,7 @@ public class MainActivity extends Activity {
                 for (Character character: gameSurface.characterList) {
                     PlayerAI playerAI = (PlayerAI) character.ai;
 
-                    if (strength >= 90) {
+                    if (strength >= 50) {
                         double attackVectorX = Math.cos(radAngle) * 10;
                         double attackVectorY = Math.sin(radAngle) * -10;
 
