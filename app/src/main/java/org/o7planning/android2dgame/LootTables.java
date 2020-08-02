@@ -22,6 +22,7 @@ public class LootTables {
     protected int mobCol;
     public Character player;
     private Context context;
+
     public LootTables(Context context ) {
         this.context = context;
         this.mobRow = 3;
@@ -141,7 +142,7 @@ public class LootTables {
                 player.attackDamage +=10;
                 Log.i("Attack after:", player.attackDamage + "");
             } else if(item == 2) {
-                player.defence += 1;
+                player.defense += 1;
             } else if(item == 3) {
                 // Implement Speed change
             } else if(item == 4) {
@@ -160,14 +161,4 @@ public class LootTables {
 
 }
 
-//Goes inside wherever hit points are decreased. Probably character.java
-    public void replenishHitpoints()  {
-
-        this.healthBar.width = (int) (((float) this.hitPoints/ (float) this.MAXHITPOINTS)*this.healthBar.originalSpriteWidth); //Hardcoded initial width of healthBar
-        if(this.healthBar.width <= 0){ // We cannot draw bitmaps of width = 0, so we draw a thin sliver of width 1.
-            this.healthBar.width = 1;
-        }
-
-        this.healthBar.image = Bitmap.createScaledBitmap(this.healthBar.image,this.healthBar.width, this.healthBar.height,false);
-    }
 

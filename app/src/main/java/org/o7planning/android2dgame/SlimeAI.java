@@ -27,7 +27,6 @@ public class SlimeAI implements CharacterAI {
         this.factory = factory;
         this.player = gameSurface.characterList.get(0);
         this.character = character;
-
     }
 
     public void onUpdate() {
