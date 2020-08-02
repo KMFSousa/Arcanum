@@ -22,10 +22,10 @@ public class StuffFactory {
 
     //TODO: UPDATE CHARACTER AND ITEM CONSTRUCTORS WITH ATTRIBUTES
 
-    public Character newPlayer(List<Character> characterList, int x, int y, Context context, int difficulty) {
+    public Character newPlayer(List<Character> characterList, int x, int y, Context context) {
         Bitmap characterBitmap = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.barbarian);
         characterBitmap = Bitmap.createScaledBitmap(characterBitmap, 1980, 90, false);
-        Character player = new Character(gameSurface, characterBitmap, x, y, true, 1, 11, 0.3f, 120 - (difficulty * 20), 11 - difficulty, 3, 3, context, "player", 3);
+        Character player = new Character(gameSurface, characterBitmap, x, y, true, 1, 11, 0.3f, 120 - (this.gameSurface.difficulty * 20), 11 - this.gameSurface.difficulty, 3, 3, context, "player", 3);
         characterList.add(player);
         this.gameSurface.player = player;
         PlayerAI playerAI = new PlayerAI(player, gameSurface, this);
@@ -53,7 +53,7 @@ public class StuffFactory {
     public Character newSlime(List<Character> characterList, int x, int y, Context context, Boolean addedMidGame) {
         Bitmap slimeBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.slimes1);
         slimeBitmap = Bitmap.createScaledBitmap(slimeBitmap, 480, 96, false);
-        Character slime = new Character(gameSurface, slimeBitmap, x, y, false, 1, 5, 0.1f, 50, 1, 3, 4, context, "slime", 0);
+        Character slime = new Character(gameSurface, slimeBitmap, x, y, false, 1, 5, 0.1f, 30 + 10*this.gameSurface.difficulty, 1, 3, 4, context, "slime", 0);
         if (addedMidGame) {
             this.gameSurface.charactersToAddList.add(slime);
         } else {
@@ -84,7 +84,7 @@ public class StuffFactory {
     public Character newOrc(List<Character> characterList, int x, int y, Context context, Boolean addedMidGame) {
         Bitmap orcBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc);
         orcBitmap = Bitmap.createScaledBitmap(orcBitmap, 1800, 128, false);
-        Character orc = new Character(gameSurface, orcBitmap, x, y, false, 1, 16, 0.2f, 70, 1, 2, 4, context, "orc", 1);
+        Character orc = new Character(gameSurface, orcBitmap, x, y, false, 1, 16, 0.2f, 40 + 10*this.gameSurface.difficulty, 1, 2, 4, context, "orc", 1);
         if (addedMidGame) {
             this.gameSurface.charactersToAddList.add(orc);
         } else {
@@ -118,7 +118,7 @@ public class StuffFactory {
     public Character newBoss(List<Character> characterList, int x, int y, Context context) {
         Bitmap bossBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.boss);
         bossBitmap = Bitmap.createScaledBitmap(bossBitmap, 2250, 175, false);
-        Character boss = new Character(gameSurface, bossBitmap, x, y, false, 1, 18, 0.1f, 1000, 5, 3, 4, context, "boss", 2);
+        Character boss = new Character(gameSurface, bossBitmap, x, y, false, 1, 18, 0.1f, 500 + 500*this.gameSurface.difficulty, 3 + this.gameSurface.difficulty, 3, 4, context, "boss", 2);
         characterList.add(boss);
         BossAI bossAI = new BossAI(boss, gameSurface, this, context);
         bossAI.character = boss;

@@ -37,13 +37,12 @@ public class Map {
     private int screenWidth;
     private int screenHeight;
 
-    private int difficulty;
     private int spawnCount;
     private String mapType;
     private String[] monsterTypes;
     private ArrayList<int[]> spawnPoints;
 
-    public Map(GameSurface gameSurface, Bitmap startingImage, String csvName, StuffFactory stuffFactory, Context context, int difficulty) {
+    public Map(GameSurface gameSurface, Bitmap startingImage, String csvName, StuffFactory stuffFactory, Context context) {
         this.gameSurface = gameSurface;
         this.context = context;
         this.csvName = csvName;
@@ -71,9 +70,7 @@ public class Map {
         this.tileArray = new Tile[rows][columns];
         this.createTiles(currentRoomBitmap, rows, columns);
 
-        this.difficulty = difficulty;
-
-        this.setMonsterSpawnAndTypes(this.difficulty, this.mapType);
+        this.setMonsterSpawnAndTypes(this.mapType);
 
         this.determinePossibleSpawnPoints(this.csvValues);
 
@@ -82,7 +79,7 @@ public class Map {
 
     // Sets the monster spawn number and types (this can be changed according to what we
     // feel is needed or appropriate)
-    private void setMonsterSpawnAndTypes(int difficulty, String mapType) {
+    private void setMonsterSpawnAndTypes(String mapType) {
         if (mapType == "SPAWN") {
             this.spawnCount = 0;
             this.monsterTypes = new String[0];
@@ -90,11 +87,11 @@ public class Map {
             this.spawnCount = 1;
             this.monsterTypes = new String[]{"boss"};
         } else if (mapType == "REGULAR"){
-            if (difficulty == 1) {
-                this.spawnCount = this.difficulty + (int)(Math.random() * 2);
+            if (this.gameSurface.difficulty == 1) {
+                this.spawnCount = this.gameSurface.difficulty + (int)(Math.random() * 2);
                 this.monsterTypes = new String[]{"orc"};
             } else {
-                this.spawnCount = this.difficulty + (int)(Math.random() * 3);
+                this.spawnCount = this.gameSurface.difficulty + (int)(Math.random() * 3);
                 this.monsterTypes = new String[]{"orc", "slime"};
             }
         } else {

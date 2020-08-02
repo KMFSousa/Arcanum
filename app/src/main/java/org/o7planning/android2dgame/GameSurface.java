@@ -40,6 +40,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     public List<Integer> upgradeList = new ArrayList<Integer>();
     public Character player;
     public TextView dynamicTestView;
+    public int difficulty;
 
     public GameSurface(Context context)  {
         super(context);
@@ -151,37 +152,37 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         StuffFactory stuffFactory = new StuffFactory(this);
         this.stuffFactory = stuffFactory;
 
-        int difficulty = 3; // Default Value? Can be changed (Values 1 - 3)
+        this.difficulty = 3; // Default Value? Can be changed (Values 1 - 3)
 
         this.dungeon = new Dungeon(this);
 
-        Character player = stuffFactory.newPlayer(this.characterList, 850, 500, this.context, difficulty);
+        Character player = stuffFactory.newPlayer(this.characterList, 850, 500, this.context);
 
         Map[][] mapArr = new Map[3][3];
 
         Bitmap mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.blue_room);
 
-        Map map = new Map(this, mapImage, "blue_room", stuffFactory, this.context, difficulty);
+        Map map = new Map(this, mapImage, "blue_room", stuffFactory, this.context);
         mapArr[0][0] = map;
 
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.red_room);
-        map = new Map(this, mapImage, "red_room", stuffFactory, this.context, difficulty);
+        map = new Map(this, mapImage, "red_room", stuffFactory, this.context);
         mapArr[1][0] = map;
 
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.box_room);
-        map = new Map(this, mapImage, "box_room", stuffFactory, this.context, difficulty);
+        map = new Map(this, mapImage, "box_room", stuffFactory, this.context);
         mapArr[0][1] = map;
 
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.green_room);
-        map = new Map(this, mapImage, "green_room", stuffFactory, this.context, difficulty);
+        map = new Map(this, mapImage, "green_room", stuffFactory, this.context);
         mapArr[2][0] = map;
 
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.sewers);
-        map = new Map(this, mapImage, "sewers", stuffFactory, this.context, difficulty);
+        map = new Map(this, mapImage, "sewers", stuffFactory, this.context);
         mapArr[1][1] = map;
 
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.boss_room);
-        map = new Map(this, mapImage, "boss_room", stuffFactory, this.context, difficulty);
+        map = new Map(this, mapImage, "boss_room", stuffFactory, this.context);
 
         mapArr[1][2] = map;
 

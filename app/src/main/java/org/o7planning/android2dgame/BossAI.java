@@ -191,14 +191,9 @@ public class BossAI implements CharacterAI {
     }
 
 
-    public void animate(int movingVectorX, int movingVectorY) {
+    public void animate(int movingVectorX, int movingVectorY) { }
 
-
-    }
-
-    public void wander() {
-
-    }
+    public void wander() { }
 
     public boolean hasWeapon() {
         return false;
