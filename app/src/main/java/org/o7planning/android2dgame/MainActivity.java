@@ -4,13 +4,10 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.hardware.display.VirtualDisplay;
-import android.media.projection.MediaProjection;
-import android.media.projection.MediaProjectionManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -21,17 +18,15 @@ import android.widget.TextView;
 import androidx.annotation.IdRes;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
 
 public class MainActivity extends Activity {
 
-    public static Button healthBar;
+    private GameSurface gameSurface;
     public final int RECORD_AUDIO = 0, WRITE_EXTERNAL_STORAGE = 1;
     private ScreenRecorder screenRecorder;
-    private GameSurface gameSurface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +39,107 @@ public class MainActivity extends Activity {
         // Set No Title
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        this.setContentView(R.layout.activity_main);
-        RelativeLayout myLayout = findViewById(R.id.main);
+        mainMenu();
+
+    }
+    protected void mainMenu() {
+        gameSurface = null;
+        this.setContentView(R.layout.main_menu);
+
+        final Button toggleButton = findViewById(R.id.startGameButton);
+        toggleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                startGame();
+            }
+        });
+    }
+
+    protected void pauseMenu(final RelativeLayout myLayout) {
+        gameSurface.setRunning(false);
+
+        final View child = getLayoutInflater().inflate(R.layout.pause_menu, null);
+
+        //TODO: Break this out into a function
+        final View js = myLayout.findViewById(R.id.joystickView);
+        final View js2 = myLayout.findViewById(R.id.joystickView2);
+        final View pb = myLayout.findViewById(R.id.pauseButton);
+        final View tw = myLayout.findViewById(R.id.attackToggleButton);
+        js.setVisibility(View.GONE);
+        js2.setVisibility(View.GONE);
+        pb.setVisibility(View.GONE);
+        tw.setVisibility(View.GONE);
+        myLayout.addView(child);
+
+        //TODO: Back stack?
+
+        final Button resumeGameButton = findViewById(R.id.resumeGameButton);
+        resumeGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                // TODO: Hide the pause Views or Remove
+                js.setVisibility(View.VISIBLE);
+                js2.setVisibility(View.VISIBLE);
+                pb.setVisibility(View.VISIBLE);
+                tw.setVisibility(View.VISIBLE);
+                myLayout.removeView(child);
+                gameSurface.setRunning(true);
+            }
+        }); // TODO: There's no way this works
+
+        final Button mainMenuButton = findViewById(R.id.mainMenuButton);
+        mainMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                mainMenu();
+            }
+        });
+
+        final Button startGameButton = findViewById(R.id.restartGameButton);
+        startGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                startGame();
+            }
+        });
+    }
+
+
+    protected void deathScreen() {
+        final View child = getLayoutInflater().inflate(R.layout.death_menu, null);
+        ViewGroup parent = findViewById(R.id.game_hud);
+        parent.addView(child);
+        //TODO: Set the game_hud to GONE
+
+        final Button restartGameButton = findViewById(R.id.restartGameButton);
+        restartGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                return; //TODO: Placeholder for now
+            }
+        });
+
+        final Button mainMenuButton = findViewById(R.id.mainMenuButton);
+        mainMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                mainMenu();
+            }
+        });
+    }
+
+    protected void victoryScreen(){
+        //TODO: This.
+    }
+
+    protected void startGame() {
+        gameSurface = null;
+        //TODO: Add View that says "Loading....."
+        this.setContentView(R.layout.game_hud);
+        // TODO: Possibly need to set to visable again
+
         gameSurface = new GameSurface(this);
+        final RelativeLayout myLayout = findViewById(R.id.game_hud);
         myLayout.addView(gameSurface);
 
         JoystickView joystick = findViewById(R.id.joystickView);
@@ -83,20 +176,31 @@ public class MainActivity extends Activity {
             }
         });
 
-        final Button toggleButton = findViewById(R.id.toggleButton);
-        toggleButton.setOnClickListener(new View.OnClickListener() {
+        final Button attackToggleButton = findViewById(R.id.attackToggleButton);
+        attackToggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 for (Character character: gameSurface.characterList) {
                     PlayerAI playerAI = (PlayerAI) character.ai;
                     if (playerAI.attackStyle == "Melee") {
                         playerAI.attackStyle = "Ranged";
-                        toggleButton.setText("Melee");
+                        attackToggleButton.setText("Melee");
                     } else {
                         playerAI.attackStyle = "Melee";
-                        toggleButton.setText("Ranged");
+                        attackToggleButton.setText("Ranged");
                     }
                 }
+            }
+        });
+
+
+        final Button pauseButton = findViewById(R.id.pauseButton);
+        pauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                // TODO: Pause the Game. Stop movement, stop drawing?
+
+                pauseMenu(myLayout);
             }
         });
 
@@ -105,6 +209,7 @@ public class MainActivity extends Activity {
         }
 
     }
+
     private boolean requestNecessaryPermissions() {
         //returns true if all permissions are already granted
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -148,18 +253,6 @@ public class MainActivity extends Activity {
                 }
         }
     }
-
-        //Button attackButton = findViewById(R.id.attackButton);
-        //attackButton.setOnClickListener(new View.OnClickListener() {
-        //    @Override
-        //    public void onClick(View view) {
-        //        for (Character character: gameSurface.characterList) {
-        //            character.ai.attack();
-        //        }
-        //    }
-        //});
-
-        //TODO: Dont uncomment this, it breaks movement
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

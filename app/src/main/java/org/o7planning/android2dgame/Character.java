@@ -1,5 +1,6 @@
 package org.o7planning.android2dgame;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -362,6 +363,16 @@ public class Character extends GameObject {
 
         if(this.hitPoints < 0){
             this.hitPoints = 0;
+
+            if (this.isPlayer) {
+                final MainActivity context = (MainActivity)gameSurface.getContext();
+                context.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        context.deathScreen();
+                    }
+                });
+            }
         }
 
         this.healthBar.width = (int) (((float) this.hitPoints/ (float) this.MAXHITPOINTS)*this.healthBar.originalSpriteWidth); //Hardcoded initial width of healthBar
@@ -391,7 +402,6 @@ public class Character extends GameObject {
         this.movingVectorY = movingVectorY;
     }
 
-    //TODO: COLLISION DETECTION CAN BE MOVED WITHIN THE HITBOX CLASS AS A SEPARATE METHOD
     public void findItem() {
         Iterator<Item> iterator = gameSurface.itemList.iterator();
 
