@@ -9,6 +9,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import androidx.annotation.IdRes;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
 
@@ -85,6 +88,7 @@ public class MainActivity extends Activity {
                 }
             }
         });
+
 
         //Button attackButton = findViewById(R.id.attackButton);
         //attackButton.setOnClickListener(new View.OnClickListener() {

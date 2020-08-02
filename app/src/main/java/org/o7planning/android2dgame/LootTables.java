@@ -1,8 +1,13 @@
 package org.o7planning.android2dgame;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.util.Log;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,6 +27,7 @@ public class LootTables {
     protected int mobCol;
     public Character player;
     private Context context;
+    protected TextView itemText;
 
     public LootTables(Context context ) {
         this.context = context;
@@ -33,6 +39,7 @@ public class LootTables {
         this.mobTable = new String[mobRow][mobCol];
         this.populateCsvArray();
         this.player = player;
+        this.itemText = (TextView) ((Activity)context).findViewById(R.id.itemsText);
     }
 
     public void  populateCsvArray() {
@@ -104,6 +111,9 @@ public class LootTables {
                 -1, -1, -1, -1, -1, -1
         };
 
+//        view.setVisibility(View.VISIBLE);
+
+
         for(int i = 0; i < this.dropTable.length; i ++) {
 //
             int dropVal = parseInt(this.dropTable[i][2]);
@@ -118,12 +128,13 @@ public class LootTables {
 //        }
 
         int index = 0;
-        for (int i = 0; i < itemQuantity; i++) {
-            int randomInt = ran.nextInt(roulette.length);
-            output.add(roulette[randomInt]);
+//        for (int i = 0; i < itemQuantity; i++) {
+        int randomInt = ran.nextInt(roulette.length);
+        itemText.setText(dropTable[randomInt][1]);
+        output.add(roulette[randomInt]);
 //            Log.i("Test Output:", output[index]);
-            index ++;
-        }
+//            index ++;
+//        }
 
         return output;
     }
@@ -145,14 +156,15 @@ public class LootTables {
                 player.defense += 1;
             } else if(item == 3) {
                 // Implement Speed change
+                player.hitsPerSecond += 0.5;
             } else if(item == 4) {
                 Log.i("Attack Before:", player.attackDamage + "");
                 player.MAXHITPOINTS += 10;
                 Log.i("Attack after:", player.attackDamage + "");
             } else if(item == 5) {
                 player.numRocks ++;
-                if (player.numRocks == 5) {
-                    player.attackDamage +=10;
+                if (player.numRocks == 2) {
+                    player.attackDamage +=5;
                     player.numRocks = 0;
                 }
             }

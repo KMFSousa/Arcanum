@@ -6,8 +6,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,7 +24,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
     private GameThread gameThread;
     public Dungeon dungeon;
-    private Context context;
+    protected Context context; // Changed this to protected
     public LootTables lootTables;
     public List<Character> characterList = new ArrayList<Character>();
     public List<Explosion> explosionList = new ArrayList<Explosion>();
@@ -32,6 +34,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     public List<Item> itemList = new ArrayList<Item>();
     public List<Integer> upgradeList = new ArrayList<Integer>();
     public Character player;
+    public TextView dynamicTestView;
+
     public GameSurface(Context context)  {
         super(context);
         this.player = null;

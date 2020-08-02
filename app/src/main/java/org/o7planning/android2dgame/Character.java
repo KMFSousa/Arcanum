@@ -3,13 +3,20 @@ package org.o7planning.android2dgame;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.util.Log;
 import java.util.List;
 import java.util.ArrayList;
 import android.util.Pair;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.*;
 
+
+import org.w3c.dom.Text;
 
 import java.util.Iterator;
+import java.util.TimerTask;
 import java.util.logging.Logger;
 
 public class Character extends GameObject {
@@ -445,6 +452,7 @@ public class Character extends GameObject {
                 items = this.gameSurface.lootTables.roulette(mobID);
                 for (int i = 0; i < items.size(); i++ ) {
 //                    Log.i("ITEM DROPPED: ", items.get(i) + "");
+//                    gotItem(this.gameSurface.lootTables.dropTable[items.get(i)][1]);
                 }
                 this.gameSurface.upgradeList.addAll(items);
 
