@@ -63,7 +63,7 @@ public class PlayerAI implements CharacterAI {
                     character.hurtBox.x + character.hurtBox.width > other.x &&
                     character.hurtBox.y < other.hitBox.y + other.height &&
                     character.hurtBox.y + character.hurtBox.height > other.hitBox.y){
-                other.reduceHitPointsBy((int) (this.character.attackDamage*1.5));
+                other.reduceHitPointsBy((int) (this.character.attackDamage*1.3));
             }
         }
     }
