@@ -25,13 +25,16 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
     private GameThread gameThread;
     public Dungeon dungeon;
+    public StuffFactory stuffFactory;
     private boolean gameStarted = false;
     protected Context context; // Changed this to protected
     public LootTables lootTables;
     public List<Character> characterList = new ArrayList<Character>();
+    public List<Character> charactersToAddList = new ArrayList<Character>();
     public List<Explosion> explosionList = new ArrayList<Explosion>();
     public List<Character> removalList = new ArrayList<Character>();
     public List<Projectile> projectileList = new ArrayList<Projectile>();
+    public List<Projectile> projectilesToAddList = new ArrayList<Projectile>();
     public List<Projectile> projectileRemovalList = new ArrayList<Projectile>();
     public List<Item> itemList = new ArrayList<Item>();
     public List<Integer> upgradeList = new ArrayList<Integer>();
@@ -54,9 +57,17 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     // MASTER UPDATE CONTROL
     // CALL ALL UPDATE METHODS FOR OBJECTS HERE
     public void update() {
+
         for (Character monster : this.dungeon.getCurrentRoom().monsterList) {
             monster.update(this.dungeon.getCurrentRoom());
         }
+
+        // If we have characters (monsters) that were created mid-update, add them to the main character list now
+        for (Character character : this.charactersToAddList) {
+            this.dungeon.getCurrentRoom().monsterList.add(character);
+        }
+        // Empty the list after
+        this.charactersToAddList = new ArrayList<Character>();
 
         for (Explosion explosion : this.explosionList) {
             explosion.update();
@@ -87,6 +98,13 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
             upgradeList.clear();
         }
 //        applyItems(roulette_results)
+
+        // If we have characters (monsters) that were created mid-update, add them to the main character list now
+        for (Projectile projectile : this.projectilesToAddList) {
+            this.projectileList.add(projectile);
+        }
+        // Empty the list after
+        this.projectilesToAddList = new ArrayList<Projectile>();
 
         characterList.removeAll(removalList);
         projectileList.removeAll(projectileRemovalList);
@@ -131,37 +149,40 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
     public void initDungeon(){
         StuffFactory stuffFactory = new StuffFactory(this);
+        this.stuffFactory = stuffFactory;
 
-        int difficulty = 1; // Default Value? Can be changed (Values 1 - 3)
+        int difficulty = 3; // Default Value? Can be changed (Values 1 - 3)
 
         this.dungeon = new Dungeon(this);
 
-        Character player = stuffFactory.newPlayer(this.characterList, 850, 500, difficulty);
+        Character player = stuffFactory.newPlayer(this.characterList, 850, 500, this.context, difficulty);
 
         Map[][] mapArr = new Map[3][3];
 
         Bitmap mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.blue_room);
-        Map map = new Map(this, mapImage, "blue_room", stuffFactory, context, difficulty);
+
+        Map map = new Map(this, mapImage, "blue_room", stuffFactory, this.context, difficulty);
         mapArr[0][0] = map;
 
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.red_room);
-        map = new Map(this, mapImage, "red_room", stuffFactory, context, difficulty);
+        map = new Map(this, mapImage, "red_room", stuffFactory, this.context, difficulty);
         mapArr[1][0] = map;
 
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.box_room);
-        map = new Map(this, mapImage, "box_room", stuffFactory, context, difficulty);
+        map = new Map(this, mapImage, "box_room", stuffFactory, this.context, difficulty);
         mapArr[0][1] = map;
 
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.green_room);
-        map = new Map(this, mapImage, "green_room", stuffFactory, context, difficulty);
+        map = new Map(this, mapImage, "green_room", stuffFactory, this.context, difficulty);
         mapArr[2][0] = map;
 
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.sewers);
-        map = new Map(this, mapImage, "sewers", stuffFactory, context, difficulty);
+        map = new Map(this, mapImage, "sewers", stuffFactory, this.context, difficulty);
         mapArr[1][1] = map;
 
         mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.boss_room);
-        map = new Map(this, mapImage, "boss_room", stuffFactory, context, difficulty);
+        map = new Map(this, mapImage, "boss_room", stuffFactory, this.context, difficulty);
+
         mapArr[1][2] = map;
 
         this.dungeon.populateMapArray(mapArr);

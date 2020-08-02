@@ -164,13 +164,15 @@ public class MainActivity extends Activity {
                 for (Character character: gameSurface.characterList) {
                     PlayerAI playerAI = (PlayerAI) character.ai;
 
-                    if (strength >= 90) {
+                    if (strength >= 50) {
                         double attackVectorX = Math.cos(radAngle) * 10;
                         double attackVectorY = Math.sin(radAngle) * -10;
 
                         // Set character attack vector
                         playerAI.setAttackVector((int) attackVectorX, (int) attackVectorY);
                         playerAI.attack();
+                    } else {
+                        playerAI.setAttackVector(0, 0);
                     }
                 }
             }

@@ -87,8 +87,8 @@ public class Map {
             this.spawnCount = 0;
             this.monsterTypes = new String[0];
         } else if (mapType == "BOSS"){
-            this.spawnCount = difficulty + 2; // Temporary
-            this.monsterTypes = new String[]{"slime"};
+            this.spawnCount = 1;
+            this.monsterTypes = new String[]{"boss"};
         } else if (mapType == "REGULAR"){
             if (difficulty == 1) {
                 this.spawnCount = this.difficulty + (int)(Math.random() * 2);
@@ -144,11 +144,13 @@ public class Map {
     private void callCorrectStuffFactoryMethod(String name, int xSpawnLocation, int ySpawnLocation, StuffFactory stuffFactory) throws Exception {
         switch(name) {
             case "orc":
-                stuffFactory.newOrc(this.monsterList, xSpawnLocation, ySpawnLocation);
+                stuffFactory.newOrc(this.monsterList, xSpawnLocation, ySpawnLocation, this.context, false);
                 break;
             case "slime":
-                stuffFactory.newSlime(this.monsterList, xSpawnLocation, ySpawnLocation);
+                stuffFactory.newSlime(this.monsterList, xSpawnLocation, ySpawnLocation, this.context, false);
                 break;
+            case "boss":
+                stuffFactory.newBoss(this.monsterList, 850, 500, this.context);
             default:
                 throw new Exception("Error: No Monster Found for Given Type.");
         }
@@ -270,9 +272,12 @@ public class Map {
             int destRow = this.getRowFromY(yDestWithHeight);
             int destCol = this.getColFromX(xDestWithWidth);
 
-            Tile destTile = this.tileArray[destRow][destCol];
+            try {
+                return !this.tileArray[destRow][destCol].isCollidable();
+            } catch (Exception e){
+                return false;
+            }
 
-            return !destTile.isCollidable();
         }
         return false;
     }
@@ -281,7 +286,11 @@ public class Map {
         int col = this.getColFromX(x);
         int row = this.getRowFromY(y);
 
-        return this.tileArray[row][col].isCollidable();
+        try {
+            return this.tileArray[row][col].isCollidable();
+        } catch (Exception e) {
+            return true;
+        }
     }
 
 

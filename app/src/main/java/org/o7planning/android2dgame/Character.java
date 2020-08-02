@@ -6,14 +6,18 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.Log;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import android.util.Pair;
+import java.util.Map;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.*;
-
-
 import org.w3c.dom.Text;
 
 import java.util.Iterator;
@@ -30,30 +34,14 @@ public class Character extends GameObject {
 
     private GameSurface gameSurface;
 
-    private static final int ROW_TOP_TO_BOTTOM = 0;
-    private static final int ROW_RIGHT_TO_LEFT = 1;
-    private static final int ROW_LEFT_TO_RIGHT = 2;
-    private static final int ROW_BOTTOM_TO_TOP = 3;
-
     private final List<Item> itemList = new ArrayList<Item>();
-
-    // Row index of Image are being used.
-    private int rowUsing = ROW_LEFT_TO_RIGHT;
-
-    // `colUsing` will tell us which stage of the animation we are on
-    private int colUsing;
 
     private int attackAnimationIndex;
 
-    private Bitmap[] leftToRights;
-    private Bitmap[] rightToLefts;
-    private Bitmap[] topToBottoms;
-    private Bitmap[] bottomToTops;
+    public Map<String, ArrayList<Bitmap>> animationMap;
 
     // Velocity of game character (pixel/millisecond)
     private float velocity;
-    public   boolean isAttacking;
-    boolean attackAnimationInProgress = false;
 
     public int hitPoints;
     public int MAXHITPOINTS;
@@ -76,19 +64,10 @@ public class Character extends GameObject {
     };
 
     public CharacterAI ai;
-    public void setCharacterAI(CharacterAI ai) {   this.ai = ai; }
-
-    //TODO: IMPLEMENT A ROLL MECHANIC (INCREASED SPEED, ANIMATION)
-    //TODO: IMPLEMENT CHARACTERS STATS (FOR COMBAT AND LEVELING(?))
-    //TODO: BROAD PHASE HIT DETECTION (SO WE'RE NOT CONSTANTLY CHECKING EVERY MONSTER)
-    //TODO: ATTACK ANIMATIONS
-    //TODO: ON HIT EFFECTS (KNOCKBACK, BLOOD(?))
-
-
 
     // This method (called in GameSurface.java) will take the sprite sheet we provide it with and create arrays holding the bitmaps of each sprite
 
-    public Character(GameSurface gameSurface, Bitmap image, int x, int y, boolean isPlayer, int spriteSheetRows, int spriteSheetColumns, float velocity, int hitPoints, int attackDamage, int hitsPerSecond, int attackAnimationIndex, int mobID) {
+    public Character(GameSurface gameSurface, Bitmap image, int x, int y, boolean isPlayer, int spriteSheetRows, int spriteSheetColumns, float velocity, int hitPoints, int attackDamage, int hitsPerSecond, int attackAnimationIndex, Context context, String mobType, int mobID) {
         super(image, spriteSheetRows, spriteSheetColumns, x, y); // Calls
 
         this.mobID = mobID;
@@ -101,102 +80,125 @@ public class Character extends GameObject {
         this.hitsPerSecond = hitsPerSecond;
         this.defense = this.mobDefense[mobID];
         this.attackAnimationIndex = attackAnimationIndex;
+        this.animationMap = new HashMap<String, ArrayList<Bitmap>>();
 
-        this.topToBottoms = new Bitmap[colCount]; // 3
-        this.rightToLefts = new Bitmap[colCount]; // 3
-        this.leftToRights = new Bitmap[colCount]; // 3
-        this.bottomToTops = new Bitmap[colCount]; // 3
+        buildAnimationMap(context, mobType);
+    }
 
-        // For each column in the spritesheet, generate arrays that hold the bitmaps created from dividing each row in createSubImageAt
+    public void setCharacterAI(CharacterAI ai) {   this.ai = ai; }
 
-        for(int col = 0; col< this.colCount; col++ ) {
-            this.topToBottoms[col] = this.createSubImageAt(ROW_TOP_TO_BOTTOM, col);
-            this.rightToLefts[col]  = this.createSubImageAt(ROW_RIGHT_TO_LEFT, col);
-            this.leftToRights[col] = this.createSubImageAt(ROW_LEFT_TO_RIGHT, col);
-            this.bottomToTops[col]  = this.createSubImageAt(ROW_BOTTOM_TO_TOP, col);
+    //TODO: IMPLEMENT A ROLL MECHANIC (INCREASED SPEED, ANIMATION)
+    //TODO: IMPLEMENT CHARACTERS STATS (FOR COMBAT AND LEVELING(?))
+    //TODO: BROAD PHASE HIT DETECTION (SO WE'RE NOT CONSTANTLY CHECKING EVERY MONSTER)
+    //TODO: ATTACK ANIMATIONS
+    //TODO: ON HIT EFFECTS (KNOCKBACK, BLOOD(?))
+
+    private ArrayList<Bitmap> populateBitmapArray(int startIndex, int endIndex) {
+        ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>();
+        for (int col = startIndex; col < endIndex; col++) {
+            bitmaps.add(this.createSubImageAt(0, col));
+        }
+        return bitmaps;
+    }
+
+    private void buildAnimationMap(Context context, String mobType) {
+        try {
+            boolean done = false;
+            switch(mobType) {
+                case "player":
+                    if (this.gameSurface.stuffFactory.playerAnimationMap != null) {
+                        this.animationMap = this.gameSurface.stuffFactory.playerAnimationMap;
+                        done = true;
+                    }
+                    break;
+                case "boss":
+                    if (this.gameSurface.stuffFactory.bossAnimationMap != null) {
+                        this.animationMap = this.gameSurface.stuffFactory.bossAnimationMap;
+                        done = true;
+                    }
+                    break;
+                case "orc":
+                    if (this.gameSurface.stuffFactory.orcAnimationMap != null) {
+                        this.animationMap = this.gameSurface.stuffFactory.orcAnimationMap;
+                        done = true;
+                    }
+                    break;
+                case "slime":
+                    if (this.gameSurface.stuffFactory.slimeAnimationMap != null) {
+                        this.animationMap = this.gameSurface.stuffFactory.slimeAnimationMap;
+                        done = true;
+                    }
+                    break;
+            }
+
+            if (!done) {
+                InputStream inputStream = context.getResources().openRawResource(R.raw.animations);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                String firstLine = reader.readLine();
+                String[] animationKeys = firstLine.split(",");
+
+                String line;
+                int lastFilledIndex = 0;
+                while ((line = reader.readLine()) != null) {
+                    // TODO: This is where we will parse the CSV, starting with the first line where we decide how to insert into the map
+
+                    String[] lineArray = line.split(",",-1);
+                    String characterName = lineArray[0];
+
+                    if (characterName.equals(mobType)) {
+
+                        for (int i = 1; i < lineArray.length; i++) {
+                            if (!lineArray[i].equals("") && !lineArray[i].equals(null)) {
+                                ArrayList<Bitmap> bitmaps = populateBitmapArray(lastFilledIndex, Integer.parseInt(lineArray[i]));
+
+                                this.animationMap.put(animationKeys[i], bitmaps);
+                                lastFilledIndex = Integer.parseInt(lineArray[i]);
+                            }
+                        }
+
+                        switch(mobType) {
+                            case "player":
+                                this.gameSurface.stuffFactory.playerAnimationMap = this.animationMap;
+                                break;
+                            case "boss":
+                                this.gameSurface.stuffFactory.bossAnimationMap = this.animationMap;
+                                break;
+                            case "orc":
+                                this.gameSurface.stuffFactory.orcAnimationMap = this.animationMap;
+                                break;
+                            case "slime":
+                                this.gameSurface.stuffFactory.slimeAnimationMap = this.animationMap;
+                                break;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // Bad
+            System.out.println("Error reading from animations CSV in Character class:");
+            System.out.println(e.getMessage());
         }
     }
 
-    // Depending on what direction the character is moving we want to be able to grab the corresponding set of sprites
-
-    public Bitmap[] getMoveBitmaps()  {
-        switch (rowUsing)  {
-            case ROW_BOTTOM_TO_TOP:
-                return  this.bottomToTops;
-            case ROW_LEFT_TO_RIGHT:
-                return this.leftToRights;
-            case ROW_RIGHT_TO_LEFT:
-                return this.rightToLefts;
-            case ROW_TOP_TO_BOTTOM:
-                return this.topToBottoms;
-            default:
-                return null;
-        }
-    }
-
-    // We will be cycling through each set of sprites depending on which direction we are moving
-    // This is determined by the switch for `rowUsing` in getMoveBitmaps, called here
-    // This function will return which stage of the animation (which specific sprite) is in use, denoted by `colUsing`
-
-    public Bitmap getCurrentMoveBitmap()  {
-        Bitmap[] bitmaps = this.getMoveBitmaps();
-        return bitmaps[this.colUsing];
-    }
 
     // This is the character update loop
 
-    public void update(Map map)  {
+    public void update(org.o7planning.android2dgame.Map map)  {
 
         checkIfDead();
-
-        //TODO: MOVE TO CHARACTER AI
-//        if(!ai.getType()){
-//            findItem();
-//        }
 
         //update character moving vector and animate
         move(map);
 
         //update AI
 
-        ai.onUpdate();
-//        if(!this.isPlayer){
-//            attack();
-//        }
-
-        //update Weapon
-//        if(itemList.size() != 0){
-//            itemList.get(0).update();
-//        }
-
+        ai.onUpdate(this.movingVectorX, this.movingVectorY);
     }
 
-    public void move(Map map) {
+    public void move(org.o7planning.android2dgame.Map map) {
         // c = sqrt(a^2 + b^2) - i.e. we are getting the movement vector based on how far we moved horizontally and vertically
         double movingVectorLength = Math.sqrt(movingVectorX*movingVectorX + movingVectorY*movingVectorY);
-
-        // Update which column we are using by 1 for each iteration
-        // Used in getCurrentMoveBitmap() to grab the next sprite to render on the canvas
-        if (movingVectorLength > 0 || isAttacking) {
-            this.colUsing++;
-        }
-        // Once we have cycled through all the sprites for a certain direction, start back at the first one
-        //TODO: CYCLE THROUGH STATES, NOT ATTACK STATE
-        if(colUsing >= this.attackAnimationIndex -1 && !isAttacking )  {
-            this.colUsing =0;
-        }
-
-        if(isAttacking) {
-            if(!attackAnimationInProgress) {
-                this.colUsing = this.attackAnimationIndex;
-                attackAnimationInProgress = true;
-
-            }
-            if(this.colUsing == this.colCount - 1) {
-                isAttacking = false;
-                attackAnimationInProgress = false;
-            }
-        }
 
         // Current time in nanoseconds
         long now = System.nanoTime();
@@ -257,89 +259,73 @@ public class Character extends GameObject {
             healthBar.y = this.getY() - this.getHeight() + 10;
         }
 
+        // TODO: This probably needs to change
         if(ai.hasWeapon()) {
-            switch (this.rowUsing) {
-                case ROW_LEFT_TO_RIGHT:
-                    hurtBox.x = hitBox.getX() + hitBox.getWidth(); //+ this.getWidth()/2 - 30 ;
-                    hurtBox.y = this.getY();
-                    break;
-                case ROW_BOTTOM_TO_TOP:
-                    hurtBox.x = hitBox.getX();
-                    hurtBox.y = hitBox.getY() - hitBox.getHeight();
-                    break;
-                case ROW_RIGHT_TO_LEFT:
-                    hurtBox.x = this.hitBox.getX() - hurtBox.getWidth();
-                    hurtBox.y = this.getY();
-                    break;
-                case ROW_TOP_TO_BOTTOM:
-                    hurtBox.x = hitBox.getX();
-                    hurtBox.y = hitBox.getY() + hitBox.getHeight();
-                    break;
+            int vectorX = movingVectorX;
+            int vectorY = movingVectorY;
+
+            if (ai instanceof PlayerAI) {
+                PlayerAI playerAI = (PlayerAI) ai;
+                if (playerAI.attackVectorX != 0 || playerAI.attackVectorY != 0) {
+                    vectorX = playerAI.attackVectorX;
+                    vectorY = playerAI.attackVectorY;
+                }
+            }
+
+            int vectorXAbsolute = Math.abs(vectorX);
+            int vectorYAbsolute = Math.abs(vectorY);
+
+            if ( vectorX != 0 || vectorY != 0 ) {
+                if (vectorX > 0) {
+                    if (vectorY > 0 && vectorXAbsolute < vectorYAbsolute) {
+                        // Moving Down
+                        hurtBox.x = hitBox.getX();
+                        hurtBox.y = hitBox.getY() + hitBox.getHeight();
+                    } else if (vectorY < 0 && vectorXAbsolute < vectorYAbsolute) {
+                        // Moving Up
+                        hurtBox.x = hitBox.getX();
+                        hurtBox.y = hitBox.getY() - hitBox.getHeight();
+                    } else {
+                        // Moving Right
+                        hurtBox.x = hitBox.getX() + hitBox.getWidth(); //+ this.getWidth()/2 - 30 ;
+                        hurtBox.y = this.getY();
+                    }
+                } else {
+                    if (vectorY > 0 && vectorXAbsolute < vectorYAbsolute) {
+                        // Moving Down
+                        hurtBox.x = hitBox.getX();
+                        hurtBox.y = hitBox.getY() + hitBox.getHeight();
+                    } else if (vectorY < 0 && vectorXAbsolute < vectorYAbsolute) {
+                        // Moving Up
+                        hurtBox.x = hitBox.getX();
+                        hurtBox.y = hitBox.getY() - hitBox.getHeight();
+                    } else {
+                        // Moving Left
+                        hurtBox.x = this.hitBox.getX() - hurtBox.getWidth();
+                        hurtBox.y = this.getY();
+                    }
+                }
             }
         }
+
+
 
         if(!ai.hasWeapon()){
             hurtBox.x = hitBox.getX();
             hurtBox.y = hitBox.getY();
         }
-        animate();
         if(itemList.size() != 0){
             itemList.get(0).x = this.x+50;
             itemList.get(0).y = this.y+20;
             itemList.get(0).hitBox.x = itemList.get(0).x;
             itemList.get(0).hitBox.y = itemList.get(0).y;
         }
-
-
-    }
-
-    public void animate() {
-
-        // movingVectorX and movingVectorY are +/- values that will determine what direction we are moving in
-        // based on the values of these vectors, we can decide which row of sprites we are using
-        int vectorX = movingVectorX;
-        int vectorY = movingVectorY;
-
-        if (this.ai instanceof PlayerAI) {
-            PlayerAI playerAI = (PlayerAI) this.ai;
-            Pair<Integer, Integer> attackVectors = playerAI.getAttackVector();
-            int tempVectorX = attackVectors.first;
-            int tempVectorY = attackVectors.second;
-            if (tempVectorX != 0 || tempVectorY != 0) {
-                vectorX = tempVectorX;
-                vectorY = tempVectorY;
-            }
-        }
-
-        int vectorXAbsolute = Math.abs(vectorX);
-        int vectorYAbsolute = Math.abs(vectorY);
-
-        if ( vectorX != 0 || vectorY != 0 ) {
-            if (vectorX > 0) {
-                if (vectorY > 0 && vectorXAbsolute < vectorYAbsolute) {
-
-                    this.rowUsing = ROW_TOP_TO_BOTTOM;
-                } else if (vectorY < 0 && vectorXAbsolute < vectorYAbsolute) {
-                    this.rowUsing = ROW_BOTTOM_TO_TOP;
-                } else {
-                    this.rowUsing = ROW_LEFT_TO_RIGHT;
-                }
-            } else {
-                if (vectorY > 0 && vectorXAbsolute < vectorYAbsolute) {
-                    this.rowUsing = ROW_TOP_TO_BOTTOM;
-                } else if (vectorY < 0 && vectorXAbsolute < vectorYAbsolute) {
-                    this.rowUsing = ROW_BOTTOM_TO_TOP;
-                } else {
-                    this.rowUsing = ROW_RIGHT_TO_LEFT;
-                }
-            }
-        }
     }
 
     // This function will get the bitmap of the exact sprite we are on and draw it on the canvas
 
     public void draw(Canvas canvas)  {
-        Bitmap bitmap = this.getCurrentMoveBitmap();
+        Bitmap bitmap = this.ai.getCurrentBitmap();
         canvas.drawBitmap(bitmap, x, y, null);
         // Last draw time.
         this.lastDrawNanoTime= System.nanoTime();
