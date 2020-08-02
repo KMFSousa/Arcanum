@@ -9,6 +9,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import androidx.annotation.IdRes;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
 
@@ -41,11 +44,8 @@ public class MainActivity extends Activity {
 
                     double movingVectorX =  Math.cos(radAngle) * 10 * strength;
                     double movingVectorY = Math.sin(radAngle) * -10 * strength;
-                    //Log.d("Joystick", angle + ": "+movingVectorX+", "+movingVectorY);
                     character.setMovingVector((int)movingVectorX, (int)movingVectorY);
-
                 }
-                // do whatever you want
             }
         });
 
@@ -85,21 +85,6 @@ public class MainActivity extends Activity {
                 }
             }
         });
-
-        //Button attackButton = findViewById(R.id.attackButton);
-        //attackButton.setOnClickListener(new View.OnClickListener() {
-        //    @Override
-        //    public void onClick(View view) {
-        //        for (Character character: gameSurface.characterList) {
-        //            character.ai.attack();
-        //        }
-        //    }
-        //});
-
-        //TODO: Dont uncomment this, it breaks movement
-
-//        Button healthBar = findViewById(R.id.healthBar);
-//        this.healthBar = healthBar;
     }
 
 }

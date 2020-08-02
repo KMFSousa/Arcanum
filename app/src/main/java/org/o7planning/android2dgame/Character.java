@@ -3,13 +3,20 @@ package org.o7planning.android2dgame;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.util.Log;
 import java.util.List;
 import java.util.ArrayList;
 import android.util.Pair;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.*;
 
+
+import org.w3c.dom.Text;
 
 import java.util.Iterator;
+import java.util.TimerTask;
 import java.util.logging.Logger;
 
 public class Character extends GameObject {
@@ -50,7 +57,9 @@ public class Character extends GameObject {
     public int hitPoints;
     public int MAXHITPOINTS;
     public int attackDamage;
+    public int defense;
     public int hitsPerSecond;
+    public int numRocks;
 
     private int movingVectorX = 0;
     private int movingVectorY = 0;
@@ -60,6 +69,10 @@ public class Character extends GameObject {
     private long lastDrawNanoTime =-1;
 
     private boolean isPlayer;
+    protected int mobID;
+    public int[] mobDefense = new int[] {
+            1,3,5, 0
+    };
 
     public CharacterAI ai;
     public void setCharacterAI(CharacterAI ai) {   this.ai = ai; }
@@ -74,9 +87,10 @@ public class Character extends GameObject {
 
     // This method (called in GameSurface.java) will take the sprite sheet we provide it with and create arrays holding the bitmaps of each sprite
 
-    public Character(GameSurface gameSurface, Bitmap image, int x, int y, boolean isPlayer, int spriteSheetRows, int spriteSheetColumns, float velocity, int hitPoints, int attackDamage, int hitsPerSecond, int attackAnimationIndex) {
+    public Character(GameSurface gameSurface, Bitmap image, int x, int y, boolean isPlayer, int spriteSheetRows, int spriteSheetColumns, float velocity, int hitPoints, int attackDamage, int hitsPerSecond, int attackAnimationIndex, int mobID) {
         super(image, spriteSheetRows, spriteSheetColumns, x, y); // Calls
 
+        this.mobID = mobID;
         this.isPlayer = isPlayer;
         this.gameSurface= gameSurface;
         this.velocity = velocity;
@@ -84,6 +98,7 @@ public class Character extends GameObject {
         this.MAXHITPOINTS = hitPoints;
         this.attackDamage = attackDamage;
         this.hitsPerSecond = hitsPerSecond;
+        this.defense = this.mobDefense[mobID];
         this.attackAnimationIndex = attackAnimationIndex;
 
         this.topToBottoms = new Bitmap[colCount]; // 3
@@ -174,7 +189,7 @@ public class Character extends GameObject {
             if(!attackAnimationInProgress) {
                 this.colUsing = this.attackAnimationIndex;
                 attackAnimationInProgress = true;
-                
+
             }
             if(this.colUsing == this.colCount - 1) {
                 isAttacking = false;
@@ -337,6 +352,13 @@ public class Character extends GameObject {
 
     public void reduceHitPointsBy(int damageDealt)  {
         this.hitPoints -= damageDealt;
+
+        if(damageDealt > this.defense) {
+            this.hitPoints -= (damageDealt - defense);
+        } else {
+            this.hitPoints --;
+        }
+
         if(this.hitPoints < 0){
             this.hitPoints = 0;
         }
@@ -348,6 +370,19 @@ public class Character extends GameObject {
 
         this.healthBar.image = Bitmap.createScaledBitmap(this.healthBar.image,this.healthBar.width, this.healthBar.height,false);
     }
+    //Goes inside wherever hit points are decreased. Probably character.java
+    public void replenishHitpoints()  {
+
+        this.hitPoints = this.MAXHITPOINTS;
+
+        this.healthBar.width = (int) (((float) this.hitPoints/ (float) this.MAXHITPOINTS)*this.healthBar.originalSpriteWidth); //Hardcoded initial width of healthBar
+        if(this.healthBar.width <= 0){ // We cannot draw bitmaps of width = 0, so we draw a thin sliver of width 1.
+            this.healthBar.width = 1;
+        }
+
+        this.healthBar.image = Bitmap.createScaledBitmap(this.healthBar.image,this.healthBar.width, this.healthBar.height,false);
+    }
+
 
 
     public void setMovingVector(int movingVectorX, int movingVectorY)  {
@@ -373,44 +408,25 @@ public class Character extends GameObject {
         //gameSurface.itemList.remove(other);
     }
 
-//    public void attack() {
-//
-//      //  if(itemList.size() != 0){itemList.get(0).inCombat();}
-//        if(ai.isPlayer()){
-//            this.isAttacking = true;
-//            this.attackAnimationInProgress = false;
-//            Iterator<Character> iterator = gameSurface.dungeon.getCurrentRoom().monsterList.iterator();
-//
-//            while(iterator.hasNext()){
-//                Character other = iterator.next();
-//                if(this.hurtBox.x < other.hitBox.x + other.width &&
-//                        this.hurtBox.x + this.hurtBox.width > other.x &&
-//                        this.hurtBox.y < other.hitBox.y + other.height &&
-//                        this.hurtBox.y + this.hurtBox.height > other.hitBox.y){
-//                    other.reduceHitPointsBy(attackDamage);
-//                    Log.d("Slime HP remaining", ": " + other.hitPoints);
-//                }
-//            }
-//        }
-//
-//        if(!ai.isPlayer() && !gameSurface.characterList.isEmpty()){
-//            Character other = gameSurface.characterList.get(0);
-//            if(this.hurtBox.x < other.hitBox.x + other.hitBox.width &&
-//                    this.hurtBox.x + this.hurtBox.width > other.hitBox.x &&
-//                    this.hurtBox.y < other.hitBox.y + other.hitBox.height &&
-//                    this.hurtBox.y + this.hurtBox.height > other.hitBox.y){
-//                other.reduceHitPointsBy(attackDamage);
-//                Log.d("Player HP remaining", ": " + other.hitPoints);
-//
-//                this.isAttacking = true;
-//            }
-//        }
-//    }
-
     public void checkIfDead() {
+        List<Integer> items;
+
         if (this.hitPoints <= 0) {
-            if(!ai.isPlayer()){gameSurface.removalList.add(this);}
+            if(!ai.isPlayer()) {
+
+                items = this.gameSurface.lootTables.roulette(mobID);
+                for (int i = 0; i < items.size(); i++ ) {
+//                    Log.i("ITEM DROPPED: ", items.get(i) + "");
+//                    gotItem(this.gameSurface.lootTables.dropTable[items.get(i)][1]);
+                }
+                this.gameSurface.upgradeList.addAll(items);
+
+                gameSurface.removalList.add(this);
+            }
             else if(ai.isPlayer()){((PlayerAI) ai).isDead = true;}
+            if(!ai.isPlayer()) {
+
+            }
         }
     }
 
