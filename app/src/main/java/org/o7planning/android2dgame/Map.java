@@ -254,11 +254,15 @@ public class Map {
             int srcCol = this.getColFromX(xSrcWithWidth);
 
             // Step 2: Index into tile array to get the tiles associated with the destination for both x and y
-            Tile newColTile = this.tileArray[srcRow][destCol];
-            Tile newRowTile = this.tileArray[destRow][srcCol];
+            try {
+                Tile newColTile = this.tileArray[srcRow][destCol];
+                Tile newRowTile = this.tileArray[destRow][srcCol];
+                return new Pair<Boolean, Boolean>(!newColTile.isCollidable(), !newRowTile.isCollidable());
+            } catch (Exception e) {
+                return new Pair<Boolean, Boolean>(false, false);
+            }
 
             // Step 3: Return a pair that defines whether you can move in the x direction or y direction
-            return new Pair<Boolean, Boolean>(!newColTile.isCollidable(), !newRowTile.isCollidable());
         } else {
             return new Pair<Boolean, Boolean>(false, false);
         }

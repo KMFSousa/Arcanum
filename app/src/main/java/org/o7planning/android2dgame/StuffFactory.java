@@ -53,7 +53,7 @@ public class StuffFactory {
     public Character newSlime(List<Character> characterList, int x, int y, Context context, Boolean addedMidGame) {
         Bitmap slimeBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.slimes1);
         slimeBitmap = Bitmap.createScaledBitmap(slimeBitmap, 480, 96, false);
-        Character slime = new Character(gameSurface, slimeBitmap, x, y, false, 1, 5, 0.1f, 70, 1, 3, 4, context, "slime", 0);
+        Character slime = new Character(gameSurface, slimeBitmap, x, y, false, 1, 5, 0.1f, 50, 1, 3, 4, context, "slime", 0);
         if (addedMidGame) {
             this.gameSurface.charactersToAddList.add(slime);
         } else {
@@ -84,7 +84,7 @@ public class StuffFactory {
     public Character newOrc(List<Character> characterList, int x, int y, Context context, Boolean addedMidGame) {
         Bitmap orcBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc);
         orcBitmap = Bitmap.createScaledBitmap(orcBitmap, 1800, 128, false);
-        Character orc = new Character(gameSurface, orcBitmap, x, y, false, 1, 16, 0.1f, 30, 1, 2, 4, context, "orc", 1);
+        Character orc = new Character(gameSurface, orcBitmap, x, y, false, 1, 16, 0.2f, 70, 1, 2, 4, context, "orc", 1);
         if (addedMidGame) {
             this.gameSurface.charactersToAddList.add(orc);
         } else {

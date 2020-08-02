@@ -45,8 +45,17 @@ public class SlimeAI implements CharacterAI {
             wander();
         }
 
-        if(spreadCount < 1 && Math.random() < 0.1 && gameSurface.dungeon.getCurrentRoom().monsterList.size() < 10)
+        int numSlimes = 0;
+        for (Character character : this.gameSurface.dungeon.getCurrentRoom().monsterList) {
+            if (character.mobType.equals("slime")) {
+                numSlimes++;
+            }
+        }
+        
+        if(spreadCount < 1 && Math.random() < 0.1 && numSlimes < 5) {
             spread();
+        }
+
 
         updateCounter++;
 

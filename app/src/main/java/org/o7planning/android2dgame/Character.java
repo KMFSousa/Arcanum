@@ -58,6 +58,7 @@ public class Character extends GameObject {
     private long lastDrawNanoTime =-1;
 
     private boolean isPlayer;
+    public String mobType = "";
     protected int mobID;
     public int[] mobDefense = new int[] {
             1,3,5, 0
@@ -70,6 +71,7 @@ public class Character extends GameObject {
     public Character(GameSurface gameSurface, Bitmap image, int x, int y, boolean isPlayer, int spriteSheetRows, int spriteSheetColumns, float velocity, int hitPoints, int attackDamage, int hitsPerSecond, int attackAnimationIndex, Context context, String mobType, int mobID) {
         super(image, spriteSheetRows, spriteSheetColumns, x, y); // Calls
 
+        this.mobType = mobType;
         this.mobID = mobID;
         this.isPlayer = isPlayer;
         this.gameSurface= gameSurface;
@@ -82,7 +84,7 @@ public class Character extends GameObject {
         this.attackAnimationIndex = attackAnimationIndex;
         this.animationMap = new HashMap<String, ArrayList<Bitmap>>();
 
-        buildAnimationMap(context, mobType);
+        buildAnimationMap(context);
     }
 
     public void setCharacterAI(CharacterAI ai) {   this.ai = ai; }
@@ -101,10 +103,10 @@ public class Character extends GameObject {
         return bitmaps;
     }
 
-    private void buildAnimationMap(Context context, String mobType) {
+    private void buildAnimationMap(Context context) {
         try {
             boolean done = false;
-            switch(mobType) {
+            switch(this.mobType) {
                 case "player":
                     if (this.gameSurface.stuffFactory.playerAnimationMap != null) {
                         this.animationMap = this.gameSurface.stuffFactory.playerAnimationMap;
@@ -146,8 +148,7 @@ public class Character extends GameObject {
                     String[] lineArray = line.split(",",-1);
                     String characterName = lineArray[0];
 
-                    if (characterName.equals(mobType)) {
-
+                    if (characterName.equals(this.mobType)) {
                         for (int i = 1; i < lineArray.length; i++) {
                             if (!lineArray[i].equals("") && !lineArray[i].equals(null)) {
                                 ArrayList<Bitmap> bitmaps = populateBitmapArray(lastFilledIndex, Integer.parseInt(lineArray[i]));
@@ -157,7 +158,7 @@ public class Character extends GameObject {
                             }
                         }
 
-                        switch(mobType) {
+                        switch(this.mobType) {
                             case "player":
                                 this.gameSurface.stuffFactory.playerAnimationMap = this.animationMap;
                                 break;

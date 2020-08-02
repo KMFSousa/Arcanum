@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -151,6 +152,11 @@ public class BossAI implements CharacterAI {
     private void spreadAttack() {
         int[] pointXArray = {911, 913, 911, 913, 913, 911};
         int[] pointYArray = {588, 588, 586, 586, 587, 587};
+        int[] enragedPointXArray = {911, 913, 911, 913, 913, 911, 912, 912};
+        int[] enragedPointYArray = {588, 588, 586, 586, 587, 587, 588, 586};
+        int[] xArrayToUse;
+        int[] yArrayToUse;
+
         Bitmap projectileBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.fireball);
         int positionX = this.character.getX() + this.character.width/2;
         int positionY = this.character.getY() + this.character.height/2;
@@ -158,9 +164,18 @@ public class BossAI implements CharacterAI {
         int pointY;
         int distanceToPointX;
         int distanceToPointY;
-        for (int i = 0; i < pointXArray.length; i++) {
-            pointX = pointXArray[i];
-            pointY = pointYArray[i];
+
+        if (!enraged) {
+            xArrayToUse = pointXArray;
+            yArrayToUse = pointYArray;
+        } else {
+            xArrayToUse = enragedPointXArray;
+            yArrayToUse = enragedPointYArray;
+        }
+
+        for (int i = 0; i < xArrayToUse.length; i++) {
+            pointX = xArrayToUse[i];
+            pointY = yArrayToUse[i];
             distanceToPointX = pointX - positionX;
             distanceToPointY = pointY - positionY;
             if (!enraged) {
