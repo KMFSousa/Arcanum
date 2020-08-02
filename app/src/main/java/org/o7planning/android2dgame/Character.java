@@ -206,7 +206,8 @@ public class Character extends GameObject {
             lastDrawNanoTime= now;
         }
         // Change nanoseconds to milliseconds (1 nanosecond = 1000000 milliseconds).
-        int deltaTime = (int) ((now - lastDrawNanoTime)/ 1000000 );
+        int deltaTime = (int) ((now - lastDrawNanoTime - gameSurface.getLastPauseTime())/ 1000000 );
+        gameSurface.setLastPauseTime(0);
 
         // Distance moved per time unit
         float distance = velocity * deltaTime;

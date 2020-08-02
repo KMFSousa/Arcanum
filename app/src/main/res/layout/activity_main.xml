@@ -68,4 +68,17 @@
 
     </Button>
 
+    <ImageButton
+        android:id="@+id/shareButton"
+        android:visibility="gone"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="50dp"
+        android:backgroundTint="#7CFFFFFF"
+        android:elevation="1dp"
+        android:src="@drawable/share_icon_start" />
+
 </RelativeLayout>
