@@ -115,8 +115,8 @@ public class StuffFactory {
 
     public Character newBoss(List<Character> characterList, int x, int y, Context context) {
         Bitmap bossBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.boss);
-        bossBitmap = Bitmap.createScaledBitmap(bossBitmap, 1500, 125, false);
-        Character boss = new Character(gameSurface, bossBitmap, x, y, false, 1, 12, 0.1f, 1000, 5, 3, 4, context, "boss");
+        bossBitmap = Bitmap.createScaledBitmap(bossBitmap, 2250, 175, false);
+        Character boss = new Character(gameSurface, bossBitmap, x, y, false, 1, 18, 0.1f, 1000, 5, 3, 4, context, "boss");
         characterList.add(boss);
         BossAI bossAI = new BossAI(boss, gameSurface, this, context);
         bossAI.character = boss;

@@ -97,9 +97,9 @@ public class BossAI implements CharacterAI {
                 break;
             case SPREAD:
                 if (this.player.getX() < this.character.getX()) {
-                    this.currentAnimationBitmap = this.character.animationMap.get("attack1left");//.get("attack2left");
+                    this.currentAnimationBitmap = this.character.animationMap.get("attack2left");
                 } else {
-                    this.currentAnimationBitmap = this.character.animationMap.get("attack1right");//.get("attack2right");
+                    this.currentAnimationBitmap = this.character.animationMap.get("attack2right");
                 }
                 if (this.enraged) {
                     if (this.attackCounter % 2 == 0) {
@@ -150,7 +150,7 @@ public class BossAI implements CharacterAI {
 
     private void spreadAttack() {
         int[] pointXArray = {911, 913, 911, 913, 913, 911};
-        int[] pointYArray = {563, 563, 561, 561, 562, 562};
+        int[] pointYArray = {588, 588, 586, 586, 587, 587};
         Bitmap projectileBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.fireball);
         int positionX = this.character.getX() + this.character.width/2;
         int positionY = this.character.getY() + this.character.height/2;
