@@ -16,6 +16,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import androidx.annotation.IdRes;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -55,11 +58,8 @@ public class MainActivity extends Activity {
 
                     double movingVectorX =  Math.cos(radAngle) * 10 * strength;
                     double movingVectorY = Math.sin(radAngle) * -10 * strength;
-                    //Log.d("Joystick", angle + ": "+movingVectorX+", "+movingVectorY);
                     character.setMovingVector((int)movingVectorX, (int)movingVectorY);
-
                 }
-                // do whatever you want
             }
         });
 
@@ -70,8 +70,6 @@ public class MainActivity extends Activity {
                 double radAngle = angle * Math.PI/180;
                 for (Character character: gameSurface.characterList) {
                     PlayerAI playerAI = (PlayerAI) character.ai;
-
-                    Log.i("Blah", "Angle: " + angle + " Strength: " + strength);
 
                     if (strength >= 90) {
                         double attackVectorX = Math.cos(radAngle) * 10;

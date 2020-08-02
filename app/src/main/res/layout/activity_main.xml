@@ -6,22 +6,22 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_alignBottom="@+id/itemsText"
     tools:context="org.o7planning.android2dgame.MainActivity">
 
-    <io.github.controlwear.virtual.joystick.android.JoystickView
-        xmlns:custom="http://schemas.android.com/apk/res-auto"
+    <io.github.controlwear.virtual.joystick.android.JoystickView xmlns:custom="http://schemas.android.com/apk/res-auto"
         android:id="@+id/joystickView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="200dp"
         android:layout_marginRight="120dp"
+        android:elevation="1dp"
+        custom:JV_backgroundColor="#328C8C8C"
+        custom:JV_borderColor="#808C8C8C"
+        custom:JV_borderWidth="4dp"
         custom:JV_buttonColor="#8C8C8C"
         custom:JV_buttonSizeRatio="30%"
-        custom:JV_borderColor="#808C8C8C"
-        custom:JV_backgroundColor="#328C8C8C"
-        custom:JV_borderWidth="4dp"
-        custom:JV_fixedCenter="false"
-        android:elevation="1dp"/>
+        custom:JV_fixedCenter="false" />
 
     <io.github.controlwear.virtual.joystick.android.JoystickView
         android:id="@+id/joystickView2"
@@ -31,15 +31,28 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_centerVertical="true"
-        android:layout_marginTop="200dp"
         android:layout_marginLeft="120dp"
+        android:layout_marginTop="200dp"
         android:elevation="1dp"
-        custom:JV_backgroundColor="#338C8C8C"
         custom:JV_borderColor="#808C8C8C"
+        custom:JV_backgroundColor="#328C8C8C"
         custom:JV_borderWidth="4dp"
         custom:JV_buttonColor="#8C8C8C"
         custom:JV_buttonSizeRatio="30%"
         custom:JV_fixedCenter="false" />
+
+    <TextView
+        android:id="@+id/itemsText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:fontFamily="casual"
+        android:text="Nothing"
+        android:textAllCaps="true"
+        android:textColor="#986333"
+        android:textSize="14sp"
+        android:theme="@style/AppTheme"
+        android:translationZ="90dp" />
 
     <Button
         android:id="@+id/toggleButton"
