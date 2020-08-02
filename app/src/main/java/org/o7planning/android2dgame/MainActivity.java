@@ -55,37 +55,34 @@ public class MainActivity extends Activity {
         });
     }
 
+    private void setHUDVisible(boolean newVisible){
+        RelativeLayout myLayout = findViewById(R.id.game_hud);
+        View js = myLayout.findViewById(R.id.joystickView);
+        View js2 = myLayout.findViewById(R.id.joystickView2);
+        View pb = myLayout.findViewById(R.id.pauseButton);
+        View tw = myLayout.findViewById(R.id.attackToggleButton);
+        int visibleInt = newVisible ? View.VISIBLE : View.GONE;
+        js.setVisibility(visibleInt);
+        js2.setVisibility(visibleInt);
+        pb.setVisibility(visibleInt);
+        tw.setVisibility(visibleInt);
+    }
+
     protected void pauseMenu(final RelativeLayout myLayout) {
         gameSurface.setRunning(false);
-
         final View child = getLayoutInflater().inflate(R.layout.pause_menu, null);
-
-        //TODO: Break this out into a function
-        final View js = myLayout.findViewById(R.id.joystickView);
-        final View js2 = myLayout.findViewById(R.id.joystickView2);
-        final View pb = myLayout.findViewById(R.id.pauseButton);
-        final View tw = myLayout.findViewById(R.id.attackToggleButton);
-        js.setVisibility(View.GONE);
-        js2.setVisibility(View.GONE);
-        pb.setVisibility(View.GONE);
-        tw.setVisibility(View.GONE);
         myLayout.addView(child);
-
-        //TODO: Back stack?
+        setHUDVisible(false);
 
         final Button resumeGameButton = findViewById(R.id.resumeGameButton);
         resumeGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                // TODO: Hide the pause Views or Remove
-                js.setVisibility(View.VISIBLE);
-                js2.setVisibility(View.VISIBLE);
-                pb.setVisibility(View.VISIBLE);
-                tw.setVisibility(View.VISIBLE);
+                setHUDVisible(true);
                 myLayout.removeView(child);
                 gameSurface.setRunning(true);
             }
-        }); // TODO: There's no way this works
+        });
 
         final Button mainMenuButton = findViewById(R.id.mainMenuButton);
         mainMenuButton.setOnClickListener(new View.OnClickListener() {
@@ -106,16 +103,17 @@ public class MainActivity extends Activity {
 
 
     protected void deathScreen() {
+        gameSurface.setRunning(false);
         final View child = getLayoutInflater().inflate(R.layout.death_menu, null);
         ViewGroup parent = findViewById(R.id.game_hud);
         parent.addView(child);
-        //TODO: Set the game_hud to GONE
+        setHUDVisible(false);
 
         final Button restartGameButton = findViewById(R.id.restartGameButton);
         restartGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                return; //TODO: Placeholder for now
+                startGame();
             }
         });
 
@@ -136,7 +134,6 @@ public class MainActivity extends Activity {
         gameSurface = null;
         //TODO: Add View that says "Loading....."
         this.setContentView(R.layout.game_hud);
-        // TODO: Possibly need to set to visable again
 
         gameSurface = new GameSurface(this);
         final RelativeLayout myLayout = findViewById(R.id.game_hud);
