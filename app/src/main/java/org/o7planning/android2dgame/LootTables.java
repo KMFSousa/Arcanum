@@ -98,8 +98,15 @@ public class LootTables {
             }
         }
 
-        int randomInt = ran.nextInt(roulette.length);
-        itemText.setText(dropTable[randomInt][1]);
+        final int randomInt = ran.nextInt(roulette.length);
+        Activity mainActivity = (MainActivity) context;
+        mainActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                itemText.setText(dropTable[randomInt][1]);
+            }
+        });
+
         output.add(roulette[randomInt]);
 
         return output;
