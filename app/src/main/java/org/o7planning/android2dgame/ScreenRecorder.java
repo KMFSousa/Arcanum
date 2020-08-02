@@ -34,6 +34,7 @@ public class ScreenRecorder {
     private int displayHeight;
     private int screenDensity;
     public boolean isRecording;
+    public boolean isPrepared;
     private String targetFilePath;
     private MediaProjection mediaProjection;
     private VirtualDisplay virtualDisplay;
@@ -44,6 +45,7 @@ public class ScreenRecorder {
         DisplayMetrics metrics = new DisplayMetrics();
         mainActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
         this.isRecording = false;
+        this.isPrepared = false;
         this.displayHeight = metrics.heightPixels;
         this.displayWidth = metrics.widthPixels;
         this.screenDensity = metrics.densityDpi;
@@ -76,11 +78,13 @@ public class ScreenRecorder {
             mediaRecorder.prepare();
         } catch (IllegalStateException | IOException e) {
             e.printStackTrace();
+            return;
         }
+        isPrepared = true;
     }
 
     public boolean startRecording() {
-        if (isRecording) return false;
+        if (isRecording || !isPrepared) return false;
         if (mediaProjection == null) {
             mainActivity.startActivityForResult(projectionManager.createScreenCaptureIntent(), PERMISSION_CODE);
             return true;
@@ -90,6 +94,7 @@ public class ScreenRecorder {
         virtualDisplay = createVirtualDisplay();
         mediaRecorder.start();
         isRecording = true;
+        isPrepared = false;
         return true;
     }
 
