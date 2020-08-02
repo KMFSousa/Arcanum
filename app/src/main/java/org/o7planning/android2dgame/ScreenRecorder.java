@@ -62,14 +62,18 @@ public class ScreenRecorder {
             mediaRecorder = new MediaRecorder();
         }
         targetFilePath = getFilePath();
-        mediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.HEVC);
-        mediaRecorder.setVideoEncodingBitRate(2000 * 1000);
-        mediaRecorder.setVideoFrameRate(60);
-        mediaRecorder.setMaxDuration(30000);
-        mediaRecorder.setVideoSize(displayWidth, displayHeight);
-        mediaRecorder.setOutputFile(targetFilePath);
+        try {
+            mediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
+            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+            mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.HEVC);
+            mediaRecorder.setVideoEncodingBitRate(2000 * 1000);
+            mediaRecorder.setVideoFrameRate(60);
+            mediaRecorder.setMaxDuration(30000);
+            mediaRecorder.setVideoSize(displayWidth, displayHeight);
+            mediaRecorder.setOutputFile(targetFilePath);
+        }catch (IllegalStateException e){
+            e.printStackTrace();
+        }
 
     }
 
