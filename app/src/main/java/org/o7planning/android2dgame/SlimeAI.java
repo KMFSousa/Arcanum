@@ -32,6 +32,7 @@ public class SlimeAI implements CharacterAI {
         this.player = gameSurface.characterList.get(0);
         this.character = character;
         this.context = context;
+        this.currentAnimationBitmap = this.character.animationMap.get("walkleft");
     }
 
     public void onUpdate (int movingVectorX, int movingVectorY) {
@@ -45,7 +46,7 @@ public class SlimeAI implements CharacterAI {
         }
 
         if(spreadCount < 1 && Math.random() < 0.1 && gameSurface.dungeon.getCurrentRoom().monsterList.size() < 10)
-           spread();
+            spread();
 
         updateCounter++;
 
@@ -60,7 +61,6 @@ public class SlimeAI implements CharacterAI {
                     character.hurtBox.y < other.hitBox.y + other.hitBox.height &&
                     character.hurtBox.y + character.hurtBox.height > other.hitBox.y){
                 other.reduceHitPointsBy(character.attackDamage);
-                Log.d("Player HP remaining", ": " + other.hitPoints);
             }
         }
     }
@@ -79,13 +79,13 @@ public class SlimeAI implements CharacterAI {
             if (vectorX > 0) {
                 if (vectorY > 0 && vectorXAbsolute < vectorYAbsolute) {
                     // Moving down and to the right
-                    this.currentAnimationBitmap = this.character.animationMap.get("walkright");
+                    this.currentAnimationBitmap = this.character.animationMap.get("walkleft");
                 } else if (vectorY < 0 && vectorXAbsolute < vectorYAbsolute) {
                     // Moving up and to the right
-                    this.currentAnimationBitmap = this.character.animationMap.get("walkright");
+                    this.currentAnimationBitmap = this.character.animationMap.get("walkleft");
                 } else {
                     // Moving right
-                    this.currentAnimationBitmap = this.character.animationMap.get("walkright");
+                    this.currentAnimationBitmap = this.character.animationMap.get("walkleft");
                 }
             } else {
                 if (vectorY > 0 && vectorXAbsolute < vectorYAbsolute) {
@@ -100,7 +100,7 @@ public class SlimeAI implements CharacterAI {
                 }
             }
         } else {
-            // Idle animation
+            this.currentAnimationBitmap = this.character.animationMap.get("walkleft");
         }
 
         double movingVectorLength = Math.sqrt(movingVectorX*movingVectorX + movingVectorY*movingVectorY);

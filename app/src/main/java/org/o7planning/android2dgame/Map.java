@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import android.os.Build;
 import android.util.Log;
@@ -36,19 +37,25 @@ public class Map {
     private int screenWidth;
     private int screenHeight;
 
-    public Map(GameSurface gameSurface, Bitmap startingImage, String csvName, StuffFactory stuffFactory, Context context) {
+    private int difficulty;
+    private int spawnCount;
+    private String mapType;
+    private String[] monsterTypes;
+    private ArrayList<int[]> spawnPoints;
+
+    public Map(GameSurface gameSurface, Bitmap startingImage, String csvName, StuffFactory stuffFactory, Context context, int difficulty) {
         this.gameSurface = gameSurface;
         this.context = context;
         this.csvName = csvName;
 
-        //if(Build.FINGERPRINT.contains("generic")) { //Emulator
-        //    this.screenWidth = Resources.getSystem().getDisplayMetrics().heightPixels;
-        //    this.screenHeight = Resources.getSystem().getDisplayMetrics().widthPixels;
-        //}
-        //else { //Hardware Phone
+        if(Build.FINGERPRINT.contains("generic")) { //Emulator
+            this.screenWidth = Resources.getSystem().getDisplayMetrics().heightPixels;
+            this.screenHeight = Resources.getSystem().getDisplayMetrics().widthPixels;
+        }
+        else { //Hardware Phone
             this.screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
             this.screenHeight =  Resources.getSystem().getDisplayMetrics().heightPixels;
-        //}
+        }
 
         this.currentRoomBitmap = Bitmap.createScaledBitmap(startingImage, screenWidth, screenHeight, true);
         int bitmapWidth = currentRoomBitmap.getWidth();
@@ -64,24 +71,68 @@ public class Map {
         this.tileArray = new Tile[rows][columns];
         this.createTiles(currentRoomBitmap, rows, columns);
 
+        this.difficulty = difficulty;
+
+        this.setMonsterSpawnAndTypes(this.difficulty, this.mapType);
+
+        this.determinePossibleSpawnPoints(this.csvValues);
+
         this.populateMonsterList(stuffFactory);
     }
 
-    private void populateMonsterList(StuffFactory stuffFactory) {
-        try {
-            InputStream inputStream = this.context.getResources().openRawResource(R.raw.monster_spawns);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] lineArray = line.split(",");
-                String roomName = lineArray[0];
-                if (roomName.equals(this.csvName)) {
-                    String monsterType = lineArray[1];
-                    int xSpawnLocation = Integer.parseInt(lineArray[2]);
-                    int ySpawnLocation = Integer.parseInt(lineArray[3]);
+    // Sets the monster spawn number and types (this can be changed according to what we
+    // feel is needed or appropriate)
+    private void setMonsterSpawnAndTypes(int difficulty, String mapType) {
+        if (mapType == "SPAWN") {
+            this.spawnCount = 0;
+            this.monsterTypes = new String[0];
+        } else if (mapType == "BOSS"){
+            this.spawnCount = 1;
+            this.monsterTypes = new String[]{"boss"};
+        } else if (mapType == "REGULAR"){
+            if (difficulty == 1) {
+                this.spawnCount = this.difficulty + (int)(Math.random() * 2);
+                this.monsterTypes = new String[]{"orc"};
+            } else {
+                this.spawnCount = this.difficulty + (int)(Math.random() * 3);
+                this.monsterTypes = new String[]{"orc", "slime"};
+            }
+        } else {
+            // Unknown Map Type
+            this.spawnCount = 0;
+            this.monsterTypes = new String[0];
+        }
+    }
 
-                    this.callCorrectStuffFactoryMethod(monsterType, xSpawnLocation, ySpawnLocation, stuffFactory);
+    // Sets spawnPoints, a list of coordinates which are
+    private void determinePossibleSpawnPoints(int[][] csvValues) {
+        int border = 2;
+        this.spawnPoints = new ArrayList<int[]>();
+        for (int x = 0 + border; x <= (this.rows - 2); x++) {
+            for (int y = 0 + border; y <= (this.columns - 2); y++) {
+                if (csvValues[x][y] == 0) {
+                    this.spawnPoints.add(new int[]{x, y});
                 }
+            }
+        }
+    }
+
+    private void populateMonsterList(StuffFactory stuffFactory) {
+        Random rand = new Random();
+
+        try {
+            for (int i = 0; i < spawnCount; i++) {
+                int randomIndex = rand.nextInt(this.spawnPoints.size());
+                int [] spawnPoint = this.spawnPoints.get(randomIndex);
+                this.spawnPoints.remove(randomIndex);
+
+                int xSpawnLocation = spawnPoint[1] * tileWidth;
+                int ySpawnLocation = spawnPoint[0] * tileHeight;
+
+                randomIndex = rand.nextInt(this.monsterTypes.length);
+                String monsterType = this.monsterTypes[randomIndex];
+
+                this.callCorrectStuffFactoryMethod(monsterType, xSpawnLocation, ySpawnLocation, stuffFactory);
             }
         } catch (Exception e) {
             // Bad
@@ -99,7 +150,7 @@ public class Map {
                 stuffFactory.newSlime(this.monsterList, xSpawnLocation, ySpawnLocation, this.context, false);
                 break;
             case "boss":
-                stuffFactory.newBoss(this.monsterList, xSpawnLocation, ySpawnLocation, this.context);
+                stuffFactory.newBoss(this.monsterList, 850, 500, this.context);
             default:
                 throw new Exception("Error: No Monster Found for Given Type.");
         }
@@ -108,16 +159,22 @@ public class Map {
     private int getResourceFromCSVName(String name) throws Exception {
         switch(name) {
             case "blue_room":
+                mapType = "REGULAR";
                 return R.raw.blue_room;
             case "red_room":
+                mapType = "REGULAR";
                 return R.raw.red_room;
             case "green_room":
+                mapType = "SPAWN";
                 return R.raw.green_room;
             case "box_room":
+                mapType = "REGULAR";
                 return R.raw.box_room;
             case "sewers":
+                mapType = "REGULAR";
                 return R.raw.sewers;
             case "boss_room":
+                mapType = "BOSS";
                 return R.raw.boss_room;
             default:
                 throw new Exception("Error: No Resource Found for CSV.");
@@ -133,8 +190,6 @@ public class Map {
     }
 
     private Bitmap createSubImageAt(Bitmap image, int row, int col) {
-        // createBitmap(bitmap, x, y, width, height);
-        // Log.i("Map", "x: " + Integer.toString(col*this.tileWidth) + ", y: " + Integer.toString((row*this.tileHeight)));
         Bitmap subImage = Bitmap.createBitmap(image, col * this.tileWidth, row * this.tileHeight, this.tileWidth, this.tileHeight);
         return subImage;
     }
@@ -154,7 +209,6 @@ public class Map {
                 for (int col = 0; col < lineArray.length; col++) {
                     int valueAsInt = Integer.parseInt(lineArray[col]);
                     this.csvValues[row][col] = valueAsInt;
-                    // Log.i("Map", "Row: " + row + ", Col: " + col + ", Val: " + lineArray[col]);
                 }
                 row++;
             }

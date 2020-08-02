@@ -74,7 +74,7 @@ public class PlayerAI implements CharacterAI {
         this.attackAnimationInProgress = false;
         if(attackVectorX != 0 || attackVectorY != 0) {
             Bitmap projectileBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.iceball);
-            Projectile projectile = factory.projectile(projectileBitmap, attackVectorX, attackVectorY, true, character.getX() + Math.round(character.width/2) - Math.round(projectileBitmap.getWidth()/2), character.getY() + Math.round(character.height/2) - Math.round(projectileBitmap.getHeight()/2), 0.4f);
+            factory.projectile(projectileBitmap, attackVectorX, attackVectorY, true, character.getX() + Math.round(character.width/2) - Math.round(projectileBitmap.getWidth()/2), character.getY() + Math.round(character.height/2) - Math.round(projectileBitmap.getHeight()/2), 0.4f);
         }
     }
 

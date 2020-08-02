@@ -22,11 +22,12 @@ public class StuffFactory {
 
     //TODO: UPDATE CHARACTER AND ITEM CONSTRUCTORS WITH ATTRIBUTES
 
-    public Character newPlayer(List<Character> characterList, int x, int y,  Context context) {
+    public Character newPlayer(List<Character> characterList, int x, int y, Context context, int difficulty) {
         Bitmap characterBitmap = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.barbarian);
         characterBitmap = Bitmap.createScaledBitmap(characterBitmap, 1980, 90, false);
-        Character player = new Character(gameSurface, characterBitmap, x, y, true, 1, 11, 0.3f, 100, 10, 3, 3, context, "player");
+        Character player = new Character(gameSurface, characterBitmap, x, y, true, 1, 11, 0.3f, 120 - (difficulty * 20), 11 - difficulty, 3, 3, context, "player", 3);
         characterList.add(player);
+        this.gameSurface.player = player;
         PlayerAI playerAI = new PlayerAI(player, gameSurface, this);
         playerAI.character = player;
         player.setCharacterAI(playerAI);
@@ -51,8 +52,8 @@ public class StuffFactory {
 
     public Character newSlime(List<Character> characterList, int x, int y, Context context, Boolean addedMidGame) {
         Bitmap slimeBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.slimes1);
-        // TODO: Change sprite sheet rows & colums for slime
-        Character slime = new Character(gameSurface, slimeBitmap, x, y, false, 4, 5, 0.1f, 30, 1, 3, 4, context, "slime");
+        slimeBitmap = Bitmap.createScaledBitmap(slimeBitmap, 480, 96, false);
+        Character slime = new Character(gameSurface, slimeBitmap, x, y, false, 1, 5, 0.1f, 70, 1, 3, 4, context, "slime", 0);
         if (addedMidGame) {
             this.gameSurface.charactersToAddList.add(slime);
         } else {
@@ -83,12 +84,13 @@ public class StuffFactory {
     public Character newOrc(List<Character> characterList, int x, int y, Context context, Boolean addedMidGame) {
         Bitmap orcBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc);
         orcBitmap = Bitmap.createScaledBitmap(orcBitmap, 1800, 128, false);
-        Character orc = new Character(gameSurface, orcBitmap, x, y, false, 1, 16, 0.1f, 30, 1, 3, 4, context, "orc");
+        Character orc = new Character(gameSurface, orcBitmap, x, y, false, 1, 16, 0.1f, 30, 1, 2, 4, context, "orc", 1);
         if (addedMidGame) {
             this.gameSurface.charactersToAddList.add(orc);
         } else {
             characterList.add(orc);
         }
+
         OrcAI orcAI = new OrcAI(orc, gameSurface);
         orcAI.character = orc;
         orc.setCharacterAI(orcAI);
@@ -116,20 +118,20 @@ public class StuffFactory {
     public Character newBoss(List<Character> characterList, int x, int y, Context context) {
         Bitmap bossBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.boss);
         bossBitmap = Bitmap.createScaledBitmap(bossBitmap, 2250, 175, false);
-        Character boss = new Character(gameSurface, bossBitmap, x, y, false, 1, 18, 0.1f, 1000, 5, 3, 4, context, "boss");
+        Character boss = new Character(gameSurface, bossBitmap, x, y, false, 1, 18, 0.1f, 1000, 5, 3, 4, context, "boss", 2);
         characterList.add(boss);
         BossAI bossAI = new BossAI(boss, gameSurface, this, context);
         bossAI.character = boss;
         boss.setCharacterAI(bossAI);
 
         Bitmap bossHitbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc_body_hitbox);
-        bossHitbox = Bitmap.createScaledBitmap(bossHitbox, 90, 90, false);
+        bossHitbox = Bitmap.createScaledBitmap(bossHitbox, 90, 180, false);
         HitBox hitBox2 = new HitBox(gameSurface, bossHitbox, x, y, boss);
         hitBox2.object = boss;
         boss.setObjectHitbox(hitBox2);
 
         Bitmap bossHurtbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc_spear_extended_hurtbox);
-        bossHurtbox = Bitmap.createScaledBitmap(bossHurtbox, 90, 90, false);
+        bossHurtbox = Bitmap.createScaledBitmap(bossHurtbox, 90, 180, false);
         HitBox hurtBox1 = new HitBox(gameSurface, bossHurtbox, x, y, boss);
         hurtBox1.object = boss;
         boss.setObjectHurtbox(hurtBox1);

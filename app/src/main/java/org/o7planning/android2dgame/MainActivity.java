@@ -1,20 +1,32 @@
 package org.o7planning.android2dgame;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import androidx.annotation.IdRes;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
 
 public class MainActivity extends Activity {
 
-    public static Button healthBar;
+    private GameSurface gameSurface;
+    public final int RECORD_AUDIO = 0, WRITE_EXTERNAL_STORAGE = 1;
+    private ScreenRecorder screenRecorder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,9 +39,107 @@ public class MainActivity extends Activity {
         // Set No Title
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        this.setContentView(R.layout.activity_main);
-        RelativeLayout myLayout = findViewById(R.id.main);
-        final GameSurface gameSurface = new GameSurface(this);
+        mainMenu();
+
+    }
+    protected void mainMenu() {
+        gameSurface = null;
+        this.setContentView(R.layout.main_menu);
+
+        final Button toggleButton = findViewById(R.id.startGameButton);
+        toggleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                startGame();
+            }
+        });
+    }
+
+    protected void pauseMenu(final RelativeLayout myLayout) {
+        gameSurface.setRunning(false);
+
+        final View child = getLayoutInflater().inflate(R.layout.pause_menu, null);
+
+        //TODO: Break this out into a function
+        final View js = myLayout.findViewById(R.id.joystickView);
+        final View js2 = myLayout.findViewById(R.id.joystickView2);
+        final View pb = myLayout.findViewById(R.id.pauseButton);
+        final View tw = myLayout.findViewById(R.id.attackToggleButton);
+        js.setVisibility(View.GONE);
+        js2.setVisibility(View.GONE);
+        pb.setVisibility(View.GONE);
+        tw.setVisibility(View.GONE);
+        myLayout.addView(child);
+
+        //TODO: Back stack?
+
+        final Button resumeGameButton = findViewById(R.id.resumeGameButton);
+        resumeGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                // TODO: Hide the pause Views or Remove
+                js.setVisibility(View.VISIBLE);
+                js2.setVisibility(View.VISIBLE);
+                pb.setVisibility(View.VISIBLE);
+                tw.setVisibility(View.VISIBLE);
+                myLayout.removeView(child);
+                gameSurface.setRunning(true);
+            }
+        }); // TODO: There's no way this works
+
+        final Button mainMenuButton = findViewById(R.id.mainMenuButton);
+        mainMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                mainMenu();
+            }
+        });
+
+        final Button startGameButton = findViewById(R.id.restartGameButton);
+        startGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                startGame();
+            }
+        });
+    }
+
+
+    protected void deathScreen() {
+        final View child = getLayoutInflater().inflate(R.layout.death_menu, null);
+        ViewGroup parent = findViewById(R.id.game_hud);
+        parent.addView(child);
+        //TODO: Set the game_hud to GONE
+
+        final Button restartGameButton = findViewById(R.id.restartGameButton);
+        restartGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                return; //TODO: Placeholder for now
+            }
+        });
+
+        final Button mainMenuButton = findViewById(R.id.mainMenuButton);
+        mainMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                mainMenu();
+            }
+        });
+    }
+
+    protected void victoryScreen(){
+        //TODO: This.
+    }
+
+    protected void startGame() {
+        gameSurface = null;
+        //TODO: Add View that says "Loading....."
+        this.setContentView(R.layout.game_hud);
+        // TODO: Possibly need to set to visable again
+
+        gameSurface = new GameSurface(this);
+        final RelativeLayout myLayout = findViewById(R.id.game_hud);
         myLayout.addView(gameSurface);
 
         JoystickView joystick = findViewById(R.id.joystickView);
@@ -41,11 +151,8 @@ public class MainActivity extends Activity {
 
                     double movingVectorX =  Math.cos(radAngle) * 10 * strength;
                     double movingVectorY = Math.sin(radAngle) * -10 * strength;
-                    //Log.d("Joystick", angle + ": "+movingVectorX+", "+movingVectorY);
                     character.setMovingVector((int)movingVectorX, (int)movingVectorY);
-
                 }
-                // do whatever you want
             }
         });
 
@@ -71,37 +178,94 @@ public class MainActivity extends Activity {
             }
         });
 
-        final Button toggleButton = findViewById(R.id.toggleButton);
-        toggleButton.setOnClickListener(new View.OnClickListener() {
+        final Button attackToggleButton = findViewById(R.id.attackToggleButton);
+        attackToggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View view) {
+            public void onClick(View view) {
                 for (Character character: gameSurface.characterList) {
                     PlayerAI playerAI = (PlayerAI) character.ai;
                     if (playerAI.attackStyle == "Melee") {
                         playerAI.attackStyle = "Ranged";
-                        toggleButton.setText("Melee");
+                        attackToggleButton.setText("Melee");
                     } else {
                         playerAI.attackStyle = "Melee";
-                        toggleButton.setText("Ranged");
+                        attackToggleButton.setText("Ranged");
                     }
                 }
             }
         });
 
-        //Button attackButton = findViewById(R.id.attackButton);
-        //attackButton.setOnClickListener(new View.OnClickListener() {
-        //    @Override
-        //    public void onClick(View view) {
-        //        for (Character character: gameSurface.characterList) {
-        //            character.ai.attack();
-        //        }
-        //    }
-        //});
 
-        //TODO: Dont uncomment this, it breaks movement
+        final Button pauseButton = findViewById(R.id.pauseButton);
+        pauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                // TODO: Pause the Game. Stop movement, stop drawing?
 
-//        Button healthBar = findViewById(R.id.healthBar);
-//        this.healthBar = healthBar;
+                pauseMenu(myLayout);
+            }
+        });
+
+        if (requestNecessaryPermissions()) {
+            initializeScreenRecorder();
+        }
+
+    }
+
+    private boolean requestNecessaryPermissions() {
+        //returns true if all permissions are already granted
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE);
+            return false;
+        }
+        return true;
+    }
+
+    private void initializeScreenRecorder(){
+        screenRecorder = new ScreenRecorder(this);
+        if(!screenRecorder.isPrepared) return;
+        final ImageButton shareButton = findViewById(R.id.shareButton);
+        shareButton.setVisibility(View.VISIBLE);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!screenRecorder.isRecording) {
+                    if (screenRecorder.startRecording()){
+                        shareButton.setImageResource(R.drawable.share_icon_stop);
+                    }
+
+                } else {
+                    if (screenRecorder.stopRecording()){
+                        shareButton.setImageResource(R.drawable.share_icon_start);
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case WRITE_EXTERNAL_STORAGE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    initializeScreenRecorder();
+                } else {
+
+                }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        screenRecorder.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        screenRecorder.onDestroy();
     }
 
 }

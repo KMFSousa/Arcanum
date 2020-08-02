@@ -4,10 +4,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,7 +26,9 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     private GameThread gameThread;
     public Dungeon dungeon;
     public StuffFactory stuffFactory;
-    private Context context;
+    private boolean gameStarted = false;
+    protected Context context; // Changed this to protected
+    public LootTables lootTables;
     public List<Character> characterList = new ArrayList<Character>();
     public List<Character> charactersToAddList = new ArrayList<Character>();
     public List<Explosion> explosionList = new ArrayList<Explosion>();
@@ -32,16 +37,21 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     public List<Projectile> projectilesToAddList = new ArrayList<Projectile>();
     public List<Projectile> projectileRemovalList = new ArrayList<Projectile>();
     public List<Item> itemList = new ArrayList<Item>();
+    public List<Integer> upgradeList = new ArrayList<Integer>();
+    public Character player;
+    public TextView dynamicTestView;
+
     public GameSurface(Context context)  {
         super(context);
-
+        this.player = null;
         this.context = context;
-
+        this.lootTables = new LootTables(this.context);
         // Make Game Surface focusable so it can handle events.
         this.setFocusable(true);
 
         // Set callback.
         this.getHolder().addCallback(this);
+        initDungeon();
     }
 
     // MASTER UPDATE CONTROL
@@ -83,6 +93,11 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         for(Projectile projectile : projectileList) {
             projectile.update();
         }
+        if(!upgradeList.isEmpty()) {
+            lootTables.applyItems(upgradeList, this.player);
+            upgradeList.clear();
+        }
+//        applyItems(roulette_results)
 
         // If we have characters (monsters) that were created mid-update, add them to the main character list now
         for (Projectile projectile : this.projectilesToAddList) {
@@ -130,6 +145,50 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         removalList.add(other);
     }
 
+
+
+    public void initDungeon(){
+        StuffFactory stuffFactory = new StuffFactory(this);
+        this.stuffFactory = stuffFactory;
+
+        int difficulty = 3; // Default Value? Can be changed (Values 1 - 3)
+
+        this.dungeon = new Dungeon(this);
+
+        Character player = stuffFactory.newPlayer(this.characterList, 850, 500, this.context, difficulty);
+
+        Map[][] mapArr = new Map[3][3];
+
+        Bitmap mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.blue_room);
+
+        Map map = new Map(this, mapImage, "blue_room", stuffFactory, this.context, difficulty);
+        mapArr[0][0] = map;
+
+        mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.red_room);
+        map = new Map(this, mapImage, "red_room", stuffFactory, this.context, difficulty);
+        mapArr[1][0] = map;
+
+        mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.box_room);
+        map = new Map(this, mapImage, "box_room", stuffFactory, this.context, difficulty);
+        mapArr[0][1] = map;
+
+        mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.green_room);
+        map = new Map(this, mapImage, "green_room", stuffFactory, this.context, difficulty);
+        mapArr[2][0] = map;
+
+        mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.sewers);
+        map = new Map(this, mapImage, "sewers", stuffFactory, this.context, difficulty);
+        mapArr[1][1] = map;
+
+        mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.boss_room);
+        map = new Map(this, mapImage, "boss_room", stuffFactory, this.context, difficulty);
+
+        mapArr[1][2] = map;
+
+        this.dungeon.populateMapArray(mapArr);
+
+        this.dungeon.getCurrentRoom().monsterList = new ArrayList<Character>(mapArr[2][0].monsterList);
+    }
     // Implements method of SurfaceHolder.Callback
 
     @Override
@@ -137,49 +196,18 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     // The gameThread will be what calls the update method on the character
     public void surfaceCreated(SurfaceHolder holder) {
 
-        StuffFactory stuffFactory = new StuffFactory(this);
-        this.stuffFactory = stuffFactory;
-
-        this.dungeon = new Dungeon(this);
-
-        Character player = stuffFactory.newPlayer(this.characterList, 850, 500, this.context);
-
-        Map[][] mapArr = new Map[3][3];
-
-        Bitmap mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.blue_room);
-        Map map = new Map(this, mapImage, "blue_room", stuffFactory, this.context);
-        mapArr[0][0] = map;
-
-        mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.red_room);
-        map = new Map(this, mapImage, "red_room", stuffFactory, this.context);
-        mapArr[1][0] = map;
-
-        mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.box_room);
-        map = new Map(this, mapImage, "box_room", stuffFactory, this.context);
-        mapArr[0][1] = map;
-
-        mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.green_room);
-        map = new Map(this, mapImage, "green_room", stuffFactory, this.context);
-        mapArr[2][0] = map;
-
-        mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.sewers);
-        map = new Map(this, mapImage, "sewers", stuffFactory, this.context);
-        mapArr[1][1] = map;
-
-        mapImage = BitmapFactory.decodeResource(this.getResources(), R.drawable.boss_room);
-        map = new Map(this, mapImage, "boss_room", stuffFactory, this.context);
-        mapArr[1][2] = map;
-
-        this.dungeon.populateMapArray(mapArr);
-
-        this.dungeon.getCurrentRoom().monsterList = new ArrayList<Character>(mapArr[2][0].monsterList);
-
         // Create a thread that will handle the running of the game (character movements and such) that can be easily paused without having to add excess logic to the main thread
-        this.gameThread = new GameThread(this, holder);
-        // Call the setRunning method to set the `running` variable of the game thread to true: this is what will control the pausing of the thread
-        this.gameThread.setRunning(true);
-        // Call the already implemented `start()` method of the `Thread` superclass which will call the overrided `run()` method of our `GameThread` subclass
-        this.gameThread.start();
+        if(gameThread == null) {
+            gameThread = new GameThread(this, holder);
+        }
+
+        if (!gameStarted) {
+            gameThread.start();
+            gameStarted = true;
+        }
+        gameThread.setRunning(true);
+
+
     }
 
     // Implements method of SurfaceHolder.Callback
@@ -191,17 +219,23 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     // Implements method of SurfaceHolder.Callback
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        boolean retry = true;
-        while (retry) {
-            try {
-                this.gameThread.setRunning(false);
-
-                // Parent thread must wait until the end of GameThread.
-                this.gameThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            retry = true;
-        }
+        gameThread.setRunning(false);
     }
+
+    public void setRunning(boolean running){
+        gameThread.setRunning(running);
+    }
+
+    public boolean isRunning(){
+        return gameThread.getRunning();
+    }
+
+    public long getLastPauseTime(){
+        return gameThread.getLastPauseTime();
+    }
+
+    public void setLastPauseTime(long newPauseTime) {
+        gameThread.setLastPauseTime(newPauseTime);
+    }
+
 }
