@@ -57,8 +57,6 @@ public class Item extends GameObject {
         Bitmap bitmap = this.sword_neutral[colUsing];
         canvas.drawBitmap(bitmap, x, y, null);
         //hitBox.draw(canvas);
-        Log.d("Location" ,"Sword hitbox x: " + hitBox.x);
-
     }
 
     //TODO: COLLISION DETECTION CAN BE MOVED WITHIN THE HITBOX CLASS AS A SEPARATE METHOD

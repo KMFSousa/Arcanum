@@ -408,46 +408,11 @@ public class Character extends GameObject {
         //gameSurface.itemList.remove(other);
     }
 
-//    public void attack() {
-//
-//      //  if(itemList.size() != 0){itemList.get(0).inCombat();}
-//        if(ai.isPlayer()){
-//            this.isAttacking = true;
-//            this.attackAnimationInProgress = false;
-//            Iterator<Character> iterator = gameSurface.dungeon.getCurrentRoom().monsterList.iterator();
-//
-//            while(iterator.hasNext()){
-//                Character other = iterator.next();
-//                if(this.hurtBox.x < other.hitBox.x + other.width &&
-//                        this.hurtBox.x + this.hurtBox.width > other.x &&
-//                        this.hurtBox.y < other.hitBox.y + other.height &&
-//                        this.hurtBox.y + this.hurtBox.height > other.hitBox.y){
-//                    other.reduceHitPointsBy(attackDamage);
-//                    Log.d("Slime HP remaining", ": " + other.hitPoints);
-//                }
-//            }
-//        }
-//
-//        if(!ai.isPlayer() && !gameSurface.characterList.isEmpty()){
-//            Character other = gameSurface.characterList.get(0);
-//            if(this.hurtBox.x < other.hitBox.x + other.hitBox.width &&
-//                    this.hurtBox.x + this.hurtBox.width > other.hitBox.x &&
-//                    this.hurtBox.y < other.hitBox.y + other.hitBox.height &&
-//                    this.hurtBox.y + this.hurtBox.height > other.hitBox.y){
-//                other.reduceHitPointsBy(attackDamage);
-//                Log.d("Player HP remaining", ": " + other.hitPoints);
-//
-//                this.isAttacking = true;
-//            }
-//        }
-//    }
-
     public void checkIfDead() {
         List<Integer> items;
 
         if (this.hitPoints <= 0) {
             if(!ai.isPlayer()) {
-                Log.i("Mob ID: ", this.mobID + "");
 
                 items = this.gameSurface.lootTables.roulette(mobID);
                 for (int i = 0; i < items.size(); i++ ) {
@@ -462,7 +427,6 @@ public class Character extends GameObject {
             if(!ai.isPlayer()) {
 
             }
-
         }
     }
 

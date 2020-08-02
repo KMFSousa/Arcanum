@@ -69,6 +69,7 @@ public class Projectile extends GameObject {
         // Calculate the new position of the game character.
         xToMoveTo = this.x + (int)(distance* movingVectorX / movingVectorLength);
         yToMoveTo = this.y + (int)(distance* movingVectorY / movingVectorLength);
+
         this.x = xToMoveTo;
         this.y = yToMoveTo;
 

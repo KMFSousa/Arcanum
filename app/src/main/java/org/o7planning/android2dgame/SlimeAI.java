@@ -53,8 +53,6 @@ public class SlimeAI implements CharacterAI {
                     character.hurtBox.y < other.hitBox.y + other.hitBox.height &&
                     character.hurtBox.y + character.hurtBox.height > other.hitBox.y){
                 other.reduceHitPointsBy(character.attackDamage);
-                Log.d("Player HP remaining", ": " + other.hitPoints);
-
                 character.isAttacking = true;
             }
         }

@@ -188,8 +188,6 @@ public class Map {
     }
 
     private Bitmap createSubImageAt(Bitmap image, int row, int col) {
-        // createBitmap(bitmap, x, y, width, height);
-        // Log.i("Map", "x: " + Integer.toString(col*this.tileWidth) + ", y: " + Integer.toString((row*this.tileHeight)));
         Bitmap subImage = Bitmap.createBitmap(image, col * this.tileWidth, row * this.tileHeight, this.tileWidth, this.tileHeight);
         return subImage;
     }
@@ -209,7 +207,6 @@ public class Map {
                 for (int col = 0; col < lineArray.length; col++) {
                     int valueAsInt = Integer.parseInt(lineArray[col]);
                     this.csvValues[row][col] = valueAsInt;
-                    // Log.i("Map", "Row: " + row + ", Col: " + col + ", Val: " + lineArray[col]);
                 }
                 row++;
             }
