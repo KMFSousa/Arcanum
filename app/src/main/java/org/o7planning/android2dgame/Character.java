@@ -329,8 +329,8 @@ public class Character extends GameObject {
         canvas.drawBitmap(bitmap, x, y, null);
         // Last draw time.
         this.lastDrawNanoTime= System.nanoTime();
-        hitBox.draw(canvas);
-        hurtBox.draw(canvas);
+        //hitBox.draw(canvas);
+        //hurtBox.draw(canvas);
 
         // healthBar Logic = Always draw for player, draw if taken damage, and don't draw if dead //TODO the last part shouldn't be necessary but for the demo it looks nicer
         if((this.isPlayer || this.hitPoints < this.MAXHITPOINTS) && this.hitPoints != 0){
