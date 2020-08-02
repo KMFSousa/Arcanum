@@ -27,7 +27,6 @@ public class SlimeAI implements CharacterAI {
         this.factory = factory;
         this.player = gameSurface.characterList.get(0);
         this.character = character;
-
     }
 
     public void onUpdate() {
@@ -41,9 +40,9 @@ public class SlimeAI implements CharacterAI {
         }
 
         if(spreadCount < 1 && Math.random() < 0.1 && gameSurface.dungeon.getCurrentRoom().monsterList.size() < 10)
-           spread();
+            spread();
 
-            updateCounter++;
+        updateCounter++;
     }
 
     public void attack() {
@@ -54,8 +53,6 @@ public class SlimeAI implements CharacterAI {
                     character.hurtBox.y < other.hitBox.y + other.hitBox.height &&
                     character.hurtBox.y + character.hurtBox.height > other.hitBox.y){
                 other.reduceHitPointsBy(character.attackDamage);
-                Log.d("Player HP remaining", ": " + other.hitPoints);
-
                 character.isAttacking = true;
             }
         }
