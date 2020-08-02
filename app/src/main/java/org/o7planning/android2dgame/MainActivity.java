@@ -116,6 +116,7 @@ public class MainActivity extends Activity {
 
     private void initializeScreenRecorder(){
         final ImageButton shareButton = findViewById(R.id.shareButton);
+        shareButton.setVisibility(View.VISIBLE);
         screenRecorder = new ScreenRecorder(this);
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
