@@ -197,6 +197,9 @@ public class MainActivity extends Activity {
         ViewGroup parent = findViewById(R.id.game_hud);
         parent.addView(child);
         setHUDVisible(false);
+        
+        TextView beatLevel = findViewById(R.id.subTextView);
+        beatLevel.setText(beatLevel.getText() + ": " + difficultySetting);
 
         final Button restartGameButton = findViewById(R.id.nextLevelButton);
         if(difficultySetting < MAX_DIFF) {
@@ -219,6 +222,7 @@ public class MainActivity extends Activity {
                 mainMenu();
             }
         });
+
     }
 
     protected void startGame() {
