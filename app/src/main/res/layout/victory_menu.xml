@@ -31,7 +31,8 @@
         android:shadowColor="#000000"
         android:shadowDx="0"
         android:shadowDy="0"
-        android:shadowRadius="15"/>
+        android:shadowRadius="15"
+        android:fontFamily="@font/fantaisie_artistique"/>
 
     <TextView
         android:id="@+id/subTextView"
@@ -43,7 +44,8 @@
         android:includeFontPadding="true"
         android:text="You beat level "
         android:textColor="#090909"
-        android:textSize="30sp" />
+        android:textSize="30sp"
+        android:fontFamily="@font/fantaisie_artistique"/>
     <Button
         android:id="@+id/mainMenuButton"
         android:layout_width="180dp"
@@ -52,7 +54,8 @@
         android:layout_alignBottom="@id/mainTextView"
         android:layout_marginBottom="-110dp"
         android:textSize="25sp"
-        android:text="Main Menu" />
+        android:text="Main Menu"
+        android:fontFamily="@font/fantaisie_artistique"/>
 
 <!-- TODO: Display next level, and remove button if final level. Maybe update text too -->
     <Button
@@ -63,6 +66,7 @@
         android:text="Next Level"
         android:layout_alignBottom="@id/mainTextView"
         android:layout_marginBottom="-110dp"
-        android:textSize="25sp"/>
+        android:textSize="25sp"
+        android:fontFamily="@font/fantaisie_artistique"/>
 
 </RelativeLayout>

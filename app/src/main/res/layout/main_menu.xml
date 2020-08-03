@@ -35,7 +35,6 @@
         android:textAllCaps="false"
         android:textColor="#EBEBEB"
         android:textSize="20sp"
-
         android:visibility="invisible"
         />
 
@@ -44,12 +43,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/game_logo"
-
         android:background="@android:color/background_dark"
         android:text="  Start Game   "
         android:textColor="#EBEBEB"
         android:textSize="25sp"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/fantaisie_artistique"/>
 
 
 
