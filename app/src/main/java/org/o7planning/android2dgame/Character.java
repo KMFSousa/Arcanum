@@ -414,7 +414,7 @@ public class Character extends GameObject {
 
                 items = this.gameSurface.lootTables.roulette(mobID);
                 for (int i = 0; i < items.size(); i++ ) {
-//                    Log.i("ITEM DROPPED: ", items.get(i) + "");
+                    Log.i("ITEM DROPPED: ", items.get(i) + "");
 //                    gotItem(this.gameSurface.lootTables.dropTable[items.get(i)][1]);
                 }
                 this.gameSurface.upgradeList.addAll(items);

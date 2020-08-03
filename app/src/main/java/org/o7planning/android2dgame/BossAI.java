@@ -143,9 +143,9 @@ public class BossAI implements CharacterAI {
         int distanceToPlayerX = this.player.getX() + this.player.width/2 - positionX;
         int distanceToPlayerY = this.player.getY() + this.player.height/2 - positionY;
         if (!enraged) {
-            factory.projectile(projectileBitmap, distanceToPlayerX, distanceToPlayerY, false, character.getX() + Math.round(character.width/2) - Math.round(projectileBitmap.getWidth()/2), character.getY() + Math.round(character.height/2) - Math.round(projectileBitmap.getHeight()/2), 0.4f);
+            factory.projectile(projectileBitmap, distanceToPlayerX, distanceToPlayerY, false, character.getX() + Math.round(character.width/2) - Math.round(projectileBitmap.getWidth()/2), character.getY() + Math.round(character.height/2) - Math.round(projectileBitmap.getHeight()/2), 0.4f, this.character.attackDamage);
         } else {
-            factory.projectile(projectileBitmap, distanceToPlayerX, distanceToPlayerY, false, character.getX() + Math.round(character.width/2) - Math.round(projectileBitmap.getWidth()/2), character.getY() + Math.round(character.height/2) - Math.round(projectileBitmap.getHeight()/2), 0.6f);
+            factory.projectile(projectileBitmap, distanceToPlayerX, distanceToPlayerY, false, character.getX() + Math.round(character.width/2) - Math.round(projectileBitmap.getWidth()/2), character.getY() + Math.round(character.height/2) - Math.round(projectileBitmap.getHeight()/2), 0.6f, this.character.attackDamage);
         }
     }
 
@@ -179,9 +179,9 @@ public class BossAI implements CharacterAI {
             distanceToPointX = pointX - positionX;
             distanceToPointY = pointY - positionY;
             if (!enraged) {
-                factory.projectile(projectileBitmap, distanceToPointX, distanceToPointY, false, character.getX() + Math.round(character.width/2) - Math.round(projectileBitmap.getWidth()/2), character.getY() + Math.round(character.height/2) - Math.round(projectileBitmap.getHeight()/2), 0.2f);
+                factory.projectile(projectileBitmap, distanceToPointX, distanceToPointY, false, character.getX() + Math.round(character.width/2) - Math.round(projectileBitmap.getWidth()/2), character.getY() + Math.round(character.height/2) - Math.round(projectileBitmap.getHeight()/2), 0.2f, this.character.attackDamage);
             } else {
-                factory.projectile(projectileBitmap, distanceToPointX, distanceToPointY, false, character.getX() + Math.round(character.width/2) - Math.round(projectileBitmap.getWidth()/2), character.getY() + Math.round(character.height/2) - Math.round(projectileBitmap.getHeight()/2), 0.4f);
+                factory.projectile(projectileBitmap, distanceToPointX, distanceToPointY, false, character.getX() + Math.round(character.width/2) - Math.round(projectileBitmap.getWidth()/2), character.getY() + Math.round(character.height/2) - Math.round(projectileBitmap.getHeight()/2), 0.4f, this.character.attackDamage);
             }
         }
     }
