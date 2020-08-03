@@ -9,7 +9,7 @@
     android:layout_alignBottom="@+id/itemsText"
     tools:context="org.o7planning.android2dgame.MainActivity">
 
-    <io.github.controlwear.virtual.joystick.android.JoystickView xmlns:custom="http://schemas.android.com/apk/res-auto"
+    <io.github.controlwear.virtual.joystick.android.JoystickView
         android:id="@+id/joystickView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -54,31 +54,35 @@
         android:theme="@style/AppTheme"
         android:translationZ="90dp" />
 
-    <Button
+    <ImageButton
         android:id="@+id/attackToggleButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="404dp"
-        android:layout_marginLeft="404dp"
-        android:layout_marginTop="338dp"
-        android:text="Ranged" />
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignStart="@id/joystickView2"
+        android:layout_marginStart="-50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp"
+        android:background="@drawable/toggle_background"
+        android:elevation="1dp"
+        android:src="@drawable/ranged_icon">
 
-    <Button
+    </ImageButton>
+
+    <ImageButton
         android:id="@+id/pauseButton"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
+        android:layout_width="50dp"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:backgroundTint="#7CFFFFFF"
-        android:text="| |"/>
+        android:elevation="1dp"
+        android:src="@drawable/pause_icon"
+         />
 
     <ImageButton
         android:id="@+id/shareButton"
-        android:visibility="gone"
         android:layout_width="50dp"
         android:layout_height="40dp"
         android:layout_marginTop="10dp"
@@ -86,7 +90,8 @@
         android:layout_toLeftOf="@id/pauseButton"
         android:backgroundTint="#7CFFFFFF"
         android:elevation="1dp"
-        android:src="@drawable/share_icon_start" />
+        android:src="@drawable/share_icon_start"
+        android:visibility="gone" />
 
     <!-- This can be used universally across pause, death and victory screens by being here -->
     <TextView

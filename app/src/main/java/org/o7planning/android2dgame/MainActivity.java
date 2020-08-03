@@ -5,13 +5,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,11 +59,58 @@ public class MainActivity extends Activity {
             @Override
             public void onClick (View view) {
                 findViewById(R.id.loadingTextView).setVisibility(View.VISIBLE);
-                startGame();
+                if(difficultySetting == 1) {
+                    prologueScreen();
+                }
+                else{
+                    startGame();
+                }
+            }
+        });
+    }
+
+    protected void prologueScreen() {
+        this.setContentView(R.layout.prologue_screen);
+        TextView mainText = findViewById(R.id.mainText);
+        TextView welcomeText = findViewById(R.id.welcomeText);
+        Animation aniFade = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in);
+        mainText.startAnimation(aniFade);
+        welcomeText.startAnimation(aniFade);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                endPrologue();
+            }
+        }, 10000);
+
+        ImageView imageView = findViewById(R.id.imageView);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                endPrologue();
             }
         });
 
     }
+
+    private void endPrologue(){
+        if(gameSurface!= null) return;
+        TextView mainText = findViewById(R.id.mainText);
+        TextView welcomeText = findViewById(R.id.welcomeText);
+        Animation fadeOut = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_out);
+        mainText.startAnimation(fadeOut);
+        welcomeText.startAnimation(fadeOut);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                findViewById(R.id.loadingTextView).setVisibility(View.VISIBLE);
+                startGame();
+            }
+        }, fadeOut.getDuration());
+    }
+
 
     private void setHUDVisible(boolean newVisible){
         RelativeLayout myLayout = findViewById(R.id.game_hud);
@@ -212,7 +263,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        final Button attackToggleButton = findViewById(R.id.attackToggleButton);
+        final ImageButton attackToggleButton = findViewById(R.id.attackToggleButton);
         attackToggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -220,17 +271,17 @@ public class MainActivity extends Activity {
                     PlayerAI playerAI = (PlayerAI) character.ai;
                     if (playerAI.attackStyle == "Melee") {
                         playerAI.attackStyle = "Ranged";
-                        attackToggleButton.setText("Melee");
+                        attackToggleButton.setImageResource(R.drawable.melee_icon);
                     } else {
                         playerAI.attackStyle = "Melee";
-                        attackToggleButton.setText("Ranged");
+                        attackToggleButton.setImageResource(R.drawable.ranged_icon);
                     }
                 }
             }
         });
 
 
-        final Button pauseButton = findViewById(R.id.pauseButton);
+        final ImageButton pauseButton = findViewById(R.id.pauseButton);
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
