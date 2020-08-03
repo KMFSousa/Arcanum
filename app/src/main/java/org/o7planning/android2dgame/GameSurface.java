@@ -211,8 +211,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
             gameThread.setRunning(true);
         }
 
-
-
     }
 
     // Implements method of SurfaceHolder.Callback

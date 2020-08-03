@@ -207,7 +207,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        final Button attackToggleButton = findViewById(R.id.attackToggleButton);
+        final ImageButton attackToggleButton = findViewById(R.id.attackToggleButton);
         attackToggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -215,17 +215,17 @@ public class MainActivity extends Activity {
                     PlayerAI playerAI = (PlayerAI) character.ai;
                     if (playerAI.attackStyle == "Melee") {
                         playerAI.attackStyle = "Ranged";
-                        attackToggleButton.setText("Melee");
+                        attackToggleButton.setImageResource(R.drawable.melee_icon);
                     } else {
                         playerAI.attackStyle = "Melee";
-                        attackToggleButton.setText("Ranged");
+                        attackToggleButton.setImageResource(R.drawable.ranged_icon);
                     }
                 }
             }
         });
 
 
-        final Button pauseButton = findViewById(R.id.pauseButton);
+        final ImageButton pauseButton = findViewById(R.id.pauseButton);
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
