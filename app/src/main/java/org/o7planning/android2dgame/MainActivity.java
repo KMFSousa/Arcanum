@@ -88,6 +88,7 @@ public class MainActivity extends Activity {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
+                findViewById(R.id.loadingTextView).setVisibility(View.VISIBLE);
                 endPrologue();
             }
         });
@@ -95,20 +96,20 @@ public class MainActivity extends Activity {
     }
 
     private void endPrologue(){
-        if(gameSurface!= null) return;
-        TextView mainText = findViewById(R.id.mainText);
-        TextView welcomeText = findViewById(R.id.welcomeText);
-        Animation fadeOut = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_out);
-        mainText.startAnimation(fadeOut);
-        welcomeText.startAnimation(fadeOut);
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                findViewById(R.id.loadingTextView).setVisibility(View.VISIBLE);
-                startGame();
-            }
-        }, fadeOut.getDuration());
+        if(gameSurface != null) return;
+//        TextView mainText = findViewById(R.id.mainText);
+//        TextView welcomeText = findViewById(R.id.welcomeText);
+//        Animation fadeOut = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_out);
+//        mainText.startAnimation(fadeOut);
+//        welcomeText.startAnimation(fadeOut);
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                startGame();
+//            }
+//        }, fadeOut.getDuration());
+        startGame();
     }
 
 
@@ -221,11 +222,14 @@ public class MainActivity extends Activity {
 
     protected void startGame() {
         gameSurface = null;
-        this.setContentView(R.layout.game_hud);
+        Animation aniFade = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
 
-        gameSurface = new GameSurface(this, difficultySetting);
+        this.setContentView(R.layout.game_hud);
         final RelativeLayout myLayout = findViewById(R.id.game_hud);
+        gameSurface = new GameSurface(this, difficultySetting);
         myLayout.addView(gameSurface);
+        gameSurface.startAnimation(aniFade);
+        myLayout.startAnimation(aniFade);
 
         JoystickView joystick = findViewById(R.id.joystickView);
         joystick.setOnMoveListener(new JoystickView.OnMoveListener() {
