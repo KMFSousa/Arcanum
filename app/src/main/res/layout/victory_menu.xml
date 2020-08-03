@@ -48,9 +48,9 @@
         android:id="@+id/mainMenuButton"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_toLeftOf="@+id/anchor"
-        android:layout_marginBottom="100dp"
+        android:layout_alignBottom="@id/mainTextView"
+        android:layout_marginBottom="-110dp"
         android:textSize="25sp"
         android:text="Main Menu" />
 
@@ -59,10 +59,10 @@
         android:id="@+id/nextLevelButton"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="100dp"
         android:layout_toRightOf="@+id/anchor"
         android:text="Next Level"
+        android:layout_alignBottom="@id/mainTextView"
+        android:layout_marginBottom="-110dp"
         android:textSize="25sp"/>
 
 </RelativeLayout>
