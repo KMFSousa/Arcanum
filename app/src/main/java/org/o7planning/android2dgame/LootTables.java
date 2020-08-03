@@ -130,7 +130,7 @@ public class LootTables {
         mainActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (display != "Recent Drop: ") {
+                if (display != "Recent Drops: ") {
                     itemText.setText(display);
                 }
             }
@@ -160,7 +160,7 @@ public class LootTables {
             } else if(item == 3) {
                 //Gloves
                 // Implement Speed change
-                player.hitsPerSecond += parseInt(dropTable[3][4]);
+                player.hitsPerSecond += Float.parseFloat(dropTable[3][4]);
                 Quantity = parseInt(playerItems.get(2).get(1));
                 Quantity ++;
                 playerItems.get(2).set(1, Integer.toString(Quantity));
@@ -223,6 +223,8 @@ public class LootTables {
                         TextView tv = (TextView) super.getView(position, convertView, parent);
                         tv.setTextColor(Color.parseColor("#986333"));
                         tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f);
+                        tv.setMaxHeight(50);
+
 //                        tv.setLayoutParams();
                         return tv;
                     }
