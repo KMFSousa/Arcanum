@@ -207,7 +207,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
             gameStarted = true;
         }
 
-        if(pausedByPlayer) {
+        if(!pausedByPlayer) {
             gameThread.setRunning(true);
         }
 
