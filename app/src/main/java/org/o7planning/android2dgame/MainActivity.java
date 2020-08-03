@@ -130,7 +130,27 @@ public class MainActivity extends Activity {
     }
 
     protected void victoryScreen(){
-        //TODO: This.
+        gameSurface.setRunning(false);
+        final View child = getLayoutInflater().inflate(R.layout.victory_menu, null);
+        ViewGroup parent = findViewById(R.id.game_hud);
+        parent.addView(child);
+        setHUDVisible(false);
+
+        final Button restartGameButton = findViewById(R.id.nextLevelButton);
+        restartGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                startGame();
+            }
+        });
+
+        final Button mainMenuButton = findViewById(R.id.mainMenuButton);
+        mainMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                mainMenu();
+            }
+        });
     }
 
     protected void startGame() {
