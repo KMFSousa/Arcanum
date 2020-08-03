@@ -27,6 +27,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     public Dungeon dungeon;
     public StuffFactory stuffFactory;
     private boolean gameStarted = false;
+    private boolean pausedByPlayer = false;
     protected Context context; // Changed this to protected
     public LootTables lootTables;
     public List<Character> characterList = new ArrayList<Character>();
@@ -205,7 +206,11 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
             gameThread.start();
             gameStarted = true;
         }
-        gameThread.setRunning(true);
+
+        if(pausedByPlayer) {
+            gameThread.setRunning(true);
+        }
+
 
 
     }
@@ -236,6 +241,10 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
     public void setLastPauseTime(long newPauseTime) {
         gameThread.setLastPauseTime(newPauseTime);
+    }
+
+    public void setPausedByPlayer(boolean pausedByPlayer){
+        this.pausedByPlayer = pausedByPlayer;
     }
 
 }

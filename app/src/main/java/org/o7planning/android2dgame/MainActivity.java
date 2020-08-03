@@ -75,6 +75,7 @@ public class MainActivity extends Activity {
 
     protected void pauseMenu(final RelativeLayout myLayout) {
         gameSurface.setRunning(false);
+        gameSurface.setPausedByPlayer(true);
         final View child = getLayoutInflater().inflate(R.layout.pause_menu, null);
         myLayout.addView(child);
         setHUDVisible(false);
@@ -86,6 +87,7 @@ public class MainActivity extends Activity {
                 setHUDVisible(true);
                 myLayout.removeView(child);
                 gameSurface.setRunning(true);
+                gameSurface.setPausedByPlayer(false);
             }
         });
 
