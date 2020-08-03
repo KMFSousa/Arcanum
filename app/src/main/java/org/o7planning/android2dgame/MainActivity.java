@@ -84,10 +84,11 @@ public class MainActivity extends Activity {
             }
         }, 10000);
 
-        ImageView imageView = findViewById(R.id.imageView);
+        final ImageView imageView = findViewById(R.id.imageView);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
+                imageView.setOnClickListener(null);
                 endPrologue();
             }
         });
