@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.IdRes;
 
@@ -41,6 +42,8 @@ public class MainActivity extends Activity {
 
         mainMenu();
 
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE);
+
     }
     protected void mainMenu() {
         gameSurface = null;
@@ -55,37 +58,34 @@ public class MainActivity extends Activity {
         });
     }
 
+    private void setHUDVisible(boolean newVisible){
+        RelativeLayout myLayout = findViewById(R.id.game_hud);
+        View js = myLayout.findViewById(R.id.joystickView);
+        View js2 = myLayout.findViewById(R.id.joystickView2);
+        View pb = myLayout.findViewById(R.id.pauseButton);
+        View tw = myLayout.findViewById(R.id.attackToggleButton);
+        int visibleInt = newVisible ? View.VISIBLE : View.GONE;
+        js.setVisibility(visibleInt);
+        js2.setVisibility(visibleInt);
+        pb.setVisibility(visibleInt);
+        tw.setVisibility(visibleInt);
+    }
+
     protected void pauseMenu(final RelativeLayout myLayout) {
         gameSurface.setRunning(false);
-
         final View child = getLayoutInflater().inflate(R.layout.pause_menu, null);
-
-        //TODO: Break this out into a function
-        final View js = myLayout.findViewById(R.id.joystickView);
-        final View js2 = myLayout.findViewById(R.id.joystickView2);
-        final View pb = myLayout.findViewById(R.id.pauseButton);
-        final View tw = myLayout.findViewById(R.id.attackToggleButton);
-        js.setVisibility(View.GONE);
-        js2.setVisibility(View.GONE);
-        pb.setVisibility(View.GONE);
-        tw.setVisibility(View.GONE);
         myLayout.addView(child);
-
-        //TODO: Back stack?
+        setHUDVisible(false);
 
         final Button resumeGameButton = findViewById(R.id.resumeGameButton);
         resumeGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                // TODO: Hide the pause Views or Remove
-                js.setVisibility(View.VISIBLE);
-                js2.setVisibility(View.VISIBLE);
-                pb.setVisibility(View.VISIBLE);
-                tw.setVisibility(View.VISIBLE);
+                setHUDVisible(true);
                 myLayout.removeView(child);
                 gameSurface.setRunning(true);
             }
-        }); // TODO: There's no way this works
+        });
 
         final Button mainMenuButton = findViewById(R.id.mainMenuButton);
         mainMenuButton.setOnClickListener(new View.OnClickListener() {
@@ -106,16 +106,17 @@ public class MainActivity extends Activity {
 
 
     protected void deathScreen() {
+        gameSurface.setRunning(false);
         final View child = getLayoutInflater().inflate(R.layout.death_menu, null);
         ViewGroup parent = findViewById(R.id.game_hud);
         parent.addView(child);
-        //TODO: Set the game_hud to GONE
+        setHUDVisible(false);
 
         final Button restartGameButton = findViewById(R.id.restartGameButton);
         restartGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                return; //TODO: Placeholder for now
+                startGame();
             }
         });
 
@@ -136,7 +137,6 @@ public class MainActivity extends Activity {
         gameSurface = null;
         //TODO: Add View that says "Loading....."
         this.setContentView(R.layout.game_hud);
-        // TODO: Possibly need to set to visable again
 
         gameSurface = new GameSurface(this);
         final RelativeLayout myLayout = findViewById(R.id.game_hud);
@@ -164,13 +164,15 @@ public class MainActivity extends Activity {
                 for (Character character: gameSurface.characterList) {
                     PlayerAI playerAI = (PlayerAI) character.ai;
 
-                    if (strength >= 90) {
+                    if (strength >= 50) {
                         double attackVectorX = Math.cos(radAngle) * 10;
                         double attackVectorY = Math.sin(radAngle) * -10;
 
                         // Set character attack vector
                         playerAI.setAttackVector((int) attackVectorX, (int) attackVectorY);
                         playerAI.attack();
+                    } else {
+                        playerAI.setAttackVector(0, 0);
                     }
                 }
             }
@@ -204,19 +206,10 @@ public class MainActivity extends Activity {
             }
         });
 
-        if (requestNecessaryPermissions()) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             initializeScreenRecorder();
         }
 
-    }
-
-    private boolean requestNecessaryPermissions() {
-        //returns true if all permissions are already granted
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE);
-            return false;
-        }
-        return true;
     }
 
     private void initializeScreenRecorder(){
@@ -246,10 +239,8 @@ public class MainActivity extends Activity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case WRITE_EXTERNAL_STORAGE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    initializeScreenRecorder();
-                } else {
-
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    Toast.makeText(this, "Screen Recorder disabled: No storage access!", Toast.LENGTH_SHORT).show();
                 }
         }
     }

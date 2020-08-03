@@ -39,13 +39,18 @@ public class Projectile extends GameObject {
         //TODO: call move()
         move();
         //TODO: check for collision (either with PC or NPC), pass in respective list from gamesurface
-        checkCharacterCollision(gameSurface.dungeon.getCurrentRoom().monsterList);
+        if (this.isPlayerOwned) {
+            checkCharacterCollision(gameSurface.dungeon.getCurrentRoom().monsterList);
+        } else {
+            checkCharacterCollision(gameSurface.characterList);
+        }
         //TODO:check for collision with environment
         checkEnvironmentCollision();
     }
 
     public void draw(Canvas canvas){
         canvas.drawBitmap(image, this.x, this.y, null);
+        //hurtBox.draw(canvas);
     }
 
     public void move(){
@@ -87,11 +92,12 @@ public class Projectile extends GameObject {
 
             while (iterator.hasNext()) {
                 Character other = iterator.next();
-                if (this.hurtBox.x < other.hitBox.x + other.width &&
+                if (this.hurtBox.x < other.hitBox.x + other.hitBox.width &&
                         this.hurtBox.x + this.hurtBox.width > other.x &&
-                        this.hurtBox.y < other.hitBox.y + other.height &&
+                        this.hurtBox.y < other.hitBox.y + other.hitBox.height &&
                         this.hurtBox.y + this.hurtBox.height > other.hitBox.y) {
                     other.reduceHitPointsBy(this.attackDamage);
+                    gameSurface.projectileRemovalList.add(this);
                 }
             }
         }

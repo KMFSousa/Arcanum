@@ -118,8 +118,8 @@ public class LootTables {
             if(item == 0){
                 player.hitPoints = player.MAXHITPOINTS;
                 player.replenishHitpoints();
-            } else if(item == 1) {
-                player.attackDamage +=10;
+            } else if (item == 1) {
+                player.attackDamage += 1;
             } else if(item == 2) {
                 player.defense += 1;
             } else if(item == 3) {
@@ -128,9 +128,9 @@ public class LootTables {
             } else if(item == 4) {
                 player.MAXHITPOINTS += 10;
             } else if(item == 5) {
-                player.numRocks ++;
+                player.numRocks++;
                 if (player.numRocks == 2) {
-                    player.attackDamage +=5;
+                    player.attackDamage += 2;
                     player.numRocks = 0;
                 }
             }

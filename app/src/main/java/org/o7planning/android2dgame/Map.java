@@ -37,13 +37,12 @@ public class Map {
     private int screenWidth;
     private int screenHeight;
 
-    private int difficulty;
     private int spawnCount;
     private String mapType;
     private String[] monsterTypes;
     private ArrayList<int[]> spawnPoints;
 
-    public Map(GameSurface gameSurface, Bitmap startingImage, String csvName, StuffFactory stuffFactory, Context context, int difficulty) {
+    public Map(GameSurface gameSurface, Bitmap startingImage, String csvName, StuffFactory stuffFactory, Context context) {
         this.gameSurface = gameSurface;
         this.context = context;
         this.csvName = csvName;
@@ -71,9 +70,7 @@ public class Map {
         this.tileArray = new Tile[rows][columns];
         this.createTiles(currentRoomBitmap, rows, columns);
 
-        this.difficulty = difficulty;
-
-        this.setMonsterSpawnAndTypes(this.difficulty, this.mapType);
+        this.setMonsterSpawnAndTypes(this.mapType);
 
         this.determinePossibleSpawnPoints(this.csvValues);
 
@@ -82,19 +79,19 @@ public class Map {
 
     // Sets the monster spawn number and types (this can be changed according to what we
     // feel is needed or appropriate)
-    private void setMonsterSpawnAndTypes(int difficulty, String mapType) {
+    private void setMonsterSpawnAndTypes(String mapType) {
         if (mapType == "SPAWN") {
             this.spawnCount = 0;
             this.monsterTypes = new String[0];
         } else if (mapType == "BOSS"){
-            this.spawnCount = difficulty + 2; // Temporary
-            this.monsterTypes = new String[]{"slime"};
+            this.spawnCount = 1;
+            this.monsterTypes = new String[]{"boss"};
         } else if (mapType == "REGULAR"){
-            if (difficulty == 1) {
-                this.spawnCount = this.difficulty + (int)(Math.random() * 2);
+            if (this.gameSurface.difficulty == 1) {
+                this.spawnCount = this.gameSurface.difficulty + (int)(Math.random() * 2);
                 this.monsterTypes = new String[]{"orc"};
             } else {
-                this.spawnCount = this.difficulty + (int)(Math.random() * 3);
+                this.spawnCount = this.gameSurface.difficulty + (int)(Math.random() * 3);
                 this.monsterTypes = new String[]{"orc", "slime"};
             }
         } else {
@@ -144,11 +141,13 @@ public class Map {
     private void callCorrectStuffFactoryMethod(String name, int xSpawnLocation, int ySpawnLocation, StuffFactory stuffFactory) throws Exception {
         switch(name) {
             case "orc":
-                stuffFactory.newOrc(this.monsterList, xSpawnLocation, ySpawnLocation);
+                stuffFactory.newOrc(this.monsterList, xSpawnLocation, ySpawnLocation, this.context, false);
                 break;
             case "slime":
-                stuffFactory.newSlime(this.monsterList, xSpawnLocation, ySpawnLocation);
+                stuffFactory.newSlime(this.monsterList, xSpawnLocation, ySpawnLocation, this.context, false);
                 break;
+            case "boss":
+                stuffFactory.newBoss(this.monsterList, 850, 500, this.context);
             default:
                 throw new Exception("Error: No Monster Found for Given Type.");
         }
@@ -252,11 +251,15 @@ public class Map {
             int srcCol = this.getColFromX(xSrcWithWidth);
 
             // Step 2: Index into tile array to get the tiles associated with the destination for both x and y
-            Tile newColTile = this.tileArray[srcRow][destCol];
-            Tile newRowTile = this.tileArray[destRow][srcCol];
+            try {
+                Tile newColTile = this.tileArray[srcRow][destCol];
+                Tile newRowTile = this.tileArray[destRow][srcCol];
+                return new Pair<Boolean, Boolean>(!newColTile.isCollidable(), !newRowTile.isCollidable());
+            } catch (Exception e) {
+                return new Pair<Boolean, Boolean>(false, false);
+            }
 
             // Step 3: Return a pair that defines whether you can move in the x direction or y direction
-            return new Pair<Boolean, Boolean>(!newColTile.isCollidable(), !newRowTile.isCollidable());
         } else {
             return new Pair<Boolean, Boolean>(false, false);
         }
@@ -270,9 +273,12 @@ public class Map {
             int destRow = this.getRowFromY(yDestWithHeight);
             int destCol = this.getColFromX(xDestWithWidth);
 
-            Tile destTile = this.tileArray[destRow][destCol];
+            try {
+                return !this.tileArray[destRow][destCol].isCollidable();
+            } catch (Exception e){
+                return false;
+            }
 
-            return !destTile.isCollidable();
         }
         return false;
     }
@@ -281,7 +287,11 @@ public class Map {
         int col = this.getColFromX(x);
         int row = this.getRowFromY(y);
 
-        return this.tileArray[row][col].isCollidable();
+        try {
+            return this.tileArray[row][col].isCollidable();
+        } catch (Exception e) {
+            return true;
+        }
     }
 
 

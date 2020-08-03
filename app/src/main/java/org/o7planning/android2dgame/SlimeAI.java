@@ -1,7 +1,10 @@
 package org.o7planning.android2dgame;
 
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -14,22 +17,25 @@ public class SlimeAI implements CharacterAI {
     private StuffFactory factory;
     private int positionX;
     private int postitionY;
-
     private int distanceToPlayerX;
     private int distanceToPlayerY;
-
     private int updateCounter;
-
     private int spreadCount;
+    private ArrayList<Bitmap> currentAnimationBitmap = new ArrayList<Bitmap>();
+    private int colUsing = 0;
+    private Context context;
+    private boolean isAttacking = false;
 
-    public SlimeAI(Character character, GameSurface gameSurface, StuffFactory factory) {
+    public SlimeAI(Character character, GameSurface gameSurface, StuffFactory factory, Context context) {
         this.gameSurface = gameSurface;
         this.factory = factory;
         this.player = gameSurface.characterList.get(0);
         this.character = character;
+        this.context = context;
+        this.currentAnimationBitmap = this.character.animationMap.get("walkleft");
     }
 
-    public void onUpdate() {
+    public void onUpdate (int movingVectorX, int movingVectorY) {
         if(closeToPlayer(100)) {
             attack();
         }
@@ -39,10 +45,21 @@ public class SlimeAI implements CharacterAI {
             wander();
         }
 
-        if(spreadCount < 1 && Math.random() < 0.1 && gameSurface.dungeon.getCurrentRoom().monsterList.size() < 10)
+        int numSlimes = 0;
+        for (Character character : this.gameSurface.dungeon.getCurrentRoom().monsterList) {
+            if (character.mobType.equals("slime")) {
+                numSlimes++;
+            }
+        }
+        
+        if(spreadCount < 1 && Math.random() < 0.1 && numSlimes < 5) {
             spread();
+        }
+
 
         updateCounter++;
+
+        this.animate(movingVectorX, movingVectorY);
     }
 
     public void attack() {
@@ -53,7 +70,55 @@ public class SlimeAI implements CharacterAI {
                     character.hurtBox.y < other.hitBox.y + other.hitBox.height &&
                     character.hurtBox.y + character.hurtBox.height > other.hitBox.y){
                 other.reduceHitPointsBy(character.attackDamage);
-                character.isAttacking = true;
+            }
+        }
+    }
+
+    public Bitmap getCurrentBitmap() {
+        return this.currentAnimationBitmap.get(this.colUsing);
+    }
+
+    public void animate(int movingVectorX, int movingVectorY) {
+        int vectorX = movingVectorX;
+        int vectorY = movingVectorY;
+        int vectorXAbsolute = Math.abs(vectorX);
+        int vectorYAbsolute = Math.abs(vectorY);
+
+        if ( vectorX != 0 || vectorY != 0 ) {
+            if (vectorX > 0) {
+                if (vectorY > 0 && vectorXAbsolute < vectorYAbsolute) {
+                    // Moving down and to the right
+                    this.currentAnimationBitmap = this.character.animationMap.get("walkleft");
+                } else if (vectorY < 0 && vectorXAbsolute < vectorYAbsolute) {
+                    // Moving up and to the right
+                    this.currentAnimationBitmap = this.character.animationMap.get("walkleft");
+                } else {
+                    // Moving right
+                    this.currentAnimationBitmap = this.character.animationMap.get("walkleft");
+                }
+            } else {
+                if (vectorY > 0 && vectorXAbsolute < vectorYAbsolute) {
+                    // Moving down and to the left
+                    this.currentAnimationBitmap = this.character.animationMap.get("walkleft");
+                } else if (vectorY < 0 && vectorXAbsolute < vectorYAbsolute) {
+                    // Moving up and to the left
+                    this.currentAnimationBitmap = this.character.animationMap.get("walkleft");
+                } else {
+                    // Moving left
+                    this.currentAnimationBitmap = this.character.animationMap.get("walkleft");
+                }
+            }
+        } else {
+            this.currentAnimationBitmap = this.character.animationMap.get("walkleft");
+        }
+
+        double movingVectorLength = Math.sqrt(movingVectorX*movingVectorX + movingVectorY*movingVectorY);
+
+        if (movingVectorLength > 0) {
+            this.colUsing++;
+
+            if (this.colUsing >= this.currentAnimationBitmap.size()) {
+                this.colUsing = 0;
             }
         }
     }
@@ -62,7 +127,7 @@ public class SlimeAI implements CharacterAI {
         int x = character.x;
         int y = character.y;
 
-        Character child = factory.newSlime(this.gameSurface.dungeon.getCurrentRoom().monsterList, x, y);
+        Character child = factory.newSlime(this.gameSurface.dungeon.getCurrentRoom().monsterList, x, y, this.context, true);
         child.x = x;
         child.y = y;
         child.hitBox.x = x;

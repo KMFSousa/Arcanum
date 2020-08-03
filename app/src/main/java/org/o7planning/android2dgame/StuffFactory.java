@@ -1,13 +1,20 @@
 package org.o7planning.android2dgame;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 public class StuffFactory {
     private GameSurface gameSurface;
+    public Map<String, ArrayList<Bitmap>> playerAnimationMap = null;
+    public Map<String, ArrayList<Bitmap>> orcAnimationMap = null;
+    public Map<String, ArrayList<Bitmap>> slimeAnimationMap = null;
+    public Map<String, ArrayList<Bitmap>> bossAnimationMap = null;
 
     public StuffFactory(GameSurface gameSurface) {
         this.gameSurface = gameSurface;
@@ -15,9 +22,10 @@ public class StuffFactory {
 
     //TODO: UPDATE CHARACTER AND ITEM CONSTRUCTORS WITH ATTRIBUTES
 
-    public Character newPlayer(List<Character> characterList, int x, int y, int difficulty) {
-        Bitmap characterBitmap1 = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.spritesheet);
-        Character player = new Character(gameSurface, characterBitmap1, x, y, true, 4, 4, 0.3f, 120 - (difficulty * 20), 11 - difficulty, 2, 3, 3);
+    public Character newPlayer(List<Character> characterList, int x, int y, Context context) {
+        Bitmap characterBitmap = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.barbarian);
+        characterBitmap = Bitmap.createScaledBitmap(characterBitmap, 1980, 90, false);
+        Character player = new Character(gameSurface, characterBitmap, x, y, true, 1, 11, 0.3f, 120 - (this.gameSurface.difficulty * 20), 11 - this.gameSurface.difficulty, 3, 3, context, "player", 3);
         characterList.add(player);
         this.gameSurface.player = player;
         PlayerAI playerAI = new PlayerAI(player, gameSurface, this);
@@ -42,11 +50,16 @@ public class StuffFactory {
         return player;
     }
 
-    public Character newSlime(List<Character> characterList, int x, int y) {
+    public Character newSlime(List<Character> characterList, int x, int y, Context context, Boolean addedMidGame) {
         Bitmap slimeBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.slimes1);
-        Character slime = new Character(gameSurface, slimeBitmap, x, y, false, 4, 5, 0.1f, 70, 1, 1, 4, 0);
-        characterList.add(slime);
-        SlimeAI slimeAI = new SlimeAI(slime, gameSurface, this);
+        slimeBitmap = Bitmap.createScaledBitmap(slimeBitmap, 480, 96, false);
+        Character slime = new Character(gameSurface, slimeBitmap, x, y, false, 1, 5, 0.1f, 30 + 10*this.gameSurface.difficulty, 1, 3, 4, context, "slime", 0);
+        if (addedMidGame) {
+            this.gameSurface.charactersToAddList.add(slime);
+        } else {
+            characterList.add(slime);
+        }
+        SlimeAI slimeAI = new SlimeAI(slime, gameSurface, this, context);
         slimeAI.character = slime;
         slime.setCharacterAI(slimeAI);
 
@@ -68,11 +81,16 @@ public class StuffFactory {
         return slime;
     }
 
-    public Character newOrc(List<Character> characterList, int x, int y) {
+    public Character newOrc(List<Character> characterList, int x, int y, Context context, Boolean addedMidGame) {
         Bitmap orcBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc);
-        orcBitmap = Bitmap.createScaledBitmap(orcBitmap, 1000, 500, false);
-        Character orc = new Character(gameSurface, orcBitmap, x, y, false, 4, 8, 0.1f, 30, 1, 2, 4, 1);
-        characterList.add(orc);
+        orcBitmap = Bitmap.createScaledBitmap(orcBitmap, 1800, 128, false);
+        Character orc = new Character(gameSurface, orcBitmap, x, y, false, 1, 16, 0.2f, 40 + 10*this.gameSurface.difficulty, 1, 2, 4, context, "orc", 1);
+        if (addedMidGame) {
+            this.gameSurface.charactersToAddList.add(orc);
+        } else {
+            characterList.add(orc);
+        }
+
         OrcAI orcAI = new OrcAI(orc, gameSurface);
         orcAI.character = orc;
         orc.setCharacterAI(orcAI);
@@ -97,11 +115,41 @@ public class StuffFactory {
         return orc;
     }
 
-    public Projectile projectile(Bitmap projectileBitmap, int movingVectorX, int movingVectorY, boolean isPlayerOwned, int originX, int originY ){
-        Projectile projectile = new Projectile(isPlayerOwned, projectileBitmap, 1, 1, originX, originY, movingVectorX, movingVectorY, gameSurface, 0.1f, 10);
-        gameSurface.projectileList.add(projectile);
+    public Character newBoss(List<Character> characterList, int x, int y, Context context) {
+        Bitmap bossBitmap = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.boss);
+        bossBitmap = Bitmap.createScaledBitmap(bossBitmap, 2250, 175, false);
+        Character boss = new Character(gameSurface, bossBitmap, x, y, false, 1, 18, 0.1f, 500 + 500*this.gameSurface.difficulty, 3 + this.gameSurface.difficulty, 3, 4, context, "boss", 2);
+        characterList.add(boss);
+        BossAI bossAI = new BossAI(boss, gameSurface, this, context);
+        bossAI.character = boss;
+        boss.setCharacterAI(bossAI);
+
+        Bitmap bossHitbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc_body_hitbox);
+        bossHitbox = Bitmap.createScaledBitmap(bossHitbox, 90, 180, false);
+        HitBox hitBox2 = new HitBox(gameSurface, bossHitbox, x, y, boss);
+        hitBox2.object = boss;
+        boss.setObjectHitbox(hitBox2);
+
+        Bitmap bossHurtbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.orc_spear_extended_hurtbox);
+        bossHurtbox = Bitmap.createScaledBitmap(bossHurtbox, 90, 180, false);
+        HitBox hurtBox1 = new HitBox(gameSurface, bossHurtbox, x, y, boss);
+        hurtBox1.object = boss;
+        boss.setObjectHurtbox(hurtBox1);
+
+        Bitmap bossHealthBar = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.healthbar);
+        bossHealthBar = Bitmap.createScaledBitmap(bossHealthBar, 200, 20, false);
+        GameObject healthBar = new GameObject(bossHealthBar, 1, 1, boss.x, boss.y);
+        boss.setHealthBar(healthBar);
+
+        return boss;
+    }
+
+    public Projectile projectile(Bitmap projectileBitmap, int movingVectorX, int movingVectorY, boolean isPlayerOwned, int originX, int originY, float velocity){
+        Projectile projectile = new Projectile(isPlayerOwned, projectileBitmap, 1, 1, originX, originY, movingVectorX, movingVectorY, gameSurface, velocity, 10);
+        gameSurface.projectilesToAddList.add(projectile);
 
         Bitmap projectileHurtbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.characterhitbox);
+        projectileHurtbox = Bitmap.createScaledBitmap(projectileHurtbox, 36, 36, false);
         HitBox hurtBox3 = new HitBox(gameSurface, projectileHurtbox, originX, originY, projectile);
         hurtBox3.object = projectile;
         projectile.setObjectHurtbox(hurtBox3);
