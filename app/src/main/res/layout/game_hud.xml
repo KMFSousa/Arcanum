@@ -50,9 +50,21 @@
         android:text="Nothing"
         android:textAllCaps="true"
         android:textColor="#986333"
-        android:textSize="14sp"
+        android:textSize="10sp"
         android:theme="@style/AppTheme"
         android:translationZ="90dp" />
+    <ListView
+        android:id="@+id/total_items"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="40dp"
+        android:fontFamily="casual"
+        android:text="Nothing"
+        android:textAllCaps="true"
+        android:textColor="#986333"
+        android:textSize="8sp"
+        android:theme="@style/AppTheme"
+        android:translationZ="90dp"/>
 
     <Button
         android:id="@+id/attackToggleButton"

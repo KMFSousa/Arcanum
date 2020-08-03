@@ -1,7 +1,11 @@
-﻿Index,Name,Item rarity
-0,Potion,30
-1,Sword,20
-2,Shield,20
-3,Boots,10
-4,Gloves,10
-5,Rocks,100
+﻿Index,Name,Item rarity,Function,Add value
+0,Potion,30,Heal,
+1,Sword,20,Attack+1,1
+2,Shield,20,Defense+1,1
+3,Gloves,10,Hits/Sec+0.5,0.5
+4,Armor,10,MaxHP+10,10
+5,Rocks,10,A Rock?,
+6,Holy Sword,110,Attack+5,5
+7,Holy Shield,110,Defense+5,5
+8,Holy Gloves,110,Hits/Sec+2,2
+9,Holy Armor,110,MaxHP+50,50
