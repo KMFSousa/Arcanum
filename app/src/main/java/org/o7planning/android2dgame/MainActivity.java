@@ -26,7 +26,8 @@ import io.github.controlwear.virtual.joystick.android.JoystickView;
 public class MainActivity extends Activity {
 
     private GameSurface gameSurface;
-    public final int RECORD_AUDIO = 0, WRITE_EXTERNAL_STORAGE = 1;
+    private int difficultySetting = 1;
+    public final int RECORD_AUDIO = 0, WRITE_EXTERNAL_STORAGE = 1, MAX_DIFF = 3;
     private ScreenRecorder screenRecorder;
 
     @Override
@@ -46,6 +47,7 @@ public class MainActivity extends Activity {
 
     }
     protected void mainMenu() {
+        difficultySetting = 1;
         gameSurface = null;
         this.setContentView(R.layout.main_menu);
 
@@ -137,6 +139,11 @@ public class MainActivity extends Activity {
         setHUDVisible(false);
 
         final Button restartGameButton = findViewById(R.id.nextLevelButton);
+        if(difficultySetting < MAX_DIFF) {
+            difficultySetting++;
+        } else {
+            restartGameButton.setText("Restart");
+        }
         restartGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
@@ -158,7 +165,7 @@ public class MainActivity extends Activity {
         //TODO: Add View that says "Loading....."
         this.setContentView(R.layout.game_hud);
 
-        gameSurface = new GameSurface(this);
+        gameSurface = new GameSurface(this, difficultySetting);
         final RelativeLayout myLayout = findViewById(R.id.game_hud);
         myLayout.addView(gameSurface);
 

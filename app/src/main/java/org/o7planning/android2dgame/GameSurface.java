@@ -42,11 +42,12 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     public TextView dynamicTestView;
     public int difficulty;
 
-    public GameSurface(Context context)  {
+    public GameSurface(Context context, int difficulty)  {
         super(context);
         this.player = null;
         this.context = context;
         this.lootTables = new LootTables(this.context);
+        this.difficulty = difficulty;
         // Make Game Surface focusable so it can handle events.
         this.setFocusable(true);
 
@@ -151,8 +152,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     public void initDungeon(){
         StuffFactory stuffFactory = new StuffFactory(this);
         this.stuffFactory = stuffFactory;
-
-        this.difficulty = 3; // Default Value? Can be changed (Values 1 - 3)
 
         this.dungeon = new Dungeon(this);
 
