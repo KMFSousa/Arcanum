@@ -350,16 +350,6 @@ public class Character extends GameObject {
 
         if(this.hitPoints < 0){
             this.hitPoints = 0;
-
-//            if (this.isPlayer) {
-//                final MainActivity context = (MainActivity)gameSurface.getContext();
-//                context.runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        context.deathScreen();
-//                    }
-//                });
-//            }
         }
 
         this.healthBar.width = (int) (((float) this.hitPoints/ (float) this.MAXHITPOINTS)*this.healthBar.originalSpriteWidth); //Hardcoded initial width of healthBar

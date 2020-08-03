@@ -9,8 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:background="#40000000"/>
-<!-- TODO: Add an outline -->
+        android:background="#90000000"/>
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
@@ -20,8 +20,12 @@
         android:layout_marginTop="120dp"
         android:includeFontPadding="true"
         android:text="Paused"
-        android:textColor="#000000"
-        android:textSize="60sp" />
+        android:textColor="#EBEBEB"
+        android:textSize="60sp"
+        android:shadowColor="#000000"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="15"/>
 
     <Button
         android:id="@+id/resumeGameButton"

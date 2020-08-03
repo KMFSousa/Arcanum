@@ -4,15 +4,21 @@
     android:layout_height="match_parent"
     android:id="@+id/death_menu">
 
+    <View
+        android:id="@+id/anchor"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerInParent="true" />
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:background="#40000000"/>
+        android:background="#9EC1921B"/>
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/mainTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -20,15 +26,30 @@
         android:layout_marginTop="120dp"
         android:includeFontPadding="true"
         android:text="Congrats!"
-        android:textColor="#811515"
-        android:textSize="60sp" />
+        android:textColor="#EBEBEB"
+        android:textSize="60sp"
+        android:shadowColor="#000000"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="15"/>
 
+    <TextView
+        android:id="@+id/subTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="200dp"
+        android:includeFontPadding="true"
+        android:text="You beat level "
+        android:textColor="#090909"
+        android:textSize="30sp" />
     <Button
         android:id="@+id/mainMenuButton"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@id/nextLevelButton"
+        android:layout_toLeftOf="@+id/anchor"
         android:layout_marginBottom="100dp"
         android:textSize="25sp"
         android:text="Main Menu" />
@@ -40,8 +61,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="100dp"
+        android:layout_toRightOf="@+id/anchor"
         android:text="Next Level"
-        android:textSize="25sp"
-        android:layout_centerHorizontal="true" />
+        android:textSize="25sp"/>
 
 </RelativeLayout>

@@ -16,10 +16,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.IdRes;
-
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+
+import java.util.concurrent.TimeUnit;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
 
@@ -50,14 +50,15 @@ public class MainActivity extends Activity {
         difficultySetting = 1;
         gameSurface = null;
         this.setContentView(R.layout.main_menu);
-
         final Button toggleButton = findViewById(R.id.startGameButton);
         toggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
+                findViewById(R.id.loadingTextView).setVisibility(View.VISIBLE);
                 startGame();
             }
         });
+
     }
 
     private void setHUDVisible(boolean newVisible){
@@ -66,11 +67,13 @@ public class MainActivity extends Activity {
         View js2 = myLayout.findViewById(R.id.joystickView2);
         View pb = myLayout.findViewById(R.id.pauseButton);
         View tw = myLayout.findViewById(R.id.attackToggleButton);
+        View sb = myLayout.findViewById(R.id.shareButton);
         int visibleInt = newVisible ? View.VISIBLE : View.GONE;
         js.setVisibility(visibleInt);
         js2.setVisibility(visibleInt);
         pb.setVisibility(visibleInt);
         tw.setVisibility(visibleInt);
+        sb.setVisibility(visibleInt);
     }
 
     protected void pauseMenu(final RelativeLayout myLayout) {
@@ -103,6 +106,7 @@ public class MainActivity extends Activity {
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
+                findViewById(R.id.loadingTextView).setVisibility(View.VISIBLE);
                 startGame();
             }
         });
@@ -120,6 +124,7 @@ public class MainActivity extends Activity {
         restartGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
+                findViewById(R.id.loadingTextView).setVisibility(View.VISIBLE);
                 startGame();
             }
         });
@@ -149,6 +154,7 @@ public class MainActivity extends Activity {
         restartGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
+                findViewById(R.id.loadingTextView).setVisibility(View.VISIBLE);
                 startGame();
             }
         });
@@ -164,7 +170,6 @@ public class MainActivity extends Activity {
 
     protected void startGame() {
         gameSurface = null;
-        //TODO: Add View that says "Loading....."
         this.setContentView(R.layout.game_hud);
 
         gameSurface = new GameSurface(this, difficultySetting);
