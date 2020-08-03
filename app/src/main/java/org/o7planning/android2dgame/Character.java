@@ -343,6 +343,8 @@ public class Character extends GameObject {
             this.hitPoints = 0;
 
             final MainActivity context = (MainActivity)gameSurface.getContext();
+
+            // link this to .checkIfDead() so that it works with the player only
             context.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
