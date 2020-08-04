@@ -148,28 +148,28 @@ public class LootTables {
             } else if (item == 1) {
                 //Sword
                 player.attackDamage += parseInt(dropTable[1][4]);
-                Quantity = parseInt(playerItems.get(0).get(1));
+                Quantity = parseInt(playerItems.get(1).get(1));
                 Quantity ++;
-                playerItems.get(0).set(1, Integer.toString(Quantity)) ;
+                playerItems.get(1).set(1, Integer.toString(Quantity)) ;
             } else if(item == 2) {
                 //Shield
                 player.defense += parseInt(dropTable[2][4]);
-                Quantity = parseInt(playerItems.get(1).get(1));
+                Quantity = parseInt(playerItems.get(2).get(1));
                 Quantity ++;
-                playerItems.get(1).set(1, Integer.toString(Quantity));
+                playerItems.get(2).set(1, Integer.toString(Quantity));
             } else if(item == 3) {
                 //Gloves
                 // Implement Speed change
                 player.hitsPerSecond += Float.parseFloat(dropTable[3][4]);
-                Quantity = parseInt(playerItems.get(2).get(1));
+                Quantity = parseInt(playerItems.get(3).get(1));
                 Quantity ++;
-                playerItems.get(2).set(1, Integer.toString(Quantity));
+                playerItems.get(3).set(1, Integer.toString(Quantity));
             } else if(item == 4) {
                 //Armor
                 player.MAXHITPOINTS += parseInt(dropTable[4][4]);
-                Quantity = parseInt(playerItems.get(3).get(1));
+                Quantity = parseInt(playerItems.get(4).get(1));
                 Quantity ++;
-                playerItems.get(3).set(1,Integer.toString(Quantity));
+                playerItems.get(4).set(1,Integer.toString(Quantity));
             } else if(item == 5) {
                 //Rocks
                 player.numRocks++;
@@ -177,34 +177,34 @@ public class LootTables {
                     player.attackDamage += 1;
                     player.numRocks = 0;
                 }
-                Quantity = parseInt(playerItems.get(4).get(1));
+                Quantity = parseInt(playerItems.get(5).get(1));
                 Quantity ++;
-                playerItems.get(4).set(1, Integer.toString(Quantity));
+                playerItems.get(5).set(1, Integer.toString(Quantity));
             } else if(item == 6) {
                 //Holy Sword
                 player.attackDamage += parseInt(dropTable[6][4]);
-                Quantity = parseInt(playerItems.get(5).get(1));
+                Quantity = parseInt(playerItems.get(6).get(1));
                 Quantity ++;
-                playerItems.get(5).set(1,Integer.toString(Quantity));
+                playerItems.get(6).set(1,Integer.toString(Quantity));
 
             } else if(item == 7) {
                 //Holy Shield
                 player.defense += parseInt(dropTable[7][4]);
-                Quantity = parseInt(playerItems.get(6).get(1));
-                Quantity ++;
-                playerItems.get(6).set(1, Integer.toString(Quantity));
-            } else if(item == 8) {
-                //Holy Gloves
-                player.hitsPerSecond += parseInt(dropTable[8][4]);
                 Quantity = parseInt(playerItems.get(7).get(1));
                 Quantity ++;
                 playerItems.get(7).set(1, Integer.toString(Quantity));
-            } else if(item == 9) {
-                // Holy Armor
-                player.MAXHITPOINTS += parseInt(dropTable[9][4]);
+            } else if(item == 8) {
+                //Holy Gloves
+                player.hitsPerSecond += parseInt(dropTable[8][4]);
                 Quantity = parseInt(playerItems.get(8).get(1));
                 Quantity ++;
                 playerItems.get(8).set(1, Integer.toString(Quantity));
+            } else if(item == 9) {
+                // Holy Armor
+                player.MAXHITPOINTS += parseInt(dropTable[9][4]);
+                Quantity = parseInt(playerItems.get(9).get(1));
+                Quantity ++;
+                playerItems.get(9).set(1, Integer.toString(Quantity));
             } else if (item == -1) {
 
             }

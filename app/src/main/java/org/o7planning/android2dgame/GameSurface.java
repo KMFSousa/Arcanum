@@ -54,7 +54,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         this.lootTables = new LootTables(this.context);
         // Make Game Surface focusable so it can handle events.
         this.setFocusable(true);
-
+        playerItems.add(Arrays.asList("Items (Scroll to see)", ""));
         playerItems.add(Arrays.asList("Sword (+1 Attack)","0"));
         playerItems.add(Arrays.asList("Shield (+1 Defense)","0"));
         playerItems.add(Arrays.asList("Gloves (+0.5 Hits/Sec)" ,"0"));
