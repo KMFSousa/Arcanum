@@ -20,7 +20,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:paddingBottom="60dp"
-        android:src="@drawable/game_title"/>
+        android:src="@drawable/arcanum_logo_full"/>
 
     <TextView
         android:id="@+id/loadingTextView"
