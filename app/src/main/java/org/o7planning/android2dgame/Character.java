@@ -350,16 +350,6 @@ public class Character extends GameObject {
 
         if(this.hitPoints < 0){
             this.hitPoints = 0;
-
-            if (this.isPlayer) {
-                final MainActivity context = (MainActivity)gameSurface.getContext();
-                context.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        context.deathScreen();
-                    }
-                });
-            }
         }
 
         this.healthBar.width = (int) (((float) this.hitPoints/ (float) this.MAXHITPOINTS)*this.healthBar.originalSpriteWidth); //Hardcoded initial width of healthBar
@@ -410,7 +400,7 @@ public class Character extends GameObject {
         List<Integer> items;
 
         if (this.hitPoints <= 0) {
-            if(!ai.isPlayer()) {
+            if(!ai.isPlayer()) { // alternatively, if (this.isPlayer) {
 
                 items = this.gameSurface.lootTables.roulette(mobID);
                 for (int i = 0; i < items.size(); i++ ) {
@@ -420,9 +410,27 @@ public class Character extends GameObject {
                 this.gameSurface.upgradeList.addAll(items);
 
                 gameSurface.removalList.add(this);
-            }
-            else if(ai.isPlayer()){((PlayerAI) ai).isDead = true;}
-            if(!ai.isPlayer()) {
+
+                // Run the victory screen when we beat the boss
+                if(this.mobType == "boss") {
+                    final MainActivity context = (MainActivity)gameSurface.getContext();
+                    context.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            context.victoryScreen();
+                        }
+                    });
+                }
+
+            } else if(ai.isPlayer()) {
+                ((PlayerAI) ai).isDead = true;
+                final MainActivity context = (MainActivity)gameSurface.getContext();
+                context.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        context.deathScreen();
+                    }
+                });
 
             }
         }

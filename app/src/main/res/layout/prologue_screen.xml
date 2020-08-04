@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/prologue_screen">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:background="#000000"
+        android:clickable="true"
+        android:focusable="true"/>
+
+    <TextView
+        android:id="@+id/mainText"
+        android:layout_width="500dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:includeFontPadding="true"
+        android:text="Deep beneath the city streets a secret evil festers in the sewers. An ancient power stirs at the behest of a wild orc shaman, whose minions spread ever further. The fate of the city lies in the hands of a lone hero and within these desecrated halls his destiny will be forged."
+        android:fontFamily="@font/fantaisie_artistique"
+        android:textColor="#BABABA"
+        android:textSize="25sp" />
+
+    <TextView
+        android:id="@+id/welcomeText"
+        android:layout_width="500dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/mainText"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="-80dp"
+        android:fontFamily="@font/fantaisie_artistique"
+        android:includeFontPadding="true"
+        android:text="Welcome to Arcanum!"
+        android:textColor="#BABABA"
+        android:textSize="40sp"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/loadingTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:paddingBottom="10dp"
+        android:paddingRight="10dp"
+
+        android:text="Loading...."
+        android:textAllCaps="false"
+        android:textColor="#EBEBEB"
+        android:textSize="20sp"
+
+        android:visibility="invisible"
+        />
+</RelativeLayout>

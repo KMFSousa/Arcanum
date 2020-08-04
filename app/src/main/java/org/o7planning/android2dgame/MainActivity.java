@@ -5,28 +5,33 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.IdRes;
-
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+
+import java.util.concurrent.TimeUnit;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
 
 public class MainActivity extends Activity {
 
     private GameSurface gameSurface;
-    public final int RECORD_AUDIO = 0, WRITE_EXTERNAL_STORAGE = 1;
+    private int difficultySetting = 1;
+    public final int RECORD_AUDIO = 0, WRITE_EXTERNAL_STORAGE = 1, MAX_DIFF = 3;
     private ScreenRecorder screenRecorder;
 
     @Override
@@ -46,17 +51,68 @@ public class MainActivity extends Activity {
 
     }
     protected void mainMenu() {
+        difficultySetting = 1;
         gameSurface = null;
         this.setContentView(R.layout.main_menu);
-
         final Button toggleButton = findViewById(R.id.startGameButton);
         toggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
-                startGame();
+                findViewById(R.id.loadingTextView).setVisibility(View.VISIBLE);
+                if(difficultySetting == 1) {
+                    prologueScreen();
+                }
+                else{
+                    startGame();
+                }
             }
         });
     }
+
+    protected void prologueScreen() {
+        this.setContentView(R.layout.prologue_screen);
+        TextView mainText = findViewById(R.id.mainText);
+        TextView welcomeText = findViewById(R.id.welcomeText);
+        Animation aniFade = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in);
+        mainText.startAnimation(aniFade);
+        welcomeText.startAnimation(aniFade);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                endPrologue();
+            }
+        }, 10000);
+
+        final ImageView imageView = findViewById(R.id.imageView);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                findViewById(R.id.loadingTextView).setVisibility(View.VISIBLE);
+                imageView.setOnClickListener(null);
+                endPrologue();
+            }
+        });
+
+    }
+
+    private void endPrologue(){
+        if(gameSurface != null) return;
+//        TextView mainText = findViewById(R.id.mainText);
+//        TextView welcomeText = findViewById(R.id.welcomeText);
+//        Animation fadeOut = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_out);
+//        mainText.startAnimation(fadeOut);
+//        welcomeText.startAnimation(fadeOut);
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                startGame();
+//            }
+//        }, fadeOut.getDuration());
+        startGame();
+    }
+
 
     private void setHUDVisible(boolean newVisible){
         RelativeLayout myLayout = findViewById(R.id.game_hud);
@@ -64,15 +120,18 @@ public class MainActivity extends Activity {
         View js2 = myLayout.findViewById(R.id.joystickView2);
         View pb = myLayout.findViewById(R.id.pauseButton);
         View tw = myLayout.findViewById(R.id.attackToggleButton);
+        View sb = myLayout.findViewById(R.id.shareButton);
         int visibleInt = newVisible ? View.VISIBLE : View.GONE;
         js.setVisibility(visibleInt);
         js2.setVisibility(visibleInt);
         pb.setVisibility(visibleInt);
         tw.setVisibility(visibleInt);
+        sb.setVisibility(visibleInt);
     }
 
     protected void pauseMenu(final RelativeLayout myLayout) {
         gameSurface.setRunning(false);
+        gameSurface.setPausedByPlayer(true);
         final View child = getLayoutInflater().inflate(R.layout.pause_menu, null);
         myLayout.addView(child);
         setHUDVisible(false);
@@ -84,6 +143,7 @@ public class MainActivity extends Activity {
                 setHUDVisible(true);
                 myLayout.removeView(child);
                 gameSurface.setRunning(true);
+                gameSurface.setPausedByPlayer(false);
             }
         });
 
@@ -99,6 +159,7 @@ public class MainActivity extends Activity {
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
+                findViewById(R.id.loadingTextView).setVisibility(View.VISIBLE);
                 startGame();
             }
         });
@@ -116,6 +177,7 @@ public class MainActivity extends Activity {
         restartGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {
+                findViewById(R.id.loadingTextView).setVisibility(View.VISIBLE);
                 startGame();
             }
         });
@@ -130,17 +192,49 @@ public class MainActivity extends Activity {
     }
 
     protected void victoryScreen(){
-        //TODO: This.
+        gameSurface.setRunning(false);
+        final View child = getLayoutInflater().inflate(R.layout.victory_menu, null);
+        ViewGroup parent = findViewById(R.id.game_hud);
+        parent.addView(child);
+        setHUDVisible(false);
+        
+        TextView beatLevel = findViewById(R.id.subTextView);
+        beatLevel.setText(beatLevel.getText() + ": " + difficultySetting);
+
+        final Button restartGameButton = findViewById(R.id.nextLevelButton);
+        if(difficultySetting < MAX_DIFF) {
+            difficultySetting++;
+        } else {
+            restartGameButton.setText("Restart");
+        }
+        restartGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                findViewById(R.id.loadingTextView).setVisibility(View.VISIBLE);
+                startGame();
+            }
+        });
+
+        final Button mainMenuButton = findViewById(R.id.mainMenuButton);
+        mainMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                mainMenu();
+            }
+        });
+
     }
 
     protected void startGame() {
         gameSurface = null;
-        //TODO: Add View that says "Loading....."
-        this.setContentView(R.layout.game_hud);
+        Animation aniFade = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
 
-        gameSurface = new GameSurface(this);
+        this.setContentView(R.layout.game_hud);
         final RelativeLayout myLayout = findViewById(R.id.game_hud);
+        gameSurface = new GameSurface(this, difficultySetting);
         myLayout.addView(gameSurface);
+        gameSurface.startAnimation(aniFade);
+        myLayout.startAnimation(aniFade);
 
         JoystickView joystick = findViewById(R.id.joystickView);
         joystick.setOnMoveListener(new JoystickView.OnMoveListener() {
@@ -178,7 +272,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        final Button attackToggleButton = findViewById(R.id.attackToggleButton);
+        final ImageButton attackToggleButton = findViewById(R.id.attackToggleButton);
         attackToggleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -186,17 +280,17 @@ public class MainActivity extends Activity {
                     PlayerAI playerAI = (PlayerAI) character.ai;
                     if (playerAI.attackStyle == "Melee") {
                         playerAI.attackStyle = "Ranged";
-                        attackToggleButton.setText("Melee");
+                        attackToggleButton.setImageResource(R.drawable.melee_icon);
                     } else {
                         playerAI.attackStyle = "Melee";
-                        attackToggleButton.setText("Ranged");
+                        attackToggleButton.setImageResource(R.drawable.ranged_icon);
                     }
                 }
             }
         });
 
 
-        final Button pauseButton = findViewById(R.id.pauseButton);
+        final ImageButton pauseButton = findViewById(R.id.pauseButton);
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View view) {

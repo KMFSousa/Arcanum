@@ -29,6 +29,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     public Dungeon dungeon;
     public StuffFactory stuffFactory;
     private boolean gameStarted = false;
+    private boolean pausedByPlayer = false;
     protected Context context; // Changed this to protected
     public LootTables lootTables;
     public List<Character> characterList = new ArrayList<Character>();
@@ -47,11 +48,12 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     public TextView dynamicTestView;
     public int difficulty;
 
-    public GameSurface(Context context)  {
+    public GameSurface(Context context, int difficulty)  {
         super(context);
         this.player = null;
         this.context = context;
         this.lootTables = new LootTables(this.context);
+        this.difficulty = difficulty;
         // Make Game Surface focusable so it can handle events.
         this.setFocusable(true);
 
@@ -168,8 +170,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         StuffFactory stuffFactory = new StuffFactory(this);
         this.stuffFactory = stuffFactory;
 
-        this.difficulty = 3; // Default Value? Can be changed (Values 1 - 3)
-
         this.dungeon = new Dungeon(this);
 
         Character player = stuffFactory.newPlayer(this.characterList, 850, 500, this.context);
@@ -222,8 +222,10 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
             gameThread.start();
             gameStarted = true;
         }
-        gameThread.setRunning(true);
 
+        if(!pausedByPlayer) {
+            gameThread.setRunning(true);
+        }
 
     }
 
@@ -253,6 +255,10 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
     public void setLastPauseTime(long newPauseTime) {
         gameThread.setLastPauseTime(newPauseTime);
+    }
+
+    public void setPausedByPlayer(boolean pausedByPlayer){
+        this.pausedByPlayer = pausedByPlayer;
     }
 
 }
