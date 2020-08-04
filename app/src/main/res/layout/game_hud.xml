@@ -61,7 +61,7 @@
         android:textSize="10sp"
         android:theme="@style/AppTheme"
         android:translationZ="90dp" />
-    
+
     <ListView
         android:id="@+id/total_items"
         android:layout_width="200dp"
