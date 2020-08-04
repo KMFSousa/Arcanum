@@ -1,4 +1,4 @@
 ﻿Index,Name,Drop Rate,Item range (Start),Item range (End),Drop Quantity,Defense
-0,Slime,50,0,100,2,1
-1,Orc,25,20,80,4,3
-2,Boss,100,0,40,5,5
+0,Slime,50,0,100,1,1
+1,Orc,25,0,80,2,3
+2,Boss,100,0,120,5,5

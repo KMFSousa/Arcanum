@@ -16,7 +16,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Collections;
@@ -39,6 +41,9 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     public List<Projectile> projectileRemovalList = new ArrayList<Projectile>();
     public List<Item> itemList = new ArrayList<Item>();
     public List<Integer> upgradeList = new ArrayList<Integer>();
+
+    public ArrayList<List<String>> playerItems = new ArrayList<List<String>>();
+
     public Character player;
     public TextView dynamicTestView;
     public int difficulty;
@@ -51,6 +56,16 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         this.difficulty = difficulty;
         // Make Game Surface focusable so it can handle events.
         this.setFocusable(true);
+
+        playerItems.add(Arrays.asList("Sword (+1 Attack)","0"));
+        playerItems.add(Arrays.asList("Shield (+1 Defense)","0"));
+        playerItems.add(Arrays.asList("Gloves (+0.5 Hits/Sec)" ,"0"));
+        playerItems.add(Arrays.asList("Armor (+10 MaxHP)","0"));
+        playerItems.add(Arrays.asList("Rocks (+1 Attack per 2)","0"));
+        playerItems.add(Arrays.asList("Holy Sword (+5 Attack)","0"));
+        playerItems.add(Arrays.asList("Holy Shield (+5 Defense)","0"));
+        playerItems.add(Arrays.asList("Holy Gloves (+2 Hits/Sec)","0"));
+        playerItems.add(Arrays.asList("Holy Armor (+50 MaxHP)","0"));
 
         // Set callback.
         this.getHolder().addCallback(this);
@@ -97,8 +112,9 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
             projectile.update();
         }
         if(!upgradeList.isEmpty()) {
-            lootTables.applyItems(upgradeList, this.player);
+            this.playerItems = lootTables.applyItems(upgradeList, this.player, this.playerItems);
             upgradeList.clear();
+
         }
 //        applyItems(roulette_results)
 

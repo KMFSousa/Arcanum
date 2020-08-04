@@ -15,9 +15,11 @@ public class StuffFactory {
     public Map<String, ArrayList<Bitmap>> orcAnimationMap = null;
     public Map<String, ArrayList<Bitmap>> slimeAnimationMap = null;
     public Map<String, ArrayList<Bitmap>> bossAnimationMap = null;
+    public Character player;
 
     public StuffFactory(GameSurface gameSurface) {
         this.gameSurface = gameSurface;
+        this.player = this.gameSurface.player;
     }
 
     //TODO: UPDATE CHARACTER AND ITEM CONSTRUCTORS WITH ATTRIBUTES
@@ -144,8 +146,8 @@ public class StuffFactory {
         return boss;
     }
 
-    public Projectile projectile(Bitmap projectileBitmap, int movingVectorX, int movingVectorY, boolean isPlayerOwned, int originX, int originY, float velocity){
-        Projectile projectile = new Projectile(isPlayerOwned, projectileBitmap, 1, 1, originX, originY, movingVectorX, movingVectorY, gameSurface, velocity, 10);
+    public Projectile projectile(Bitmap projectileBitmap, int movingVectorX, int movingVectorY, boolean isPlayerOwned, int originX, int originY, float velocity, int attackdamage){
+        Projectile projectile = new Projectile(isPlayerOwned, projectileBitmap, 1, 1, originX, originY, movingVectorX, movingVectorY, gameSurface, velocity, attackdamage);
         gameSurface.projectilesToAddList.add(projectile);
 
         Bitmap projectileHurtbox = BitmapFactory.decodeResource(gameSurface.getResources(), R.drawable.characterhitbox);
