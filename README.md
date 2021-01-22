@@ -1,10 +1,10 @@
-ECE 452 - Software Design and Architectures
-University of Waterloo
-Electrical and Computer Engineering 2021
+ECE 452 - Software Design and Architectures </br>
+University of Waterloo </br>
+Electrical and Computer Engineering 2021</br>
 
-Kristopher Sousa, Zachary Walford, Jackson Barr, William Huang, Daniel Tran and Cristiano Chelotti 
+Kristopher Sousa, Zachary Walford, Jackson Barr, William Huang, Daniel Tran and Cristiano Chelotti </br>
 
-!!! Note: This Repo is a mirror of the private Repo. !!!
+### !!! Note: This Repo is a mirror of the private Repo. !!!
 
 ## Features
 - Screen record gameplay
