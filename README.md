@@ -12,7 +12,10 @@ Kristopher Sousa, Zachary Walford, Jackson Barr, William Huang, Daniel Tran and 
 - 3 Difficulty levels
 - Item drops providing buffs
 - Variety of monsters: Slimes, Orcs, etc
-- Boss Fight varies behaviour based on difficulty
+- Boss Fight varies behavior based on difficulty
+
+## Game Trailer
+A Fun trailer is available at the top level of this repo.
 
 # Code Breakdown
 * All the code can be found in /app/src/main/java/org.o7planning.android2dgame.
