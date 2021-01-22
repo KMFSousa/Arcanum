@@ -14,8 +14,8 @@ Kristopher Sousa, Zachary Walford, Jackson Barr, William Huang, Daniel Tran and 
 - Variety of monsters: Slimes, Orcs, etc
 - Boss Fight varies behavior based on difficulty
 
-## Game Trailer
-A Fun trailer is available at the top level of this repo.
+## Game Demo
+A demo and project description is available here: https://youtu.be/8AhAuv4iPXk
 
 # Code Breakdown
 * All the code can be found in /app/src/main/java/org.o7planning.android2dgame.
