@@ -1,3 +1,19 @@
+ECE 452 - Software Design and Architectures
+University of Waterloo
+Electrical and Computer Engineering 2021
+
+Kristopher Sousa, Zachary Walford, Jackson Barr, William Huang, Daniel Tran and Cristiano Chelotti 
+
+!!! Note: This Repo is a mirror of the private Repo. !!!
+
+## Features
+- Screen record gameplay
+- Share recordings to social media
+- 3 Difficulty levels
+- Item drops providing buffs
+- Variety of monsters: Slimes, Orcs, etc
+- Boss Fight varies behaviour based on difficulty
+
 # Code Breakdown
 * All the code can be found in /app/src/main/java/org.o7planning.android2dgame.
 * All the resources are stored /app/src/main/res.
